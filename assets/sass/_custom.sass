@@ -1,0 +1,718 @@
+/* Hero Section */
+nav
+  z-index: 10
+  
+#hero
+  position: relative
+  #brand
+    img
+      height: 4rem
+      transform: scale(2)
+      margin: 0 auto
+      position: absolute
+      left: 47%
+      &:hover
+        background-color: transparent
+
+#brand-mob
+  &:hover
+  background-color: transparent !important
+  img
+    transform: scale(3.5)
+    position: relative
+    padding-left: .5rem
+    
+    &.is-page-brand
+      padding-left: 1.5rem !important
+
+#main-menu
+  position: relative
+  z-index: 10
+  .navbar-start
+    .nav-item
+      font-size: .8em
+  .navbar-end
+    .button
+      &.menu-icon
+        background-color: transparent
+  @media only screen and (max-width: 620px)
+    right: 1.5rem
+    background-color: #212121
+    &.is-page-brand
+      right: auto
+
+.main-hero
+  position: relative
+  z-index: 1
+  background: url('./assets/images/background.jpg') center center no-repeat
+  background-size: cover
+  color: $white
+  max-height: 100%
+  overflow: hidden
+
+  &:before
+    content: ''
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background-image: linear-gradient(to right, #000, #000)
+    opacity: .7
+    z-index: 1
+
+  .hero-body
+    z-index: 10
+    padding: 0
+    position: relative
+
+  video
+    object-fit: fill
+    position: absolute
+    max-width: none
+
+  .subtitle
+    margin: 0 auto 4rem
+    color: $white
+    font-weight: normal
+    font: $font-family-serif
+    letter-spacing: 1rem
+    word-spacing: 1rem
+    font-size: 4rem
+    .b
+      font-weight: 800
+      text-shadow: 1px 2px 1px rgb(125,125,125)
+
+    @media only screen and (max-width: 600px)
+      font-size: 2rem
+      transform: scale(1)
+
+  .social-icons
+    position: absolute
+    top: 27%
+    .s-icon
+      margin-top: 1.5rem
+
+  .image-icon
+    height: 40px
+
+  .content
+    width: 100%
+    position: absolute
+    bottom: 5rem
+    max-width: 100%
+
+  .hero-head
+    padding-left: 3rem
+    z-index: 10
+    width: 100%
+    transition: all 1sec ease
+
+    &.mode-static
+      background-color: $primary-color
+      position: fixed !important
+
+    .navbar
+      background-color: transparent
+      box-shadow: none
+
+      a
+        &.nav-item
+          color: $white
+
+  .withed
+    max-width: 400px
+
+    input
+      max-width: 100%
+      border-radius: 1em
+      padding-right: 4.6em
+    p
+      position: relative
+    .button
+      position: absolute
+      top: 0
+      right: 0
+      width: 4.4em
+      border-radius: 1em
+  p
+    &.arrow
+      font-size: 5em
+      a
+        color: $white
+
+  h2
+    font-weight: bolder
+    letter-spacing: .1em
+    line-height: 2em
+
+    .bars
+      display: inline-block
+      font-weight: normal
+      transform: scaleY(1.2)
+      text-shadow: 2px 1px 3px rgb(125,125,125)
+
+  .hero-butts
+    margin-left: 4rem
+    margin-right: 4rem
+    max-width: 100%
+
+    .button
+      border-radius: 0
+
+      &:hover
+        background-color: transparent
+        border-color: $white
+        color: $white
+
+  #loader
+    position: absolute
+    left: 45%
+    top: 30%
+    z-index: 3
+    display: none
+    .button
+      background-color: transparent
+
+
+.m-card
+  cursor: pointer
+  box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2)
+  transition: all 0.3s
+  border-radius: 5px
+
+  &:hover
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2)
+
+  .card-container
+    padding: 10px 0
+  .card-image
+    border-radius: 5px 5px 0 0
+    max-height: 100%
+    max-width: 100%
+
+.z1
+  z-index: 10
+.z2
+  z-index: 100
+.z3
+  z-index: 1000
+.z4
+  z-index: 10000
+.z5
+  z-index: 100000
+
+.m-container
+  padding: 1em 1em
+
+aside
+  min-width: 100%
+  min-height: calc(100vh - 5em)
+  padding: 1em
+  .user-avatar
+    width: 60px
+    height: 60px
+    border-radius: 50%
+
+.m-centered
+  margin: 0 auto
+
+.is-hidden
+  visibility: hidden
+
+.pane
+  &.main
+    width: 100%
+    max-width: 600px
+
+.at-center
+  display: inline-block
+  margin: 0 auto
+
+.tile
+  &.box
+    transition: all 0.25s
+    max-width: 100%
+    margin: 5px !important
+    cursor: pointer
+    &.is-scalable
+      &:hover
+        transform: scale(1.008)
+        background-color: #DADADA
+      &.selected
+        background-color: $darker-gray
+        p
+          color: $white
+
+.bordered
+  padding-bottom: 2px
+  border-bottom: 1px dashed $darker-blue
+
+.box
+  cursor: pointer
+  &.box-main
+    width: 100%
+    max-width: 768px
+  &.doc-box
+    padding: 0.5rem
+  p
+    padding-top: 1em
+  h2
+    font-weight: bolder
+
+.padded-top-down
+  padding: .2em 0
+
+.margined-top-down
+  margin: .5em 0
+
+.doc-form
+  .field
+    margin: 1em auto
+    max-width: 600px
+  .select
+    margin: 1em 4em
+    @media only screen and (max-width: 500px)
+      margin: .3em 0
+
+
+#general
+  background-color: #f2f2f2
+
+  .columns
+    align-items: baseline
+    .box
+      min-height: 30rem
+      //height: 100%
+
+  .image
+    margin-left: auto
+    margin-right: auto
+  .box
+    transition: 200ms
+    transition-timing-function: ease-in-out
+    p
+      &.content
+        color: #212121
+        margin: 2em 1em !important
+    &:hover
+      background-color: $primary-color
+      color: $white
+      h2
+        color: $white
+      svg
+        path
+          fill: $white !important
+      .button
+        font-size: 1em
+        span
+          i
+            display: none
+          &:before
+            content: 'Go'
+      p
+        &.content
+          color: $white
+
+#customers
+  background-color: #F2F2F2
+  .safe
+    position: relative
+    top: 30%
+    margin: auto
+
+
+#example
+  p
+    i
+      font-size: 1.2em
+      font-style: italics
+  .box-cont
+    border-radius: 1rem
+    margin: 3rem
+    box-shadow: 4px 6px 40px #888888, -4px -4px 40px #888888
+
+#upload
+  background-color: $primary-color
+  color: #FFF
+
+  .column
+    &.is-3
+      min-height: 100%
+      position: relative
+    .field
+      margin: 4rem 1rem
+
+.box-cont
+  border-radius: 1rem
+  margin: 3rem
+  box-shadow: 2px 2px 10px #888888, -1px -1px 10px #888888
+
+  @media only screen and (max-width: 600px)
+    padding: 0
+    margin: 0 !important
+
+#ask-attorney
+  background-color: #f2f2f2
+
+  textarea
+    background-color: $lighter-gray
+    resize: none
+    border-radius: .8rem
+    border-size: 3em 3em 6em 3em
+
+#adv
+  background-color: #DADADA
+  background-image: url('./assets/images/parallax.jpeg')
+  height: 500px
+  background-attachment: fixed
+  background-position: center
+  background-repeat: no-repeat
+  background-size: cover
+
+  @media only screen and (max-device-width: 1024px)
+    background-attachment: scroll
+
+#register
+  background-color: #f2f2f2
+  .cont
+    display: flex
+    justify-content: center
+    flex-wrap: wrap
+    margin-top: 2rem
+    margin-bottom: 2rem
+    .field
+      margin-left: 1rem
+      display: inline-block
+      @media only screen and (max-width: 500px)
+        display: block
+
+#footer
+  .foot-icon
+    background-color: transparent
+  .brand
+    height: 100px
+  .title
+    &.is-6
+      margin-top: 1.2rem
+  a
+    color: $white
+  .tweets
+    &.items
+      font-size: .85em
+  .terms
+    display: inline-block
+
+.has-text-darker-blue
+  color: $darker-blue
+
+.has-text-darker-yellow
+  color: $darker-yellow
+
+.has-text-darker-gray
+  color: $darker-gray
+
+.has-text-light-gray
+  color: $light-gray
+
+.has-text-lighter-gray
+  color: $lighter-gray
+
+.is-darker-blue
+  background-color: $darker-blue
+
+.is-darker-yellow
+  background-color: $darker-yellow
+
+.is-darker-gray
+  background-color: $darker-gray
+
+.is-light-gray
+  background-color: $light-gray
+
+.is-lighter-gray
+  background-color: $lighter-gray
+
+.is-dark
+  background-color: #212121
+
+p
+  letter-spacing: .05rem
+
+#floating-button
+  position: fixed
+  bottom: 5rem
+  right: 5rem
+  display: none
+  .button
+    border-radius: 50%
+    //padding: 1rem
+    .icon
+      //padding: 0
+  .tooltiptext
+    display: none
+    width: 120px
+    background-color: $primary-color
+    color: #fff
+    text-align: center
+    padding: 5px 0
+    border-radius: 6px
+    position: fixed
+    bottom: 8.6rem
+    right: 3.8rem
+    margin-left: -60px
+    &::after
+      content: " "
+      position: absolute
+      top: 100%
+      left: 50%
+      margin-left: -5px
+      border-width: 5px
+      border-style: solid
+      border-color: $primary-color transparent transparent transparent
+
+#testimonial
+  position: relative
+
+  .quote-box
+    position: relative
+    margin-left: 1rem
+    position: relative
+    transition: all 0.25s
+
+    &.red
+      border-top: 1px solid red
+      &::after
+        border-color: red transparent transparent transparent
+    &.yellow
+      border-top: 1px solid yellow
+      &::after
+        border-color: yellow transparent transparent transparent
+    &.blue
+      border-top: 1px solid blue
+      &::after
+        border-color: blue transparent transparent transparent
+    &.green
+      border-top: 1px solid green
+      &::after
+        border-color: green transparent transparent transparent
+    &.pink
+      border-top: 1px solid pink
+      &::after
+        border-color: pink transparent transparent transparent
+    &::after
+      content: " "
+      position: absolute
+      top: 100%
+      left: 50%
+      margin-left: -5px
+      border-width: 8px
+      border-style: solid
+      border-color: $primary-color transparent transparent transparent
+  img
+    height: 50px
+    width: 50px
+    border-radius: 50%
+
+  .nav-icon
+    position: absolute
+    top: 50%
+    display: inline-block
+    color: red
+    z-index: 1
+
+    &.left
+      left: 20px
+    &.right
+      right: 20px
+
+.is-bordercircle
+  border-radius: 50%
+
+
+.section-button
+  @media only screen and (max-width: 600px)
+    text-align: center
+
+
+// animations
+
+.animated
+  animation-duration: 1s
+  animation-fill-mode: both
+
+@keyframes fadeIn
+  from
+    opacity: 0
+
+  to
+    opacity: 1
+
+
+.fadeIn
+  animation-name: fadeIn
+
+@keyframes fadeOut
+  from
+    opacity: 1
+
+  to
+    opacity: 0
+
+
+.fadeOut
+  animation-name: fadeOut
+
+
+
+.is-mfullheight
+  width: 100%
+  min-height: 100vh
+
+#upload-doc
+  .box
+    position: relative
+    transition: 200ms
+    transition-timing-function: ease-in-out
+    
+    .file-input
+      width: 100%
+      height: 80%
+      max-height: 100%
+      cursor: pointer
+      opacity: 0
+    &:hover
+      box-shadow: 1px 1px 10px #212121
+    .content
+      margin: 4em
+    p
+      &.is-icon
+        font-size: 4rem
+    &.dragged
+      box-shadow: 4px 4px 30px #212121
+    
+  #doc-count
+    font-size: 2rem
+
+
+  .todo
+    li
+      font-size: 1.5rem
+      margin-top: 1em
+
+  .step
+    background-color: $darker-yellow
+    color: $white
+    display: inline-block
+    height: 35px
+    width: 35px
+    border-radius: 50%
+    text-align: center
+    font-size: 1.3rem
+    font-weight: bolder
+    margin-bottom: 1em
+    
+  form
+    width: 100%
+    max-width: 800px
+    margin: 1em auto
+  .butts
+    display: inline-block
+
+  .upload
+    -box-cont
+    transition: all 200ms ease-in-out
+    
+  .progress
+    height: .5em
+    transition: background-color 1s ease-in-out
+    
+.in
+  display: inline-block
+  z-index: 2
+  &a
+    width: 100%
+    height: 100%
+
+// Snackbar
+
+#snackbar 
+  visibility: hidden
+  min-width: 250px
+  background-color: $darker-yellow
+  color: #000
+  text-align: center
+  border-radius: 2px
+  padding: 16px
+  position: fixed
+  z-index: 1
+  right: 30px
+  bottom: 30px
+
+  @media only screen and (max-width: 600px)
+    right: 50%
+    
+  &.show
+    visibility: visible !important
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s
+    animation: fadein 0.5s, fadeout 0.5s 2.5s
+
+@-webkit-keyframes fadein
+  from
+    bottom: 0
+    opacity: 0
+  to
+    bottom: 30px
+    opacity: 1
+
+
+@keyframes fadein
+  from
+    bottom: 0
+    opacity: 0
+  to
+    bottom: 30px
+    opacity: 1
+
+@-webkit-keyframes fadeout
+  from
+    bottom: 30px
+    opacity: 1
+  to
+    bottom: 0
+    opacity: 0
+
+@keyframes fadeout
+  from
+    bottom: 30px
+    opacity: 1
+  to
+    bottom: 0
+    opacity: 0
+
+
+#user-dashboard
+  h3
+    &.title
+      margin-bottom: 0
+  .media
+    & + .media
+      border-top: none
+      margin-top: 0
+      padding-top: 0
+  .box
+    &.padded-small
+      padding: .5rem
+  .button
+    border-radius: 0
+    margin-bottom: .5rem
+
+.box
+  &.has-top-blue
+    border-top: 1px solid $darker-blue
+  &.has-top-yellow
+    border-top: 1px solid $darker-yellow
+  &.has-top-gray
+    border-top: 1px solid $darker-gray
+  &.has-top-light
+    border-top: 1px solid $light-gray
