@@ -690,7 +690,6 @@ p
     bottom: 0
     opacity: 0
 
-
 #user-dashboard
   h3
     &.title
@@ -716,3 +715,34 @@ p
     border-top: 1px solid $darker-gray
   &.has-top-light
     border-top: 1px solid $light-gray
+
+#user_activities
+  .page-button
+    border-radius: 50%
+
+.truncate
+  display: inline-block
+  width: 60%
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+  .media-content
+    position: relative
+    max-width: 100%
+    .content
+      width: 900px
+      max-width: 90%
+    .time
+      float: right
+    
+.media-right
+  padding-top: 1rem
+
+.padded-top
+  display: inline-block
+  padding-top: 1em
+
+tr.clickable
+  &:hover
+    background-color: $lighter-gray !important

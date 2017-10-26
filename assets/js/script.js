@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var messageCont = document.querySelector('.message');
     var messageBody = document.querySelector('.message-body');
     var snackBar = document.getElementById('snackbar');
-    
+    var authenticated = $wp_data.authenticated;
+
     // Registration Functions
 
     var $regButton = document.getElementById('reg-submit');
@@ -174,12 +175,14 @@ document.addEventListener('DOMContentLoaded', function () {
             success:function(data){
                 if (data.status){
                     localStorage.setItem('token', data.token);
-                    window.location = '/user';
+                    if(!sendUnsentUserPayload())
+                        window.location = '/user';
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
                 }
                 loading = false;
+                
             },
             error: function(errorThrown){
                 showLoadingButton($loginButton, false);
@@ -717,12 +720,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 showLoadingButton(askAttorneyBtn, true);
                 askLoad = true;
-                
-                postData({
+
+                var data = {
                     action: 'ask_attorney',
                     content: contentEl.value,
                     client_key: $wp_data.client_auth
-                }, function(data){
+                };
+
+                if (!makeSureUserAuthenticated(data))
+                    return false;
+                
+                postData(data, function(data){
                     if(data.status){
                         showSnackBar('Request submitted...');
                         clearField(contentEl);
@@ -1128,7 +1136,11 @@ document.addEventListener('DOMContentLoaded', function () {
         field.classList.remove('is-danger');
     }
 
-    var activeNav = document.querySelector('aside .menu-list a[href^="/' + location.pathname.split('/').splice(-2, 1)[0] + '"]');
+    var nPath = location.pathname.split('/');
+    nPath = cleanArray(nPath);
+    nPath = nPath.splice(nPath.length - 1, 1)[0];
+    
+    var activeNav = document.querySelector('aside .menu-list a[data-href^="' + nPath + '"]');
     if (activeNav)
         activeNav.classList.add('is-active');
 
@@ -1205,7 +1217,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 'xml');
 
         });
-
     }
 
     makeSVGFileInline();
@@ -1259,6 +1270,76 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function cleanArray(arr){
+        for(var i = 0; i < arr.length; i++) {
+            if(arr[i] === ""){
+                arr.splice(i, 1);
+            }
+        }
+
+        return arr;
+    }
+
+    function makeSureUserAuthenticated(data) {
+        if(authenticated){
+            return true;
+        } else {
+            localStorage.setItem('redirect', JSON.stringify(location.pathname));
+            localStorage.setItem('redirect-data', JSON.stringify(data));
+            location.href = "/login";
+        }
+        return false;
+    }
+
+    function sendUnsentUserPayload(){
+        var has = localStorage.getItem('redirect');
+        if (has){
+            has = JSON.parse(has);
+            if(has){
+                var data = JSON.parse(localStorage.getItem('redirect-data'));
+                showSnackBar('Sending request');
+                postData(data,
+                         function (data) {
+                             if(data.status){
+                                 showSnackBar("Request sent successfully");
+                             }
+                             else {
+                                 showSnackBar("There was an error sending request");
+                             }
+                         },
+                         function (err) {
+                             showSnackBar("There was an error sending request");
+                         });
+            }
+            clearStorageData();
+            location.href = has;
+            return true;
+        }
+        return false;
+    }
+
+    function clearStorageData(){
+        localStorage.removeItem('redirect');
+        localStorage.removeItem('redirect-data');
+    }
+
+    function shorten(text, maxLength) {
+        var ret = text;
+        if (ret.length > maxLength) {
+            ret = ret.substr(0,maxLength-3) + "...";
+        }
+        return ret;
+    }
+
+    var clickable = document.querySelectorAll('.clickable');
+
+    for(var i = 0; i < clickable.length; i++) {
+        clickable[i].addEventListener("click", function ($event) {
+            var tar = $event.currentTarget;
+            var link = tar.getAttribute('data-href');
+            location.href= link;
+        });
+    }
     // End of Utility Functions
 
 

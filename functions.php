@@ -12,10 +12,10 @@ use \Firebase\JWT\JWT;
 
 $USER_PAYLOAD = array(
     'status' => false
-             );
+);
 
 if (array_key_exists('token', $_COOKIE)){
-validate_jwt($_COOKIE['token']);
+    validate_jwt($_COOKIE['token']);
 }
 
 
@@ -26,15 +26,15 @@ require_once get_template_directory() . '/lib/init.php';
 
 
 function my_theme_enqueue_styles() {
-global $client_key;
-global $USER_PAYLOAD;
-wp_enqueue_script('util', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/utils.js');
-wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'jquery'));
-wp_localize_script( 'script-js', '$wp_data',
+    global $client_key;
+    global $USER_PAYLOAD;
+    wp_enqueue_script('util', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/utils.js');
+    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'jquery'));
+    wp_localize_script( 'script-js', '$wp_data',
                         array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 'client_auth' => CLIENT_KEY, 'home' => HOME, 'authenticated' => $USER_PAYLOAD['status']));
 }
 
-    add_action('wp_ajax_nopriv_register_form', 'register_form');
+add_action('wp_ajax_nopriv_register_form', 'register_form');
 add_action('wp_ajax_register_form', 'register_form');
 add_action('wp_ajax_nopriv_login_form', 'login_form');
 add_action('wp_ajax_login_form', 'login_form');
@@ -70,38 +70,38 @@ remove_filter( 'the_excerpt', 'wpautop' );
 // initial function calls
 
 function wpdocs_set_html_mail_content_type() {
-return 'text/html';
+    return 'text/html';
 }
 
-    // define the wp_mail_failed callback
-    function action_wp_mail_failed($wp_error)
-    {
-return error_log(print_r($wp_error, true));
+// define the wp_mail_failed callback
+function action_wp_mail_failed($wp_error)
+{
+    return error_log(print_r($wp_error, true));
 }
 
-    // add the action
-    add_action('wp_mail_failed', 'action_wp_mail_failed', 10, 1);
+// add the action
+add_action('wp_mail_failed', 'action_wp_mail_failed', 10, 1);
 
 function register_form(){
-global $wpdb;
+    global $wpdb;
 
-// check if request is from our client
+    // check if request is from our client
 
-if (trim($_POST['client_key']) != CLIENT_KEY)
-    return die(0);
+    if (trim($_POST['client_key']) != CLIENT_KEY)
+        return die(0);
 
-// verify captca
+    // verify captca
 
-$captcha = $_POST['captcha'];
-$captcha_url = "https://www.google.com/recaptcha/api/siteverify";
-$c_data = array(
-    'secret' => CAPTCHA_SECRET_KEY,
+    $captcha = $_POST['captcha'];
+    $captcha_url = "https://www.google.com/recaptcha/api/siteverify";
+    $c_data = array(
+        'secret' => CAPTCHA_SECRET_KEY,
         'response' => $captcha,
         'remoteip' => $_SERVER['REMOTE_ADDR']
-             );
+    );
 
-$captcha_response = wp_remote_post( $captcha_url, array(
-    'method' => 'POST',
+    $captcha_response = wp_remote_post( $captcha_url, array(
+        'method' => 'POST',
         'timeout' => 45,
         'redirection' => 5,
         'httpversion' => '1.0',
@@ -121,7 +121,7 @@ $captcha_response = wp_remote_post( $captcha_url, array(
 
         return die(0);
     } else {
-       $captcha_response = json_decode($captcha_response["body"]);
+        $captcha_response = json_decode($captcha_response["body"]);
         $state = $captcha_response -> success;
         if (!$state){
             wp_send_json(array(
@@ -184,14 +184,14 @@ $captcha_response = wp_remote_post( $captcha_url, array(
             'full_name' => $full_name,
             'password' => $hashed_password,
             'role_auth' => 1
-            ),
-            array(
-                "%s",
-                "%s",
-                "%s",
-                "%s",
-                "%d"
-            )
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d"
+        )
     );
 
     if ($result){
@@ -683,7 +683,7 @@ function addActivity($type_name, $user_id){
         )
     ); 
 
-    dbDelta($wpdb -> insert_id);
+    return $wpdb -> insert_id;
 }
 
 function get_files(){
@@ -763,7 +763,7 @@ function generate_document(){
 
     $pdf = new Spatie\PdfToImage\Pdf($gen_file_pdf);
     $pdf->saveImage($gen_file_jpg);
-        
+    
     wp_send_json(array(
         'message' => 'Success',
         'status' => true,
@@ -951,9 +951,48 @@ function redirect($url) {
 
 
 function ask_attorney(){
-    wp_send_json(array(
-        'message' => 'Success',
-        'status' => true));
+    global $USER_PAYLOAD;
+    global $wpdb;
+    $content = $_POST['content'];
+
+    if (trim($_POST['client_key']) != CLIENT_KEY)
+        return die(0);
+
+    error_log(print_r($USER_PAYLOAD, true));
+    // validate cookie
+    if(!$USER_PAYLOAD["status"]) return redirect("/login");
+    $user = $USER_PAYLOAD["data"];
+    $date = date('Y-m-d H:i:s');
+    $act_id = addActivity(_ASK_ATTORNEY_, $user -> user_id);
+
+    $table_requests = _REQUEST_TABLE_;
+    $res = $wpdb -> insert($table_requests,
+                           array(
+                               "act_id" => $act_id,
+                               "mess" => $content,
+                               "status" => _RECEIVED_,
+                               "last_updated" => $date,
+                               "viewed" => 0
+                           ), array(
+                               "%d",
+                               "%s",
+                               "%s",
+                               "%s",
+                               "%d"
+                           )
+    );
+
+    if ($res){
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true));
+    } else {
+        wp_send_json(array(
+            'message' => 'Error adding request',
+            'status' => false));
+    }
+
+    
     die();
 }
 
@@ -982,13 +1021,13 @@ function getActivities($limit = 10){
     return $results;
 }
 
-    function getRequests($limit = 10){
+function getRequests($limit = 10){
     global $wpdb;
 
     $table_requests = _REQUEST_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
     
-    $query = "SELECT $table_requests.id, date_created, type_name
+    $query = "SELECT $table_requests.id, date_created, type_name, status
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
@@ -1005,7 +1044,7 @@ function getAllRequests($limit = 20){
     $table_requests = _REQUEST_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
     
-    $query = "SELECT $table_requests.id, date_created, type_name, mess
+    $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
@@ -1017,6 +1056,30 @@ function getAllRequests($limit = 20){
 }
 
 function getActivityTemplate($act){
+
+    if (!$act){
+        return (
+            '
+        <article class="media">
+        <figure class="media-left">
+        <p class="media-icon">
+        <span class="icon">
+        <i class="fa fa-paper-plane-o"></i>
+        </span>
+        </p>
+        </figure>
+        <div class="media-content">
+        <div class="content">
+        <p> 
+          &middot;
+        </p>
+        </div>
+        </div>
+        </article>
+        '
+        );
+
+    }
     $date = time_elapsed_string($act -> date_created);
     $content = "";
 
@@ -1033,13 +1096,16 @@ function getActivityTemplate($act){
     case _REGISTERED_ACCOUNT_:
         $content = 'You created a new <strong>account</strong>';
         break;
-     case _ACTIVATED_ACCOUNT_:
+    case _ACTIVATED_ACCOUNT_:
         $content = 'You <strong>activated</strong> your account';
         break;
-     case _RECOVER_PASSWORD_:
+    case _RECOVER_PASSWORD_:
         $content = 'You recovered your account <strong>password</strong>';
         break;
-     default:
+    case _ASK_ATTORNEY_:
+        $content = 'You sent a request to an <strong>antorney</strong>';
+        break;
+    default:
         $date = "";
         $content = "";
         break;
@@ -1047,28 +1113,69 @@ function getActivityTemplate($act){
 
     return (
         '
-         <article class="media">
-               <figure class="media-left">
-                   <p class="media-icon">
-                      <span class="icon">
-                           <i class="fa fa-paper-plane-o"></i>
-                      </span>
-                   </p>
-               </figure>
-               <div class="media-content">
-                   <div class="content">
-                      <p>' .
-                        $content . ' &middot; <small> ' . $date . '</small>
-                       </p>
-                   </div>
-               </div>
-           </article>
+        <article class="media">
+        <figure class="media-left">
+        <p class="media-icon">
+        <span class="icon">
+        <i class="fa fa-paper-plane-o"></i>
+        </span>
+        </p>
+        </figure>
+        <div class="media-content">
+        <div class="content">
+        <p>' .
+        $content . ' &middot; <small> ' . $date . '</small>
+        </p>
+        </div>
+        </div>
+        </article>
         '
+    );
+
+}
+
+function getAllRequestsTemplate($req){
+
+    $status = $req -> status;
+    $viewed = $req -> viewed;
+    $mess = $req -> mess;
+    $last_updated = time_elapsed_string($req -> last_updated);
+    $req_id = $req -> id;
+    $status_color = get_color($status);
+    
+    return (
+        "
+
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+         
+        <td  style=\"width: 85%\">
+           <p>$mess</p>
+       </td>
+       <td  style=\"width: 10%; padding-top: 1.5rem\">
+         <small class=\"has-text-centered\">$last_updated</small>
+       </td>  
+        "
     );
 }
 
-function getRequestTemplate($req){
-    
+function get_color($status){
+    switch($status){
+    case _RECEIVED_:
+        return "has-text-warning";
+    case _PROCESSING_:
+        return "has-text-info";
+        break;
+    case _COMPLETED_:
+        return "has-text-success";
+        break;
+        
+    }
 }
 
 function time_elapsed_string($datetime, $full = false) {
@@ -1098,4 +1205,31 @@ function time_elapsed_string($datetime, $full = false) {
 
     if (!$full) $string = array_slice($string, 0, 1);
     return $string ? implode(', ', $string) . ' ago' : 'just now';
+}
+
+function getActivityCount($act_name){
+    global $wpdb;
+    global $USER_PAYLOAD;
+    
+    $user = $USER_PAYLOAD['data'];
+    $table_activities = _ACTIVITY_TABLE_;
+    $user_id = $user -> user_id;
+
+    $query = "
+           SELECT COUNT(id)
+           FROM $table_activities
+           WHERE type_name = '$act_name'
+           AND user_id = '$user_id'
+     ";
+
+    $results = $wpdb -> get_var($query);
+    return $results;
+}
+
+function getRequestMessages($req_id){
+    
+}
+
+function getRequestMessagesTemplate($mess){
+
 }

@@ -10742,39 +10742,83 @@ p {
     opacity: 0;
   }
 }
-/* line 696, assets/sass/_custom.sass */
+/* line 695, assets/sass/_custom.sass */
 #user-dashboard h3.title {
   margin-bottom: 0;
 }
-/* line 699, assets/sass/_custom.sass */
+/* line 698, assets/sass/_custom.sass */
 #user-dashboard .media + .media {
   border-top: none;
   margin-top: 0;
   padding-top: 0;
 }
-/* line 704, assets/sass/_custom.sass */
+/* line 703, assets/sass/_custom.sass */
 #user-dashboard .box.padded-small {
   padding: 0.5rem;
 }
-/* line 706, assets/sass/_custom.sass */
+/* line 705, assets/sass/_custom.sass */
 #user-dashboard .button {
   border-radius: 0;
   margin-bottom: 0.5rem;
 }
 
-/* line 711, assets/sass/_custom.sass */
+/* line 710, assets/sass/_custom.sass */
 .box.has-top-blue {
   border-top: 1px solid #455a64;
 }
-/* line 713, assets/sass/_custom.sass */
+/* line 712, assets/sass/_custom.sass */
 .box.has-top-yellow {
   border-top: 1px solid #fdd835;
 }
-/* line 715, assets/sass/_custom.sass */
+/* line 714, assets/sass/_custom.sass */
 .box.has-top-gray {
   border-top: 1px solid #212121;
 }
-/* line 717, assets/sass/_custom.sass */
+/* line 716, assets/sass/_custom.sass */
 .box.has-top-light {
   border-top: 1px solid #757575;
+}
+
+/* line 720, assets/sass/_custom.sass */
+#user_activities .page-button {
+  border-radius: 50%;
+}
+
+/* line 723, assets/sass/_custom.sass */
+.truncate {
+  display: inline-block;
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* line 730, assets/sass/_custom.sass */
+.truncate .media-content {
+  position: relative;
+  max-width: 100%;
+}
+/* line 733, assets/sass/_custom.sass */
+.truncate .media-content .content {
+  width: 900px;
+  max-width: 90%;
+}
+/* line 736, assets/sass/_custom.sass */
+.truncate .media-content .time {
+  float: right;
+}
+
+/* line 739, assets/sass/_custom.sass */
+.media-right {
+  padding-top: 1rem;
+}
+
+/* line 742, assets/sass/_custom.sass */
+.padded-top {
+  display: inline-block;
+  padding-top: 1em;
+}
+
+/* line 747, assets/sass/_custom.sass */
+tr.clickable:hover {
+  background-color: #f5f5f5 !important;
 }

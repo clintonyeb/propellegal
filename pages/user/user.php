@@ -1,7 +1,11 @@
 <?php
 $activities = getActivities(7);
+$doc_created_count = getActivityCount(_CREATE_DOCUMENT_);
+$doc_review_count = getActivityCount(_REVIEW_DOCUMENT_);
+$attorney_count = getActivityCount(_ASK_ATTORNEY_);
+$register_count = getActivityCount(_REGISTER_BUSINESS_);
 ?>
-<section class="section">
+<section class="section" id="user-dashboard">
     <div class="container-fluid">
         <h1 class="title is-3">Dashboard</h1>
         <div class="columns">
@@ -147,7 +151,7 @@ $activities = getActivities(7);
                         DOCUMENTS CREATED
                     </p>
                     <h3 class="title is-3 has-text-white has-text-centered">
-                        0
+                        <?php echo $doc_created_count ?>
                     </h3>
                     <p class="has-text-centered">
                         <a class="button is-white">Create a Document</a>
@@ -160,7 +164,7 @@ $activities = getActivities(7);
                         DOCUMENTS REVIEWED
                     </p>
                     <h3 class="title is-3 has-text-warning has-text-centered">
-                        0
+                        <?php echo $doc_review_count ?>
                     </h3>
                     <p class="has-text-centered">
                         <a class="button is-warning">Review a Document</a>
@@ -173,7 +177,7 @@ $activities = getActivities(7);
                         ATTORNEY REQUESTS
                     </p>
                     <h3 class="title is-3 has-text-centered">
-                        0
+                        <?php echo $attorney_count ?>
                     </h3>
                     <p class="has-text-centered">
                         <a class="button is-dark">Ask an Attorney</a>
@@ -186,7 +190,7 @@ $activities = getActivities(7);
                         BUSINESS REGISTRATIONS
                     </p>
                     <h3 class="title is-3 has-text-white has-text-centered">
-                        0
+                        <?php echo $register_count ?>
                     </h3>
                     <p class="has-text-centered">
                         <a class="button is-white">Register a Business</a>

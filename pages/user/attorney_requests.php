@@ -1,7 +1,7 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
-$requests = getAllRequests();
+$requests = getAllRequests(20);
 ?>
 
 <section class="section" id="user_activities">
@@ -25,14 +25,14 @@ $requests = getAllRequests();
                         </a>
                     </div>
                 </div>
-                <hr />
+                <hr class="is-marginless" />
                 <p class="label">What is this?</p>
                 This page displays a history of all your activities whiles using our services. You can view them anytime to know what you did and when you did it.
             </div>
 
             <p class="has-text-centered margined-top-down">
-	            <a class="button is-primary is-medium" href="/user/ask_attorney">Submit a new request</a>
-                </p>
+	        <a class="button is-primary is-medium" href="/user/ask_attorney">Submit a new request</a>
+            </p>
         </div>
         <div class="column">
             <div class="box has-blue-top">
@@ -51,8 +51,8 @@ $requests = getAllRequests();
 
                 <div class="level">
                     <div class="level-left">
-                        <div class="select">
-                            <select style="border-radius: 10px">
+                        <div class="select" style="margin-bottom: .5em">
+                            <select>
                                 <option>Most Recent</option>
                                 <option>Least Recent</option>
                                 <option value="">Attorney Requests</option>
@@ -63,7 +63,7 @@ $requests = getAllRequests();
                         </div>
                     </div>
                     <div class="level-right">
-                        <p>
+                        <p class="" style="margin-bottom: .5em">
                             1 to 20 of 2000
                         </p>
                         &nbsp;&nbsp;&nbsp;

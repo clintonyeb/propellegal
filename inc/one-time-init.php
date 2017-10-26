@@ -77,6 +77,9 @@ $query = "CREATE TABLE IF NOT EXISTS $table_requests (
     id mediumint(9) NOT NULL AUTO_INCREMENT,
     act_id mediumint(9) NOT NULL,
     mess nvarchar(10000) NOT NULL,
+    status nvarchar(100) NOT NULL,
+    last_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    viewed bit DEFAULT 0,
     FOREIGN KEY (act_id) REFERENCES $table_activities(id),
     PRIMARY KEY(id)
 ) $charset_collate;";
@@ -124,12 +127,14 @@ $wpdb -> insert(
 }
 
 insertActivityTypes(_CREATE_DOCUMENT_);
-insertActivityTypes(_CREATE_ACCOUNT_);
 insertActivityTypes(_LOGGED_IN_);
 insertActivityTypes(_UPLOAD_DOCUMENT_);
 insertActivityTypes(_REGISTERED_ACCOUNT_);
 insertActivityTypes(_ACTIVATED_ACCOUNT_);
 insertActivityTypes(_RECOVER_PASSWORD_);
+insertActivityTypes(_ASK_ATTORNEY_);
+insertActivityTypes(_REVIEW_DOCUMENT_);
+insertActivityTypes(_REGISTER_BUSINESS_);
 
 function insertActivityTypes($name){
 global $wpdb;

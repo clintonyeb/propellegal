@@ -22,7 +22,7 @@ get_template_part('template-parts/usernav');
 ?>
 </section>
 
-<section id="user-dashboard">
+<section>
     <div class="columns">
         <div class="column is-narrow box is-padded">
             <?php get_template_part('template-parts/side', 'nav'); ?>
