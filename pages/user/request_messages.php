@@ -38,7 +38,7 @@ $messages = getRequestMessages($req_id);
                 </a>
             </div>
             <div class="level-right">
-                      <a class="button is-primary" id="reply-focus">
+                <a class="button is-primary" id="reply-focus">
                     <span> Reply To Messages</span>
                     <span class="icon">
                         <i class="fa fa-reply"></i>
@@ -64,7 +64,7 @@ $messages = getRequestMessages($req_id);
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea id="reply-request" class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
+                        <textarea id="request-textbox" class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
                     </p>
                 </div>
                 <nav class="level">

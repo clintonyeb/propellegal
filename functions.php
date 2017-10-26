@@ -60,6 +60,8 @@ add_action('wp_ajax_ask_attorney', 'ask_attorney');
 add_action('wp_ajax_nopriv_ask_attorney', 'ask_attorney');
 add_action('wp_ajax_ask_business', 'ask_business');
 add_action('wp_ajax_nopriv_ask_business', 'ask_business');
+add_action('wp_ajax_req_mess', 'req_mess');
+add_action('wp_ajax_nopriv_req_mess', 'req_mess');
 
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
@@ -870,14 +872,14 @@ function _saveFile($files, $i){
     # var_dump($check);
 
     /*
-      if($check !== false) {
-      echo "File is an image - " . $check["mime"] . ".";
-      $uploadOk = 1;
-      } else {
-      echo "File is not an image.";
-      $uploadOk = 0;
-      }
-    */
+       if($check !== false) {
+       echo "File is an image - " . $check["mime"] . ".";
+       $uploadOk = 1;
+       } else {
+       echo "File is not an image.";
+       $uploadOk = 0;
+       }
+     */
 
     // Check if file already exists
     if (file_exists($target_file)) {
@@ -909,14 +911,14 @@ function role_id_to_string($id){
     global $LAWYER_ROLE;
 
     switch($id){
-    case 1:
-        return $USER_ROLE;
-    case 2:
-        return $LAWYER_ROLE;
-    case 3:
-        return $ADMIN_ROLE;
-    default:
-        return '';
+        case 1:
+            return $USER_ROLE;
+        case 2:
+            return $LAWYER_ROLE;
+        case 3:
+            return $ADMIN_ROLE;
+        default:
+            return '';
     }
 }
 
@@ -983,16 +985,70 @@ function ask_attorney(){
     );
 
     if ($res){
-        wp_send_json(array(
-            'message' => 'Success',
-            'status' => true));
+
+        $res = addRequestMessage($user-> user_id, $wpdb -> insert_id, $content);
+        if ($res){
+            wp_send_json(array(
+                'message' => 'Success',
+                'status' => true));
+        } else{
+            wp_send_json(array(
+                'message' => 'Error adding request',
+                'status' => false));
+        }
+        
     } else {
         wp_send_json(array(
             'message' => 'Error adding request',
             'status' => false));
     }
-
     
+    die();
+}
+
+function addRequestMessage($user_id, $req_id, $content){
+    global $wpdb;
+    
+    $date = date('Y-m-d H:i:s');
+
+    $table_req_mess = _REQUEST_MESS_;
+    
+    $res = $wpdb -> insert(
+        $table_req_mess,
+        array(
+            "req_id" => $req_id,
+            "user_id" => $user_id,
+            "content" => $content,
+            "date_created" => $date
+        ),
+        array(
+            "%d",
+            "%d",
+            "%s",
+            "%s"
+        )
+    );
+
+    return $res;
+}
+
+
+function req_mess(){
+    $content = $_POST['content'];
+    $req_id =  $_POST['req_id'];
+    global $USER_PAYLOAD;
+    $user = $USER_PAYLOAD['data'];
+
+    if (addRequestMessage($user -> user_id, $req_id, $content)) {
+        wp_send_json(array(
+                'message' => 'Success',
+                'status' => true));
+    } else {
+        wp_send_json(array(
+                'message' => 'error adding request',
+                'status' => false));
+    }
+
     die();
 }
 
@@ -1001,10 +1057,6 @@ function ask_business(){
         'message' => 'Success',
         'status' => true));
     die();
-}
-
-function requestMessage(){
-
 }
 
 function getActivities($limit = 10){
@@ -1060,23 +1112,23 @@ function getActivityTemplate($act){
     if (!$act){
         return (
             '
-        <article class="media">
-        <figure class="media-left">
-        <p class="media-icon">
-        <span class="icon">
-        <i class="fa fa-paper-plane-o"></i>
-        </span>
-        </p>
-        </figure>
-        <div class="media-content">
-        <div class="content">
-        <p> 
-          &middot;
-        </p>
-        </div>
-        </div>
-        </article>
-        '
+                <article class="media">
+                <figure class="media-left">
+                <p class="media-icon">
+                <span class="icon">
+                <i class="fa fa-paper-plane-o"></i>
+                </span>
+                </p>
+                </figure>
+                <div class="media-content">
+                <div class="content">
+                <p> 
+                &middot;
+                </p>
+                </div>
+                </div>
+                </article>
+                '
         );
 
     }
@@ -1084,52 +1136,52 @@ function getActivityTemplate($act){
     $content = "";
 
     switch($act -> type_name){
-    case _CREATE_DOCUMENT_:
-        $content = 'You created a new <strong>document</strong>';
-        break;
-    case _LOGGED_IN_:
-        $content = 'You <strong>logged into</strong> your account';
-        break;
-    case _UPLOAD_DOCUMENT_:
-        $content = 'You <strong>uploaded</strong> a new document';
-        break;
-    case _REGISTERED_ACCOUNT_:
-        $content = 'You created a new <strong>account</strong>';
-        break;
-    case _ACTIVATED_ACCOUNT_:
-        $content = 'You <strong>activated</strong> your account';
-        break;
-    case _RECOVER_PASSWORD_:
-        $content = 'You recovered your account <strong>password</strong>';
-        break;
-    case _ASK_ATTORNEY_:
-        $content = 'You sent a request to an <strong>antorney</strong>';
-        break;
-    default:
-        $date = "";
-        $content = "";
-        break;
+        case _CREATE_DOCUMENT_:
+            $content = 'You created a new <strong>document</strong>';
+            break;
+        case _LOGGED_IN_:
+            $content = 'You <strong>logged into</strong> your account';
+            break;
+        case _UPLOAD_DOCUMENT_:
+            $content = 'You <strong>uploaded</strong> a new document';
+            break;
+        case _REGISTERED_ACCOUNT_:
+            $content = 'You created a new <strong>account</strong>';
+            break;
+        case _ACTIVATED_ACCOUNT_:
+            $content = 'You <strong>activated</strong> your account';
+            break;
+        case _RECOVER_PASSWORD_:
+            $content = 'You recovered your account <strong>password</strong>';
+            break;
+        case _ASK_ATTORNEY_:
+            $content = 'You sent a request to an <strong>antorney</strong>';
+            break;
+        default:
+            $date = "";
+            $content = "";
+            break;
     }
 
     return (
         '
-        <article class="media">
-        <figure class="media-left">
-        <p class="media-icon">
-        <span class="icon">
-        <i class="fa fa-paper-plane-o"></i>
-        </span>
-        </p>
-        </figure>
-        <div class="media-content">
-        <div class="content">
-        <p>' .
+                <article class="media">
+                <figure class="media-left">
+                <p class="media-icon">
+                <span class="icon">
+                <i class="fa fa-paper-plane-o"></i>
+                </span>
+                </p>
+                </figure>
+                <div class="media-content">
+                <div class="content">
+                <p>' .
         $content . ' &middot; <small> ' . $date . '</small>
-        </p>
-        </div>
-        </div>
-        </article>
-        '
+                </p>
+                </div>
+                </div>
+                </article>
+                '
     );
 
 }
@@ -1166,15 +1218,15 @@ function getAllRequestsTemplate($req){
 
 function get_color($status){
     switch($status){
-    case _RECEIVED_:
-        return "has-text-warning";
-    case _PROCESSING_:
-        return "has-text-info";
-        break;
-    case _COMPLETED_:
-        return "has-text-success";
-        break;
-        
+        case _RECEIVED_:
+            return "has-text-warning";
+        case _PROCESSING_:
+            return "has-text-info";
+            break;
+        case _COMPLETED_:
+            return "has-text-success";
+            break;
+            
     }
 }
 
@@ -1227,9 +1279,47 @@ function getActivityCount($act_name){
 }
 
 function getRequestMessages($req_id){
+    global $wpdb;
+
+    $table_requests = _REQUEST_TABLE_;
+    $table_users = _USER_TABLE_;
+    $table_mess = _REQUEST_MESS_;
     
+    $query = "SELECT content, $table_mess.date_created, full_name
+             FROM $table_mess
+             INNER JOIN $table_users
+             ON $table_mess.user_id = $table_users.id
+             WHERE req_id= $req_id
+             ORDER BY $table_mess.date_created DESC;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
 }
 
 function getRequestMessagesTemplate($mess){
 
+    $full_name = $mess -> full_name;
+    $date = time_elapsed_string($mess -> date_created);
+    $content = $mess -> content;
+    
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> <small>$date</small>
+        <br>
+           $content
+        </p>
+        </div>
+        </div>
+        </article>
+        "
+    );
 }

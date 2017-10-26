@@ -2,58 +2,21 @@
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
 
-parse_str($_SERVER['QUERY_STRING']);
-
-$messages = getRequestMessages($req_id);
-?>
+       ?>
 
 <span data-href="attorney_requests"></span>
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Requests to an Attorney
+Ask an Attorney
     </h2>
     
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
-                <h3 class="title is-5">Messages</h3>
-            </div>
-            <div class="level-right">
-                <p class="">
-                    <span class="icon is-medium">
-                        <i class="fa fa-refresh"></i>
-                    </span>
-                </p>
+                <h3 class="title is-5">Create a new Request</h3>
             </div>
         </div>
-
-        <div class="level">
-            <div class="level-left">
-                <a class="button is-warning" href="/attorney_requests">
-                    <span class="icon">
-                        <i class="fa fa-angle-left"></i>
-                    </span>
-                    <span> Go To Requests</span>
-                </a>
-            </div>
-            <div class="level-right">
-                      <a class="button is-primary" id="reply-focus">
-                    <span> Reply To Messages</span>
-                    <span class="icon">
-                        <i class="fa fa-reply"></i>
-                    </span>
-                </a>
-            </div>
-        </div>
-        <hr>
-        
-        <?php
-        foreach($messages as $mess){
-            echo getRequestMessagesTemplate($mess);
-        }
-        
-        ?>
 
         <article class="media">
             <figure class="media-left">
@@ -64,7 +27,7 @@ $messages = getRequestMessages($req_id);
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea id="reply-request" class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
+                        <textarea id="request-textbox" col="5" data-new=true class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
                     </p>
                 </div>
                 <nav class="level">

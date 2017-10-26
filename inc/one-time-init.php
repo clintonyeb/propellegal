@@ -94,6 +94,7 @@ $query = "CREATE TABLE IF NOT EXISTS $table_req_mess (
     req_id mediumint(9) NOT NULL,
     user_id mediumint(9) NOT NULL,
     content nvarchar(10000) NOT NULL,
+    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     FOREIGN KEY (req_id) REFERENCES $table_requests(id),
     FOREIGN KEY (user_id) REFERENCES $table_users(id),
     PRIMARY KEY(id)

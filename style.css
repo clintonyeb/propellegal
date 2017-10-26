@@ -10783,42 +10783,42 @@ p {
 #user_activities .page-button {
   border-radius: 50%;
 }
-
 /* line 723, assets/sass/_custom.sass */
+#user_activities .media-content {
+  position: relative;
+  max-width: 100%;
+}
+/* line 726, assets/sass/_custom.sass */
+#user_activities .media-content .content {
+  width: 900px;
+  max-width: 90%;
+}
+/* line 729, assets/sass/_custom.sass */
+#user_activities .media-content .time {
+  float: right;
+}
+
+/* line 732, assets/sass/_custom.sass */
+.media-right {
+  padding-top: 1rem;
+}
+
+/* line 735, assets/sass/_custom.sass */
+.padded-top {
+  display: inline-block;
+  padding-top: 1em;
+}
+
+/* line 740, assets/sass/_custom.sass */
+tr.clickable:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* line 743, assets/sass/_custom.sass */
 .truncate {
   display: inline-block;
   width: 60%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-/* line 730, assets/sass/_custom.sass */
-.truncate .media-content {
-  position: relative;
-  max-width: 100%;
-}
-/* line 733, assets/sass/_custom.sass */
-.truncate .media-content .content {
-  width: 900px;
-  max-width: 90%;
-}
-/* line 736, assets/sass/_custom.sass */
-.truncate .media-content .time {
-  float: right;
-}
-
-/* line 739, assets/sass/_custom.sass */
-.media-right {
-  padding-top: 1rem;
-}
-
-/* line 742, assets/sass/_custom.sass */
-.padded-top {
-  display: inline-block;
-  padding-top: 1em;
-}
-
-/* line 747, assets/sass/_custom.sass */
-tr.clickable:hover {
-  background-color: #f5f5f5 !important;
 }
