@@ -1099,6 +1099,100 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // End of File Upload
+
+
+    // Request Messages
+
+    var replyTextbox = document.getElementById('request-textbox');
+    var enterToSend;
+    var requestBtn;
+    if(replyTextbox){
+        enterToSend = document.getElementById('enter-send');
+
+        enterToSend.addEventListener('change', function ($event) {
+            if(enterToSend.checked) makeEnterToSend();
+            else removeEnterToSend();
+        });
+
+        requestBtn = document.getElementById('req-submit');
+        requestBtn.addEventListener('click', sendRequestMessage);
+
+        var replyFocus = document.getElementById('reply-focus');
+        if (replyFocus)
+            replyFocus.addEventListener('click', function ($event) {
+                replyTextbox.focus();
+            });
+    }
+
+    function sendRequestMessage(){
+        if (loading) return;
+        
+        var v = replyTextbox.value.trim();
+        if(!rules.required(v, true)){
+            replyTextbox.value = "";
+            replyTextbox.classList.add('is-danger');
+            replyTextbox.focus();
+            return false;
+        }
+        
+        var req_id = document.getElementById('req_id').value;
+
+        showLoadingButton(requestBtn, true);
+        loading = true;
+
+        var data;
+
+        var is_new = replyTextbox.getAttribute('data-new');
+        if(is_new){
+            data = {
+                action: 'ask_attorney',
+                content: v,
+                client_key: $wp_data.client_auth
+            }; 
+        } else {
+            data = {
+                action: 'req_mess',
+                content: v,
+                req_id: req_id,
+                client_key: $wp_data.client_auth
+            };
+        }
+        
+        postData(data, function (data) {
+            if(data.status){
+                showSnackBar("Request submitted...");
+                if(is_new)
+                    location.href = "/user/attorney_request";
+                else
+                    location.reload();
+            } else {
+                showLoadingButton(requestBtn, false);
+                loading  = false;
+                showSnackBar(data.message);
+            }
+        }, function (err) {
+            showLoadingButton(requestBtn, false);
+            loading  = false;
+            showSnackBar(data.message);
+        });
+        
+        return true;
+    }
+
+    function makeEnterToSend(){
+        replyTextbox.addEventListener('keypress', sendOnEnter);
+    }
+
+    function sendOnEnter($event) {
+        if($event.keyCode === 13){
+            sendRequestMessage();
+        }
+    }
+
+
+    function removeEnterToSend(){
+        replyTextbox.removeEventListener('keypress', sendOnEnter);
+    }
     
     // Utility functions
 
@@ -1143,6 +1237,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var activeNav = document.querySelector('aside .menu-list a[data-href^="' + nPath + '"]');
     if (activeNav)
         activeNav.classList.add('is-active');
+    else
+    {
+        var el = document.querySelector('span[data-href]');
+        if(el){
+            var sel = el.getAttribute('data-href');
+            activeNav = document.querySelector('aside .menu-list a[data-href^="' + sel + '"]');
+            if(activeNav)
+                activeNav.classList.add('is-active');
+        }
+    }
+    
+    
 
     var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
