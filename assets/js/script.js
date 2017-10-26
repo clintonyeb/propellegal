@@ -1125,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function sendRequestMessage(){
-        if (loading) return;
+        if (loading) return false;
         
         var v = replyTextbox.value.trim();
         if(!rules.required(v, true)){
@@ -1135,8 +1135,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
         
-        var req_id = document.getElementById('req_id').value;
-
         showLoadingButton(requestBtn, true);
         loading = true;
 
@@ -1150,6 +1148,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             }; 
         } else {
+            var req_id = document.getElementById('req_id').value;
+            
             data = {
                 action: 'req_mess',
                 content: v,

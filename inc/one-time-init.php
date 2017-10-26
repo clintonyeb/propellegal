@@ -30,7 +30,7 @@ $query = "CREATE TABLE IF NOT EXISTS $table_users(
   date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
   full_name tinytext NOT NULL,
   email nvarchar(200) NOT NULL,
-  password text NOT NULL,
+  password nvarchar(60) NOT NULL,
   role_auth tinyint NOT NULL,
   activated int NOT NULL DEFAULT 0,
   PRIMARY KEY (id),

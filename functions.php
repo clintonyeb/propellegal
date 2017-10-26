@@ -176,7 +176,11 @@ function register_form(){
         return die(0);
     }
 
-    $hashed_password = crypt($password, SALT_PASSWORD);
+    $p_options = [
+        'cost' => 12,
+    ];
+    
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
 
     $result =  $wpdb->insert(
         $table_user,
@@ -369,7 +373,7 @@ function login_form(){
 
         $hashed_password = $res_data -> password;
         
-        if (hash_equals($hashed_password, crypt($password, $hashed_password))) {
+        if (password_verify($password, $hashed_password)) {
             $token = encryptData($res_data);
 
             setcookie('token', $token, time() + (86400 * 30 * 7), "/"); // 86400 = 7 days
@@ -380,6 +384,11 @@ function login_form(){
                 'message' => "Login Success",
                 'status' => true,
                 'token' => $token
+            ));
+        } else {
+            wp_send_json(array(
+                'message' => "Username and Password Incorrect",
+                'status' => false
             ));
         }
 
@@ -1041,12 +1050,12 @@ function req_mess(){
 
     if (addRequestMessage($user -> user_id, $req_id, $content)) {
         wp_send_json(array(
-                'message' => 'Success',
-                'status' => true));
+            'message' => 'Success',
+            'status' => true));
     } else {
         wp_send_json(array(
-                'message' => 'error adding request',
-                'status' => false));
+            'message' => 'error adding request',
+            'status' => false));
     }
 
     die();

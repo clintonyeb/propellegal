@@ -180,7 +180,7 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                         <?php echo $attorney_count ?>
                     </h3>
                     <p class="has-text-centered">
-                        <a class="button is-dark">Ask an Attorney</a>
+                        <a class="button is-dark" href="/user/attorney_requests">Ask an Attorney</a>
                     </p>
                 </div>
             </div>

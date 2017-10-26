@@ -2,7 +2,7 @@
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
 
-       ?>
+?>
 
 <span data-href="attorney_requests"></span>
 
@@ -27,7 +27,7 @@ Ask an Attorney
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea id="request-textbox" col="5" data-new=true class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
+                        <textarea id="request-textbox" data-new=true class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
                     </p>
                 </div>
                 <nav class="level">
@@ -44,7 +44,6 @@ Ask an Attorney
                         </div>
                     </div>
                 </nav>
-                <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
         </article>
         
