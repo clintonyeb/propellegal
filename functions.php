@@ -62,6 +62,8 @@ add_action('wp_ajax_ask_business', 'ask_business');
 add_action('wp_ajax_nopriv_ask_business', 'ask_business');
 add_action('wp_ajax_req_mess', 'req_mess');
 add_action('wp_ajax_nopriv_req_mess', 'req_mess');
+add_action('wp_ajax_rev_mess', 'rev_mess');
+add_action('wp_ajax_nopriv_rev_mess', 'rev_mess');
 
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
@@ -530,7 +532,11 @@ function do_pass_recovery(){
     if (count($results) == 1){
         $data = $results[0];
         
-        $hashed_password = crypt($password, SALT_PASSWORD);
+        $p_options = [
+            'cost' => 12,
+        ];
+        
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);        
         
         $up = $wpdb -> update(
             $table_user,
@@ -797,26 +803,71 @@ function get_pdf($html){
 
 
 function upload_doc(){
+    global $USER_PAYLOAD;
+    global $wpdb;
+    
     $files = $_FILES['file'];
     $name = $_POST['name'];
     $content = $_POST['content'];
-
+    $user = $USER_PAYLOAD['data'];
+    $table_doc_reviews = _DOC_REVIEW_TABLE_;
+    $table_doc_files = _DOC_FILES_;
+    $date = $date = date('Y-m-d H:i:s');
+    $save_files = array();
+    
     // Authenticate request
     if (trim($_POST['client_key']) != CLIENT_KEY)
         return die(0);
 
-    // TODO: Authenticate user
-
     $total = count($files['name']);
 
     for($i = 0; $i < $total; $i++){
-        _saveFile($files, $i);
+        $target_file = _saveFile($files, $i);
+
+        if ($target_file){
+            array_push($save_files, $target_file);
+        } else {
+            sendError("Error uploading files");
+        }
     }
 
+    $act_id = addActivity(_REVIEW_DOCUMENT_, $user -> user_id);
 
+    $res = $wpdb -> insert($table_doc_reviews,
+                           array(
+                               "act_id" => $act_id,
+                               "mess" => $content,
+                               "status" => _RECEIVED_,
+                               "last_updated" => $date,
+                               "viewed" => 0,
+                               "doc_user_name" => $name,
+                           ), array(
+                               "%d", "%s", "%s", "%s", "%d", "%s"
+                           ));
+
+    if ($res){
+        $doc_id = $wpdb -> insert_id;
+
+        // add files
+        foreach ($save_files as $f){
+            $wpdb -> insert($table_doc_files,
+                            array(
+                                "doc_id" => $doc_id,
+                                "path" => $f
+                            ), array(
+                                "%d", "%s"
+                            ));
+        }
+        
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true,
+        ));
+    }
+    
     wp_send_json(array(
-        'message' => 'Success',
-        'status' => true,
+        'message' => 'Failed',
+        'status' => false,
     ));
 
     die();
@@ -869,49 +920,27 @@ function upload_doc(){
  *  die();
  * }*/
 
-function _saveFile($files, $i){
+function _saveFile($files, $i, $crush = 0){
     $target_dir =  "assets/uploads/";
     $target_file = $target_dir . basename($files['name'][$i]);
-    $uploadOk = 1;
 
-    // TODO: Authenticate user
+    if ($crush != 0){
+        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+        $imageName = pathinfo($target_file, PATHINFO_FILENAME);
 
-    $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-    $check = getimagesize($files['tmp_name'][$i]);
-    # var_dump($check);
-
-    /*
-       if($check !== false) {
-       echo "File is an image - " . $check["mime"] . ".";
-       $uploadOk = 1;
-       } else {
-       echo "File is not an image.";
-       $uploadOk = 0;
-       }
-     */
-
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
+        $target_file = $target_dir . $imageName . '-' . $crush . '.' . $imageFileType;
+    }
+    
+    if (file_exists(SITE_ROOT . '/' . $target_file)) {
+        return _saveFile($files, $i, ++$crush);
     }
 
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-        // if everything is ok, try to upload file
-    } else {
-        if (move_uploaded_file($files["tmp_name"][$i], SITE_ROOT . '/' .  $target_file)) {
-            wp_send_json(array(
-                'message' => 'Success',
-                'status' => true));
-
-            # addActivity($UPLOADED_DOCUMENT, $wp_db -> $results[0] -> id);
-
-        } else {
-            echo "Sorry, there was an error uploading your file.";
-        }
-    }
+    $res = move_uploaded_file($files["tmp_name"][$i], SITE_ROOT . '/' .  $target_file);
+    
+    if ($res)
+        return pathinfo($target_file, PATHINFO_BASENAME);
+    
+    return false;
 }
 
 function role_id_to_string($id){
@@ -1061,6 +1090,51 @@ function req_mess(){
     die();
 }
 
+function addReviewMessage($user_id, $req_id, $content){
+    global $wpdb;
+    
+    $date = date('Y-m-d H:i:s');
+
+    $table_rev_mess = _DOC_REVIEW_MESS_;
+    
+    $res = $wpdb -> insert(
+        $table_rev_mess,
+        array(
+            "doc_id" => $req_id,
+            "user_id" => $user_id,
+            "content" => $content,
+            "date_created" => $date
+        ),
+        array(
+            "%d",
+            "%d",
+            "%s",
+            "%s"
+        )
+    );
+
+    return $res;
+}
+
+function rev_mess(){
+    $content = $_POST['content'];
+    $req_id =  $_POST['req_id'];
+    global $USER_PAYLOAD;
+    $user = $USER_PAYLOAD['data'];
+
+    if (addReviewMessage($user -> user_id, $req_id, $content)) {
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true));
+    } else {
+        wp_send_json(array(
+            'message' => 'error adding review',
+            'status' => false));
+    }
+
+    die();
+}
+
 function ask_business(){
     wp_send_json(array(
         'message' => 'Success',
@@ -1070,11 +1144,15 @@ function ask_business(){
 
 function getActivities($limit = 10){
     global $wpdb;
+    global $USER_PAYLOAD;
 
+    $user = $USER_PAYLOAD['data'];
     $table_activities = _ACTIVITY_TABLE_;
+    $user_id = $user -> user_id;
     
     $query = "SELECT id, date_created, type_name
              FROM $table_activities
+             WHERE user_id = $user_id
              ORDER BY date_created DESC
              LIMIT $limit;";
     
@@ -1099,16 +1177,74 @@ function getRequests($limit = 10){
     return $results;
 }
 
-function getAllRequests($limit = 20){
+$PAGE = 0;
+$DATA_COUNT = 0;
+
+function getAllRequests($limit = 20, $page = 1, $q = ""){
     global $wpdb;
+    global $PAGE;
+    global $USER_PAYLOAD;
+    global $DATA_COUNT;
 
     $table_requests = _REQUEST_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_requests.id)
+             FROM $table_requests
+             INNER JOIN $table_activities
+             ON $table_requests.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+        
+        $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
+             FROM $table_requests
+             INNER JOIN $table_activities
+             ON $table_requests.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s'
+             ORDER BY date_created DESC
+             LIMIT $limit";
+        
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+        
+        $results = $wpdb -> get_results($query, OBJECT);
+        
+        return $results;
+    }
+    
+    $query = "SELECT COUNT($table_requests.id)
+             FROM $table_requests
+             INNER JOIN $table_activities
+             ON $table_requests.act_id = $table_activities.id
+             WHERE user_id = $user_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
     
     $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
+             WHERE user_id = $user_id
              ORDER BY date_created DESC
              LIMIT $limit;";
     
@@ -1165,6 +1301,12 @@ function getActivityTemplate($act){
             break;
         case _ASK_ATTORNEY_:
             $content = 'You sent a request to an <strong>antorney</strong>';
+            break;
+        case _REVIEW_DOCUMENT_:
+            $content = 'You sent a document for <strong>review</strong>';
+            break;
+        case _REGISTER_BUSINESS_:
+            $content = 'You requested to <strong>register</strong> a business';
             break;
         default:
             $date = "";
@@ -1298,8 +1440,7 @@ function getRequestMessages($req_id){
              FROM $table_mess
              INNER JOIN $table_users
              ON $table_mess.user_id = $table_users.id
-             WHERE req_id= $req_id
-             ORDER BY $table_mess.date_created DESC;";
+             WHERE req_id= $req_id;";
 
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
@@ -1310,6 +1451,255 @@ function getRequestMessagesTemplate($mess){
     $full_name = $mess -> full_name;
     $date = time_elapsed_string($mess -> date_created);
     $content = $mess -> content;
+    
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> <small>$date</small>
+        <br>
+           $content
+        </p>
+        </div>
+        </div>
+        </article>
+        "
+    );
+}
+
+
+function sendError($mess = "Error"){
+    wp_send_json(array(
+        'message' => $mess,
+        'status' => false
+    ));
+}
+
+function sendResponse($mess = "Success", $data = array()){
+    wp_send_json(array(
+        'message' => $mess,
+        'status' => true,
+        'data'=> $data
+    ));
+}
+
+
+function getAllDocReviews($limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $USER_PAYLOAD;
+    global $DATA_COUNT;
+
+    $table_doc_reviews = _DOC_REVIEW_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_doc_reviews.id)
+             FROM $table_doc_reviews
+             INNER JOIN $table_activities
+             ON $table_doc_reviews.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+        
+        $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
+             FROM $table_doc_reviews
+             INNER JOIN $table_activities
+             ON $table_doc_reviews.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s'
+             ORDER BY last_updated DESC
+             LIMIT $limit";
+        
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+        
+        $results = $wpdb -> get_results($query, OBJECT);
+        
+        return $results;
+    }
+    
+    $query = "SELECT COUNT($table_doc_reviews.id)
+             FROM $table_doc_reviews
+             INNER JOIN $table_activities
+             ON $table_doc_reviews.act_id = $table_activities.id
+             WHERE user_id = $user_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+    
+    $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
+             FROM $table_doc_reviews
+             INNER JOIN $table_activities
+             ON $table_doc_reviews.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             ORDER BY last_updated DESC
+             LIMIT $limit;";
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+
+function getAllDocReviewsTemplate($req){
+
+    $status = $req -> status;
+    $viewed = $req -> viewed;
+    $mess = $req -> mess;
+    $last_updated = time_elapsed_string($req -> last_updated);
+    $req_id = $req -> id;
+    $status_color = get_color($status);
+    
+    return (
+        "
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+         
+        <td  style=\"width: 85%\">
+           <p>$mess</p>
+       </td>
+       <td  style=\"width: 10%; padding-top: 1.5rem\">
+         <small class=\"has-text-centered\">$last_updated</small>
+       </td>  
+        "
+    );
+}
+
+function getDocRevDetails($req_id){
+    global $wpdb;
+
+    $table_docs = _DOC_REVIEW_TABLE_;
+    $table_users = _USER_TABLE_;
+    $table_mess = _DOC_REVIEW_MESS_;
+    $table_files = _DOC_FILES_;
+    $table_activities = _ACTIVITY_TABLE_;
+    
+    $query = "SELECT $table_docs.id,  mess, $table_activities.date_created, full_name, doc_user_name, status 
+             FROM $table_docs
+             INNER JOIN $table_activities
+             ON $table_docs.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             WHERE $table_docs.id = $req_id
+             LIMIT 1;";
+
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results[0];
+}
+
+
+
+function getDocRevDetailsTemplate($req, $fn){
+    $status = $req -> status;
+    $mess = $req -> mess;
+    $date = time_elapsed_string($req -> date_created);
+    $doc_id = $req -> id;
+    $status_color = get_color($status);
+    $full_name = $req -> full_name;
+    $doc_user_name = $req -> doc_user_name;
+
+    $files = "<strong>$fn</strong> file";
+    if ($fn > 1)
+        $files .= "s";
+    $files .= " uploaded";
+    
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> &middot; <small>$date</small>
+        <br>
+           $mess
+        </p>
+        <p>
+          <strong>Full name: </strong> $doc_user_name
+        </p>
+        <p>
+          <span class=\"icon is-small has-text-darker-yellow\">
+             <i class=\"fa fa-file\"></i>
+          </span>
+          <span> $files </span>
+         </p>
+        </div>
+        </div>
+        </article>
+        "
+    );
+}
+
+
+function getFileCount($req_id){
+    global $wpdb;
+
+    $table_files = _DOC_FILES_;
+    
+    $query = "SELECT COUNT(id) 
+             FROM $table_files
+             WHERE $table_files.doc_id = $req_id;";
+
+    
+    $results = $wpdb -> get_var($query);
+    return $results;
+}
+
+function getReviewMessages($doc_id){
+    global $wpdb;
+
+    $table_users = _USER_TABLE_;
+    $table_mess = _DOC_REVIEW_MESS_;
+
+    
+    $query = "SELECT content, $table_mess.date_created, full_name 
+             FROM $table_mess
+             INNER JOIN $table_users
+             ON $table_mess.user_id = $table_users.id
+             WHERE doc_id = $doc_id;";
+
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getRevMessTemplate($rev){
+    $full_name = $rev -> full_name;
+    $date = time_elapsed_string($rev -> date_created);
+    $content = $rev -> content;
     
     return(
         "

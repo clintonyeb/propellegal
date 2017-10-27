@@ -255,8 +255,6 @@ aside
     max-width: 768px
   &.doc-box
     padding: 0.5rem
-  p
-    padding-top: 1em
   h2
     font-weight: bolder
 
@@ -583,8 +581,6 @@ p
       opacity: 0
     &:hover
       box-shadow: 1px 1px 10px #212121
-    .content
-      margin: 4em
     p
       &.is-icon
         font-size: 4rem
@@ -594,7 +590,6 @@ p
   #doc-count
     font-size: 2rem
 
-
   .todo
     li
       font-size: 1.5rem
@@ -602,7 +597,6 @@ p
 
   .step
     background-color: $darker-yellow
-    color: $white
     display: inline-block
     height: 35px
     width: 35px
@@ -705,6 +699,8 @@ p
   .button
     border-radius: 0
     margin-bottom: .5rem
+  p
+    padding-top: 1em 
 
 .box
   &.has-top-blue
@@ -746,3 +742,8 @@ tr.clickable
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
+
+.table.is-striped tbody tr:not(.is-selected):nth-child(odd) 
+  background-color: #fafafa
+.table.is-striped tbody tr:not(.is-selected):nth-child(even) 
+  background-color: #fff

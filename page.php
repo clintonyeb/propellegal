@@ -4,7 +4,7 @@
  *
  * This file serves as the container page for all templates
  *
- * Template Name: Page
+ * Template Name: Dashboard Pages
  *
  * @package clinton-child
  * @author  Clinton

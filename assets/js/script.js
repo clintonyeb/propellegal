@@ -949,7 +949,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         content = c.value;
                         loading = true;
                         showLoadingButton(b, true);
-                        // post Data to server
 
                         uploadFilesToServer(filesToUpload, {
                             name: name,
@@ -1101,23 +1100,43 @@ document.addEventListener('DOMContentLoaded', function () {
     // End of File Upload
 
 
+    var requestSearch = document.getElementById('request-search');
+    if(requestSearch) {
+        var btn = document.getElementById('req-search-btn');
+        btn.addEventListener('click', function ($event) {
+            var query = requestSearch.value;
+
+            if(!rules.required(query, true)){
+                requestSearch.focus();
+                return false;
+            }
+
+            location.href= "/attorney_requests/?page=0&query=" + query;
+            
+            return true;
+        });
+    }
+
     // Request Messages
 
     var replyTextbox = document.getElementById('request-textbox');
     var enterToSend;
     var requestBtn;
+    var replyFocus;
+    
     if(replyTextbox){
         enterToSend = document.getElementById('enter-send');
 
         enterToSend.addEventListener('change', function ($event) {
-            if(enterToSend.checked) makeEnterToSend();
-            else removeEnterToSend();
+            if(enterToSend.checked) makeEnterToSend(replyTextbox);
+            else removeEnterToSend(replyTextbox);
         });
 
         requestBtn = document.getElementById('req-submit');
         requestBtn.addEventListener('click', sendRequestMessage);
 
-        var replyFocus = document.getElementById('reply-focus');
+        replyFocus = document.getElementById('reply-focus');
+
         if (replyFocus)
             replyFocus.addEventListener('click', function ($event) {
                 replyTextbox.focus();
@@ -1179,8 +1198,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
-    function makeEnterToSend(){
-        replyTextbox.addEventListener('keypress', sendOnEnter);
+    function makeEnterToSend(el){
+        el.addEventListener('keypress', sendOnEnter);
     }
 
     function sendOnEnter($event) {
@@ -1190,9 +1209,90 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    function removeEnterToSend(){
-        replyTextbox.removeEventListener('keypress', sendOnEnter);
+    function removeEnterToSend(el){
+        el.removeEventListener('keypress', sendOnEnter);
     }
+
+    var reviewTextbox = document.getElementById('review-textbox');
+
+    if(reviewTextbox){
+        enterToSend = document.getElementById('enter-send');
+
+        enterToSend.addEventListener('change', function ($event) {
+            if(enterToSend.checked) rmakeEnterToSend(reviewTextbox);
+            else rremoveEnterToSend(reviewTextbox);
+        });
+
+        requestBtn = document.getElementById('req-submit');
+        requestBtn.addEventListener('click', sendReviewMessage);
+
+        replyFocus = document.getElementById('reply-focus');
+        
+        if (replyFocus)
+            replyFocus.addEventListener('click', function ($event) {
+                reviewTextbox.focus();
+            });
+    }
+
+    function sendReviewMessage(){
+        if (loading) return false;
+        
+        var v = reviewTextbox.value.trim();
+        if(!rules.required(v, true)){
+            reviewTextbox.value = "";
+            reviewTextbox.classList.add('is-danger');
+            reviewTextbox.focus();
+            return false;
+        }
+        
+        showLoadingButton(requestBtn, true);
+        loading = true;
+
+        var data;
+
+        var req_id = document.getElementById('req_id').value;
+        
+        data = {
+            action: 'rev_mess',
+            content: v,
+            req_id: req_id,
+            client_key: $wp_data.client_auth
+        };
+        
+        postData(data, function (data) {
+            if(data.status){
+                showSnackBar("Request submitted...");
+                location.reload();
+            } else {
+                showLoadingButton(requestBtn, false);
+                loading  = false;
+                showSnackBar(data.message);
+            }
+            console.log(data);
+        }, function (err) {
+            showLoadingButton(requestBtn, false);
+            loading  = false;
+            showSnackBar(data.message);
+            console.log(err);
+        });
+        
+        return true;
+    }
+
+    function rmakeEnterToSend(el){
+        el.addEventListener('keypress', rsendOnEnter);
+    }
+
+    function rsendOnEnter($event) {
+        if($event.keyCode === 13){
+            sendReviewMessage();
+        }
+    }
+
+    function rremoveEnterToSend(el){
+        el.removeEventListener('keypress', rsendOnEnter);
+    }
+
     
     // Utility functions
 
@@ -1446,6 +1546,16 @@ document.addEventListener('DOMContentLoaded', function () {
             location.href= link;
         });
     }
+
+    var reload = document.querySelectorAll('.reload');
+
+    for(var i = 0; i < reload.length; i++) {
+        reload[i].addEventListener('click', function () {
+            location.reload();
+        });
+    }
+
+    
     // End of Utility Functions
 
 

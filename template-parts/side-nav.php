@@ -39,6 +39,22 @@ $requests = getAllRequests(20);
     <ul class="menu-list">
 
         <li class="menu-item">
+            <a href="/user/documents_created" data-href="documents_created">
+                <span class="icon is-small has-text-darker-yellow">
+                    <i class="fa fa-book"></i>
+                </span>
+                &nbsp;&nbsp;Created Documents
+            </a>
+
+            <ul>
+                <li>
+                    <a href="/user/create_document" data-href="create_document">Create a Document</a>
+                </li>
+            </ul>
+        </li>
+
+        
+        <li class="menu-item">
             <a href="/user/attorney_requests" data-href="attorney_requests">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-handshake-o"></i>
@@ -54,7 +70,7 @@ $requests = getAllRequests(20);
         </li>
 
         <li class="menu-item">
-            <a href="/document_review" data-href="document_review">
+            <a href="/document_reviews" data-href="document_reviews">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-file"></i>
                 </span>
@@ -63,13 +79,13 @@ $requests = getAllRequests(20);
 
             <ul>
                 <li>
-                    <a href="">Review Document</a>
+                    <a href="/user/review_document" data-href="review_document">Review a Document</a>
                 </li>
             </ul>
         </li>
 
         <li class="menu-item">
-            <a href="/business_registration" data-href="business_registration">
+            <a href="/business_registrations" data-href="business_registrations">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-briefcase"></i>
                 </span>
@@ -78,7 +94,7 @@ $requests = getAllRequests(20);
 
             <ul>
                 <li>
-                    <a href="">Register Business</a>
+                    <a href="/user/register_business" data-href="register_business">Register a Business</a>
                 </li>
             </ul>
             

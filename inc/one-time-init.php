@@ -3,14 +3,14 @@
 require_once(SITE_ROOT . "/inc/global.php");
 
 function createTables(){
-global $wpdb;
+    global $wpdb;
 
-$charset_collate = $wpdb->get_charset_collate();
+    $charset_collate = $wpdb->get_charset_collate();
 
-// create user roles table
+    // create user roles table
 
-$table_user_roles = _ROLE_TABLE_;
-$query = "CREATE TABLE IF NOT EXISTS $table_user_roles (
+    $table_user_roles = _ROLE_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_user_roles (
    id mediumint(9) NOT NULL AUTO_INCREMENT,
    name nvarchar(10) NOT NULL,
    authority tinyint NOT NULL,
@@ -19,13 +19,13 @@ $query = "CREATE TABLE IF NOT EXISTS $table_user_roles (
    CONSTRAINT UC_Authority UNIQUE (authority)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
 
 
-// create user table
+    // create user table
 
-$table_users = _USER_TABLE_;
-$query = "CREATE TABLE IF NOT EXISTS $table_users(
+    $table_users = _USER_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_users(
   id mediumint(9) NOT NULL AUTO_INCREMENT,
   date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
   full_name tinytext NOT NULL,
@@ -38,26 +38,26 @@ $query = "CREATE TABLE IF NOT EXISTS $table_users(
   FOREIGN KEY (role_auth) REFERENCES $table_user_roles(authority)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
 
 
-// create activity types table
+    // create activity types table
 
-$table_activity_type = _ACT_TYPE_TABLE_;
-$query = "CREATE TABLE IF NOT EXISTS $table_activity_type (
+    $table_activity_type = _ACT_TYPE_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_activity_type (
    id mediumint(9) NOT NULL AUTO_INCREMENT,
    name nvarchar(100) NOT NULL,
    CONSTRAINT UC_Name_Auth UNIQUE (name),
    PRIMARY KEY(id)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
 
 
-// create activities table
+    // create activities table
 
-$table_activities = _ACTIVITY_TABLE_;
-$query = "CREATE TABLE IF NOT EXISTS $table_activities (
+    $table_activities = _ACTIVITY_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_activities (
    id mediumint(9) NOT NULL AUTO_INCREMENT,
    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
    type_name nvarchar(100) NOT NULL,
@@ -67,13 +67,13 @@ $query = "CREATE TABLE IF NOT EXISTS $table_activities (
    PRIMARY KEY(id)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
 
 
-// request table
+    // request table
 
-$table_requests = _REQUEST_TABLE_;
-$query = "CREATE TABLE IF NOT EXISTS $table_requests (
+    $table_requests = _REQUEST_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_requests (
     id mediumint(9) NOT NULL AUTO_INCREMENT,
     act_id mediumint(9) NOT NULL,
     mess nvarchar(10000) NOT NULL,
@@ -84,12 +84,12 @@ $query = "CREATE TABLE IF NOT EXISTS $table_requests (
     PRIMARY KEY(id)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
 
-// request messages
+    // request messages
 
-$table_req_mess = _REQUEST_MESS_;
-$query = "CREATE TABLE IF NOT EXISTS $table_req_mess (
+    $table_req_mess = _REQUEST_MESS_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_req_mess (
     id mediumint(9) NOT NULL AUTO_INCREMENT,
     req_id mediumint(9) NOT NULL,
     user_id mediumint(9) NOT NULL,
@@ -100,7 +100,51 @@ $query = "CREATE TABLE IF NOT EXISTS $table_req_mess (
     PRIMARY KEY(id)
 ) $charset_collate;";
 
-dbDelta($query);
+    dbDelta($query);
+
+    $table_reviews = _DOC_REVIEW_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_reviews (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    act_id mediumint(9) NOT NULL,
+    mess nvarchar(10000) NOT NULL,
+    status nvarchar(100) NOT NULL,
+    last_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    viewed bit DEFAULT 0,
+    doc_user_name nvarchar(255) NOT NULL,
+    FOREIGN KEY (act_id) REFERENCES $table_activities(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+    // document reviews messages
+
+    $table_doc_rev_mess = _DOC_REVIEW_MESS_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_doc_rev_mess (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    doc_id mediumint(9) NOT NULL,
+    user_id mediumint(9) NOT NULL,
+    content nvarchar(10000) NOT NULL,
+    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (doc_id) REFERENCES $table_reviews(id),
+    FOREIGN KEY (user_id) REFERENCES $table_users(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+    $table_doc_files = _DOC_FILES_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_doc_files (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    doc_id mediumint(9) NOT NULL,
+    path nvarchar(500) NOT NULL,
+    FOREIGN KEY (doc_id) REFERENCES $table_reviews(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
 }
 
 createTables();
@@ -110,21 +154,21 @@ insertRoleTypes(2, _LAWYER_ROLE_);
 insertRoleTypes(3, _ADMIN_ROLE_);
 
 function insertRoleTypes($auth, $name){
-global $wpdb;
+    global $wpdb;
 
-$table_user_roles = _ROLE_TABLE_;
+    $table_user_roles = _ROLE_TABLE_;
 
-$wpdb -> insert(
-    $table_user_roles,
+    $wpdb -> insert(
+        $table_user_roles,
         array(
             'name' => $name,
             'authority' => $auth
-                   ),
+        ),
         array(
             "%s",
             "%d"
-            )
-        );
+        )
+    );
 }
 
 insertActivityTypes(_CREATE_DOCUMENT_);
@@ -138,19 +182,19 @@ insertActivityTypes(_REVIEW_DOCUMENT_);
 insertActivityTypes(_REGISTER_BUSINESS_);
 
 function insertActivityTypes($name){
-global $wpdb;
+    global $wpdb;
 
-$table_activity_type = _ACT_TYPE_TABLE_;
+    $table_activity_type = _ACT_TYPE_TABLE_;
 
-$wpdb -> insert(
-    $table_activity_type,
+    $wpdb -> insert(
+        $table_activity_type,
         array(
             'name' => $name
-                   ),
+        ),
         array(
             "%s"
-            )
-        );
+        )
+    );
 }
 
-    ?>
+?>

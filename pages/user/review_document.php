@@ -1,38 +1,101 @@
-<section class="section is-mfullheight" id="upload-doc">
-    <div class="container-fluid">
-        <div class="columns">
-            <div class="column is-4">
-                <h1 class="title is-3">
-                    Upload your Document
-                </h1>
-                <ul class="todo">
-                    <li>
-                        <span class="icon has-text-darker-yellow">
-                            <i class="fa fa-hand-o-right"></i>
-                        </span>
-                        <span>
-                            You upload your documents
-                        </span>
-                    </li>
-                    <li>
-                        <span class="icon has-text-darker-yellow">
-                            <i class="fa fa-hand-o-right"></i>
-                        </span>
-                        <span>
-                            Our Attorneys review and provide you feedback
-                        </span>
-                    </li>
-                    <li>
-                        <span class="icon has-text-darker-yellow">
-                            <i class="fa fa-hand-o-right"></i>
-                        </span>
-                        <span>
-                            We notify you when a response is ready
-                        </span>
-                    </li>
-                </ul>
-            </div>          
-            <div class="column">
+<?php
+global $USER_PAYLOAD;
+global $PAGE;
+global $DATA_COUNT;
+$page = "";
+$query = "";
+parse_str($_SERVER['QUERY_STRING']);
+
+$limit = 20;
+$user = $USER_PAYLOAD['data'];
+$requests = getAllRequests($limit, $page, $query);
+$back = "";
+$forward = "";
+
+if ($PAGE > 1){
+    $page = $PAGE - 1;
+    $back = "href=\"/user/attorney_requests/?";
+    $back .= "page=$page\"";
+}
+
+if ($limit * $PAGE < $DATA_COUNT){
+    $page = $PAGE + 1;
+    $forward = "href=\"/user/attorney_requests/?";
+    $forward .= "page=$page\"";
+}
+?>
+
+<section class="section" id="user_activities">
+    <h2 class="title is-3">
+        Review Document
+    </h2>
+
+    <div class="columns">
+        <div class="column is-4">
+            
+            
+            <div class="box has-yellow-top">
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="media-icon">
+                            <span class="icon has-text-darker-yellow">
+                                <i class="fa fa-hand-o-right"></i>
+                            </span>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                You upload your documents                                    
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="media-icon">
+                            <span class="icon has-text-darker-yellow">
+                                <i class="fa fa-hand-o-right"></i>
+                            </span>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                Our Attorneys review and provide you feedback
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="media-icon">
+                            <span class="icon has-text-darker-yellow">
+                                <i class="fa fa-hand-o-right"></i>
+                            </span>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                We notify you when a response is ready                
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <hr class="" />
+                <p class="label">What is this?</p>
+                This page displays a history of all your activities whiles using our services. You can view them anytime to know what you did and when you did it.
+            </div>
+
+            <p class="has-text-centered margined-top-down">
+	        <a class="button is-primary is-medium" href="/user/ask_attorney">View Reviewed Documents</a>
+            </p>
+        </div>
+        <div class="column" id="upload-doc">
+            <div class="box has-blue-top">
                 <div class="columns">
                     <div class="column">
                         <p class="step">
@@ -58,7 +121,7 @@
                         <h2 class="title is-4">
                             Confirmation
                         </h2>
-                    </div>                    
+                    </div>
                 </div>
                 
                 <progress class="progress is-warning" value="2" max="100">2%</progress>
@@ -156,15 +219,6 @@
                         </h2>
                         <p>
                             We have received your documents. We will notify you once our lawyers have reviewed it.
-                        </p>
-                        <hr><br>
-                        <p class="is-primary">
-                            <a class="button is-primary is-large" data-step="3">
-                                <span class="icon">
-                                    <i class="fa fa-home"></i>
-                                </span>
-                                <span>Go to Homepage</span>
-                            </a>
                         </p>
                     </div>
                 </div>

@@ -8,7 +8,7 @@ parse_str($_SERVER['QUERY_STRING']);
 
 $limit = 20;
 $user = $USER_PAYLOAD['data'];
-$requests = getAllRequests($limit, $page, $query);
+$requests = getAllDocReviews($limit, $page, $query);
 $back = "";
 $forward = "";
 
@@ -27,7 +27,7 @@ if ($limit * $PAGE < $DATA_COUNT){
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Requests to an Attorney
+        Documents Reviewed
     </h2>
 
     <div class="columns">
@@ -35,10 +35,10 @@ if ($limit * $PAGE < $DATA_COUNT){
             
             
             <div class="box has-yellow-top">
-                <p class="label">Search Requests</p>
+                <p class="label">Search Documents</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input class="input" type="text" id="request-search" placeholder="Search here for requests made">
+                        <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed">
                     </div>
                     <div class="control" id="req-search-btn">
                         <a class="button is-warning">
@@ -52,14 +52,14 @@ if ($limit * $PAGE < $DATA_COUNT){
             </div>
 
             <p class="has-text-centered margined-top-down">
-	        <a class="button is-primary is-medium" href="/user/ask_attorney">Submit a new request</a>
+	        <a class="button is-primary is-medium" href="/user/ask_attorney">Review your Documents</a>
             </p>
         </div>
         <div class="column">
             <div class="box has-blue-top">
                 <div class="level">
                     <div class="level-left">
-                        <h3 class="title is-5">Requests</h3>
+                        <h3 class="title is-5">Documents</h3>
                     </div>
                     <div class="level-right">
                         <p class="reload">
@@ -110,11 +110,11 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <?php
                         $c = count($requests);
                         if ($c < 1){
-                            echo ("<p class=\"has-text-centered has-text-darker-blue\">You have made no requests so far...</p>");
+                            echo ("<p class=\"has-text-centered has-text-darker-blue\">You have not sent any documents for review so far...</p>");
                         } else {
                             foreach($requests as $req){
-                                echo('<tr data-href=/user/request_messages/?req_id=' . $req -> id . ' class=clickable>');
-                                echo (getAllRequestsTemplate($req));
+                                echo('<tr data-href=/user/document_details/?req_id=' . $req -> id . ' class=clickable>');
+                                echo (getAllDocReviewstemplate($req));
                                 echo("</tr>");
                             }
                         }

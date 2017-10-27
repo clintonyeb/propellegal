@@ -154,7 +154,7 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                         <?php echo $doc_created_count ?>
                     </h3>
                     <p class="has-text-centered">
-                        <a class="button is-white">Create a Document</a>
+                        <a class="button is-white" href="/user/create_document">Create a Document</a>
                     </p>
                 </div>
             </div>
@@ -167,7 +167,7 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                         <?php echo $doc_review_count ?>
                     </h3>
                     <p class="has-text-centered">
-                        <a class="button is-warning">Review a Document</a>
+                        <a class="button is-warning" href="/user/document_reviews">Review a Document</a>
                     </p>
                 </div>
             </div>
@@ -193,7 +193,7 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                         <?php echo $register_count ?>
                     </h3>
                     <p class="has-text-centered">
-                        <a class="button is-white">Register a Business</a>
+                        <a class="button is-white" href="/user/register_business">Register a Business</a>
                     </p>
                 </div>
             </div>

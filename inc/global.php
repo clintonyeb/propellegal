@@ -7,6 +7,9 @@ define("_ACT_TYPE_TABLE_",  $wpdb -> prefix . "my_activity_types");
 define("_ACTIVITY_TABLE_",  $wpdb -> prefix . "my_activities");
 define("_REQUEST_TABLE_", $wpdb -> prefix . "my_requests");
 define("_REQUEST_MESS_", $wpdb -> prefix . "my_req_mess");
+define("_DOC_REVIEW_TABLE_", $wpdb -> prefix . "my_doc_reviews");
+define("_DOC_REVIEW_MESS_", $wpdb -> prefix . "my_doc_rev_mess");
+define("_DOC_FILES_", $wpdb -> prefix . "my_doc_files");
 
 // USER ROLES
 define("_USER_ROLE_", "USER");
