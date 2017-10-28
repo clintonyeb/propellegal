@@ -229,34 +229,24 @@ aside
   display: inline-block
   margin: 0 auto
 
-.tile
-  &.box
-    transition: all 0.25s
-    max-width: 100%
-    margin: 5px !important
-    cursor: pointer
-    &.is-scalable
-      &:hover
-        transform: scale(1.008)
-        background-color: #DADADA
-      &.selected
-        background-color: $darker-gray
-        p
-          color: $white
+.is-scalable
+  transition: all 0.25s
+  max-width: 100%
+  margin: 5px !important
+  cursor: pointer
+  &:hover
+    transform: scale(1.008)
+    background-color: #DADADA
+  &.selected
+    background-color: $light-gray
+    p
+      color: $white
+          
 
 .bordered
   padding-bottom: 2px
   border-bottom: 1px dashed $darker-blue
 
-.box
-  cursor: pointer
-  &.box-main
-    width: 100%
-    max-width: 768px
-  &.doc-box
-    padding: 0.5rem
-  h2
-    font-weight: bolder
 
 .padded-top-down
   padding: .2em 0

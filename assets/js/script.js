@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // categories section
         if (docForm){
-            var category = document.querySelectorAll('.tile.is-child.box');
+            var category = document.querySelectorAll('#create_document .is-scalable');
             var categoryName = '';
 
             docForm.addEventListener('submit', function($ev){
@@ -370,31 +370,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 loading = true;
                 showLoadingButton($submitBtn, true);
 
-                jQuery.ajax({
-                    type:"POST",
-                    url: $wp_data.ajaxUrl,
-                    data: {
-                        action: "get_files",
-                        state: state,
-                        category: cat
-                    },
-                    success:function(data){
-                        if (data.status){
-                            localStorage.setItem('files', data.data);
-                            localStorage.setItem('state', JSON.stringify(state));
-                            localStorage.setItem('category', JSON.stringify(cat));
-                            navigateLink('/list-documents');
-                        } else {
-                            console.log('Error fetching data', data);
-                        }
-
-                        loading = false;
-                        showLoadingButton($submitBtn, false);
-                    },
-                    error: function(errorThrown){
-                        console.log('Error fetching data', errorThrown);
-                        showLoadingButton($submitBtn, false);
+                postData({
+                    action: "get_files",
+                    state: state,
+                    category: cat
+                }, function(data){
+                    if (data.status){
+                        localStorage.setItem('files', data.data);
+                        localStorage.setItem('state', JSON.stringify(state));
+                        localStorage.setItem('category', JSON.stringify(cat));
+                        location.href = '/user/list-documents';
+                    } else {
+                        showSnackBar("Error fetching documents");
                     }
+                    console.log('da', data);
+                    loading = false;
+                    showLoadingButton($submitBtn, false);
+                }, function(errorThrown){
+                    showSnackBar("Error fetching documents");
+                    showLoadingButton($submitBtn, false);
+                    loading = false;
+                    console.log('err', errorThrown);
                 });
             });
 
@@ -432,9 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var docEls = document.querySelectorAll('.tile.is-child.box');
             var docName = '';
 
-            while(docs.length){
-                res += createNodes(docs.splice(0, 3), state, cat);
-            }
+            res = createNodes(docs, state, cat);
 
             selectForm.insertAdjacentHTML('afterbegin', res);
 
@@ -553,7 +547,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitDocSelected.state = state;
         submitDocSelected.category =  cat;
 
-        res.push('<div class="tile is-ancestor res-cont">');
+        res.push('<div class="div columns is-mobile is-gapless is-multiline">');
 
         for(var i = 0; i < array.length; i++){
             res.push(createDocumentNode(array[i], state, cat));
@@ -567,18 +561,18 @@ document.addEventListener('DOMContentLoaded', function () {
     function createDocumentNode(data, state, category){
         var name = data.split('.')[0];
 
-        var thumbs = $wp_data.home + '/assets/thumbs/' + state + '/' + category + '/' + name + '.png';
+        var thumbs = '/wp-content/themes/clinton-child/assets/thumbs/document.jpeg';
 
         var res = [
-            '<div class="tile is-4">',
-            '<div class="tile is-child box doc-box is-scalable" data-value="' + name + '">',
+            '<div class="column is-3">',
+            '<div class="box doc-box is-scalable" data-value="' + name + '">',
             '<p class="has-text-centered bordered"><b>' + name.toUpperCase() + '</b></p>',
             '<p class="has-text-centered">A little Description</p>',
             '<figure class="image is-3by2">',
             '<img src="' + thumbs +  '">',
             '</figure>',
-            '<div class="padded-top-down"><button class="button is-primary is-fullwidth customize-btn" data-value="' +  name + '">Customize Document</button></div>',
-            '<div><button class="button is-primary is-fullwidth ask-btn" data-value="' + name  + '">Request Lawyer</button></div>',
+            '<div class="has-margin-top"><button class="button is-primary is-fullwidth customize-btn" data-value="' +  name + '">Customize Document</button></div>',
+            '<div class="has-margin-top"><button class="button is-primary is-fullwidth ask-btn" data-value="' + name  + '">Request Lawyer</button></div>',
             '</div>',
             '</div>'
         ].join('\n');

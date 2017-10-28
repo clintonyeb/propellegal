@@ -10098,191 +10098,173 @@ aside .user-avatar {
   margin: 0 auto;
 }
 
-/* line 233, assets/sass/_custom.sass */
-.tile.box {
+/* line 232, assets/sass/_custom.sass */
+.is-scalable {
   transition: all 0.25s;
   max-width: 100%;
   margin: 5px !important;
   cursor: pointer;
 }
-/* line 239, assets/sass/_custom.sass */
-.tile.box.is-scalable:hover {
+/* line 237, assets/sass/_custom.sass */
+.is-scalable:hover {
   transform: scale(1.008);
   background-color: #DADADA;
 }
-/* line 242, assets/sass/_custom.sass */
-.tile.box.is-scalable.selected {
-  background-color: #212121;
+/* line 240, assets/sass/_custom.sass */
+.is-scalable.selected {
+  background-color: #757575;
 }
-/* line 244, assets/sass/_custom.sass */
-.tile.box.is-scalable.selected p {
+/* line 242, assets/sass/_custom.sass */
+.is-scalable.selected p {
   color: white;
 }
 
-/* line 247, assets/sass/_custom.sass */
+/* line 246, assets/sass/_custom.sass */
 .bordered {
   padding-bottom: 2px;
   border-bottom: 1px dashed #455a64;
 }
 
 /* line 251, assets/sass/_custom.sass */
-.box {
-  cursor: pointer;
-}
-/* line 253, assets/sass/_custom.sass */
-.box.box-main {
-  width: 100%;
-  max-width: 768px;
-}
-/* line 256, assets/sass/_custom.sass */
-.box.doc-box {
-  padding: 0.5rem;
-}
-/* line 258, assets/sass/_custom.sass */
-.box h2 {
-  font-weight: bolder;
-}
-
-/* line 261, assets/sass/_custom.sass */
 .padded-top-down {
   padding: 0.2em 0;
 }
 
-/* line 264, assets/sass/_custom.sass */
+/* line 254, assets/sass/_custom.sass */
 .margined-top-down {
   margin: 0.5em 0;
 }
 
-/* line 268, assets/sass/_custom.sass */
+/* line 258, assets/sass/_custom.sass */
 .doc-form .field {
   margin: 1em auto;
   max-width: 600px;
 }
-/* line 271, assets/sass/_custom.sass */
+/* line 261, assets/sass/_custom.sass */
 .doc-form .select {
   margin: 1em 4em;
 }
 @media only screen and (max-width: 500px) {
-  /* line 271, assets/sass/_custom.sass */
+  /* line 261, assets/sass/_custom.sass */
   .doc-form .select {
     margin: 0.3em 0;
   }
 }
 
-/* line 277, assets/sass/_custom.sass */
+/* line 267, assets/sass/_custom.sass */
 #general {
   background-color: #f2f2f2;
 }
-/* line 280, assets/sass/_custom.sass */
+/* line 270, assets/sass/_custom.sass */
 #general .columns {
   align-items: baseline;
 }
-/* line 282, assets/sass/_custom.sass */
+/* line 272, assets/sass/_custom.sass */
 #general .columns .box {
   min-height: 30rem;
 }
-/* line 286, assets/sass/_custom.sass */
+/* line 276, assets/sass/_custom.sass */
 #general .image {
   margin-left: auto;
   margin-right: auto;
 }
-/* line 289, assets/sass/_custom.sass */
+/* line 279, assets/sass/_custom.sass */
 #general .box {
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 293, assets/sass/_custom.sass */
+/* line 283, assets/sass/_custom.sass */
 #general .box p.content {
   color: #212121;
   margin: 2em 1em !important;
 }
-/* line 296, assets/sass/_custom.sass */
+/* line 286, assets/sass/_custom.sass */
 #general .box:hover {
   background-color: #455a64;
   color: white;
 }
-/* line 299, assets/sass/_custom.sass */
+/* line 289, assets/sass/_custom.sass */
 #general .box:hover h2 {
   color: white;
 }
-/* line 302, assets/sass/_custom.sass */
+/* line 292, assets/sass/_custom.sass */
 #general .box:hover svg path {
   fill: white !important;
 }
-/* line 304, assets/sass/_custom.sass */
+/* line 294, assets/sass/_custom.sass */
 #general .box:hover .button {
   font-size: 1em;
 }
-/* line 307, assets/sass/_custom.sass */
+/* line 297, assets/sass/_custom.sass */
 #general .box:hover .button span i {
   display: none;
 }
-/* line 309, assets/sass/_custom.sass */
+/* line 299, assets/sass/_custom.sass */
 #general .box:hover .button span:before {
   content: "Go";
 }
-/* line 312, assets/sass/_custom.sass */
+/* line 302, assets/sass/_custom.sass */
 #general .box:hover p.content {
   color: white;
 }
 
-/* line 315, assets/sass/_custom.sass */
+/* line 305, assets/sass/_custom.sass */
 #customers {
   background-color: #F2F2F2;
 }
-/* line 317, assets/sass/_custom.sass */
+/* line 307, assets/sass/_custom.sass */
 #customers .safe {
   position: relative;
   top: 30%;
   margin: auto;
 }
 
-/* line 325, assets/sass/_custom.sass */
+/* line 315, assets/sass/_custom.sass */
 #example p i {
   font-size: 1.2em;
   font-style: italics;
 }
-/* line 328, assets/sass/_custom.sass */
+/* line 318, assets/sass/_custom.sass */
 #example .box-cont {
   border-radius: 1rem;
   margin: 3rem;
   box-shadow: 4px 6px 40px #888888, -4px -4px 40px #888888;
 }
 
-/* line 333, assets/sass/_custom.sass */
+/* line 323, assets/sass/_custom.sass */
 #upload {
   background-color: #455a64;
   color: #FFF;
 }
-/* line 338, assets/sass/_custom.sass */
+/* line 328, assets/sass/_custom.sass */
 #upload .column.is-3 {
   min-height: 100%;
   position: relative;
 }
-/* line 341, assets/sass/_custom.sass */
+/* line 331, assets/sass/_custom.sass */
 #upload .column .field {
   margin: 4rem 1rem;
 }
 
-/* line 344, assets/sass/_custom.sass */
+/* line 334, assets/sass/_custom.sass */
 .box-cont {
   border-radius: 1rem;
   margin: 3rem;
   box-shadow: 2px 2px 10px #888888, -1px -1px 10px #888888;
 }
 @media only screen and (max-width: 600px) {
-  /* line 344, assets/sass/_custom.sass */
+  /* line 334, assets/sass/_custom.sass */
   .box-cont {
     padding: 0;
     margin: 0 !important;
   }
 }
 
-/* line 353, assets/sass/_custom.sass */
+/* line 343, assets/sass/_custom.sass */
 #ask-attorney {
   background-color: #f2f2f2;
 }
-/* line 356, assets/sass/_custom.sass */
+/* line 346, assets/sass/_custom.sass */
 #ask-attorney textarea {
   background-color: #f5f5f5;
   resize: none;
@@ -10290,7 +10272,7 @@ aside .user-avatar {
   border-size: 3em 3em 6em 3em;
 }
 
-/* line 362, assets/sass/_custom.sass */
+/* line 352, assets/sass/_custom.sass */
 #adv {
   background-color: #DADADA;
   background-image: url("./assets/images/parallax.jpeg");
@@ -10301,17 +10283,17 @@ aside .user-avatar {
   background-size: cover;
 }
 @media only screen and (max-device-width: 1024px) {
-  /* line 362, assets/sass/_custom.sass */
+  /* line 352, assets/sass/_custom.sass */
   #adv {
     background-attachment: scroll;
   }
 }
 
-/* line 374, assets/sass/_custom.sass */
+/* line 364, assets/sass/_custom.sass */
 #register {
   background-color: #f2f2f2;
 }
-/* line 376, assets/sass/_custom.sass */
+/* line 366, assets/sass/_custom.sass */
 #register .cont {
   display: flex;
   justify-content: center;
@@ -10319,115 +10301,115 @@ aside .user-avatar {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-/* line 382, assets/sass/_custom.sass */
+/* line 372, assets/sass/_custom.sass */
 #register .cont .field {
   margin-left: 1rem;
   display: inline-block;
 }
 @media only screen and (max-width: 500px) {
-  /* line 382, assets/sass/_custom.sass */
+  /* line 372, assets/sass/_custom.sass */
   #register .cont .field {
     display: block;
   }
 }
 
-/* line 389, assets/sass/_custom.sass */
+/* line 379, assets/sass/_custom.sass */
 #footer .foot-icon {
   background-color: transparent;
 }
-/* line 391, assets/sass/_custom.sass */
+/* line 381, assets/sass/_custom.sass */
 #footer .brand {
   height: 100px;
 }
-/* line 394, assets/sass/_custom.sass */
+/* line 384, assets/sass/_custom.sass */
 #footer .title.is-6 {
   margin-top: 1.2rem;
 }
-/* line 396, assets/sass/_custom.sass */
+/* line 386, assets/sass/_custom.sass */
 #footer a {
   color: white;
 }
-/* line 399, assets/sass/_custom.sass */
+/* line 389, assets/sass/_custom.sass */
 #footer .tweets.items {
   font-size: 0.85em;
 }
-/* line 401, assets/sass/_custom.sass */
+/* line 391, assets/sass/_custom.sass */
 #footer .terms {
   display: inline-block;
 }
 
-/* line 404, assets/sass/_custom.sass */
+/* line 394, assets/sass/_custom.sass */
 .has-text-darker-blue {
   color: #455a64;
 }
 
-/* line 407, assets/sass/_custom.sass */
+/* line 397, assets/sass/_custom.sass */
 .has-text-darker-yellow {
   color: #fdd835;
 }
 
-/* line 410, assets/sass/_custom.sass */
+/* line 400, assets/sass/_custom.sass */
 .has-text-darker-gray {
   color: #212121;
 }
 
-/* line 413, assets/sass/_custom.sass */
+/* line 403, assets/sass/_custom.sass */
 .has-text-light-gray {
   color: #757575;
 }
 
-/* line 416, assets/sass/_custom.sass */
+/* line 406, assets/sass/_custom.sass */
 .has-text-lighter-gray {
   color: #f5f5f5;
 }
 
-/* line 419, assets/sass/_custom.sass */
+/* line 409, assets/sass/_custom.sass */
 .is-darker-blue {
   background-color: #455a64;
 }
 
-/* line 422, assets/sass/_custom.sass */
+/* line 412, assets/sass/_custom.sass */
 .is-darker-yellow {
   background-color: #fdd835;
 }
 
-/* line 425, assets/sass/_custom.sass */
+/* line 415, assets/sass/_custom.sass */
 .is-darker-gray {
   background-color: #212121;
 }
 
-/* line 428, assets/sass/_custom.sass */
+/* line 418, assets/sass/_custom.sass */
 .is-light-gray {
   background-color: #757575;
 }
 
-/* line 431, assets/sass/_custom.sass */
+/* line 421, assets/sass/_custom.sass */
 .is-lighter-gray {
   background-color: #f5f5f5;
 }
 
-/* line 434, assets/sass/_custom.sass */
+/* line 424, assets/sass/_custom.sass */
 .is-dark {
   background-color: #212121;
 }
 
-/* line 437, assets/sass/_custom.sass */
+/* line 427, assets/sass/_custom.sass */
 p {
   letter-spacing: 0.05rem;
 }
 
-/* line 440, assets/sass/_custom.sass */
+/* line 430, assets/sass/_custom.sass */
 #floating-button {
   position: fixed;
   bottom: 5rem;
   right: 5rem;
   display: none;
 }
-/* line 445, assets/sass/_custom.sass */
+/* line 435, assets/sass/_custom.sass */
 #floating-button .button {
   border-radius: 50%;
 }
-/* line 450, assets/sass/_custom.sass */
+/* line 440, assets/sass/_custom.sass */
 #floating-button .tooltiptext {
   display: none;
   width: 120px;
@@ -10441,7 +10423,7 @@ p {
   right: 3.8rem;
   margin-left: -60px;
 }
-/* line 462, assets/sass/_custom.sass */
+/* line 452, assets/sass/_custom.sass */
 #floating-button .tooltiptext::after {
   content: " ";
   position: absolute;
@@ -10453,58 +10435,58 @@ p {
   border-color: #455a64 transparent transparent transparent;
 }
 
-/* line 472, assets/sass/_custom.sass */
+/* line 462, assets/sass/_custom.sass */
 #testimonial {
   position: relative;
 }
-/* line 475, assets/sass/_custom.sass */
+/* line 465, assets/sass/_custom.sass */
 #testimonial .quote-box {
   position: relative;
   margin-left: 1rem;
   position: relative;
   transition: all 0.25s;
 }
-/* line 481, assets/sass/_custom.sass */
+/* line 471, assets/sass/_custom.sass */
 #testimonial .quote-box.red {
   border-top: 1px solid red;
 }
-/* line 483, assets/sass/_custom.sass */
+/* line 473, assets/sass/_custom.sass */
 #testimonial .quote-box.red::after {
   border-color: red transparent transparent transparent;
 }
-/* line 485, assets/sass/_custom.sass */
+/* line 475, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow {
   border-top: 1px solid yellow;
 }
-/* line 487, assets/sass/_custom.sass */
+/* line 477, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow::after {
   border-color: yellow transparent transparent transparent;
 }
-/* line 489, assets/sass/_custom.sass */
+/* line 479, assets/sass/_custom.sass */
 #testimonial .quote-box.blue {
   border-top: 1px solid blue;
 }
-/* line 491, assets/sass/_custom.sass */
+/* line 481, assets/sass/_custom.sass */
 #testimonial .quote-box.blue::after {
   border-color: blue transparent transparent transparent;
 }
-/* line 493, assets/sass/_custom.sass */
+/* line 483, assets/sass/_custom.sass */
 #testimonial .quote-box.green {
   border-top: 1px solid green;
 }
-/* line 495, assets/sass/_custom.sass */
+/* line 485, assets/sass/_custom.sass */
 #testimonial .quote-box.green::after {
   border-color: green transparent transparent transparent;
 }
-/* line 497, assets/sass/_custom.sass */
+/* line 487, assets/sass/_custom.sass */
 #testimonial .quote-box.pink {
   border-top: 1px solid pink;
 }
-/* line 499, assets/sass/_custom.sass */
+/* line 489, assets/sass/_custom.sass */
 #testimonial .quote-box.pink::after {
   border-color: pink transparent transparent transparent;
 }
-/* line 501, assets/sass/_custom.sass */
+/* line 491, assets/sass/_custom.sass */
 #testimonial .quote-box::after {
   content: " ";
   position: absolute;
@@ -10515,13 +10497,13 @@ p {
   border-style: solid;
   border-color: #455a64 transparent transparent transparent;
 }
-/* line 510, assets/sass/_custom.sass */
+/* line 500, assets/sass/_custom.sass */
 #testimonial img {
   height: 50px;
   width: 50px;
   border-radius: 50%;
 }
-/* line 515, assets/sass/_custom.sass */
+/* line 505, assets/sass/_custom.sass */
 #testimonial .nav-icon {
   position: absolute;
   top: 50%;
@@ -10529,28 +10511,28 @@ p {
   color: red;
   z-index: 1;
 }
-/* line 522, assets/sass/_custom.sass */
+/* line 512, assets/sass/_custom.sass */
 #testimonial .nav-icon.left {
   left: 20px;
 }
-/* line 524, assets/sass/_custom.sass */
+/* line 514, assets/sass/_custom.sass */
 #testimonial .nav-icon.right {
   right: 20px;
 }
 
-/* line 527, assets/sass/_custom.sass */
+/* line 517, assets/sass/_custom.sass */
 .is-bordercircle {
   border-radius: 50%;
 }
 
 @media only screen and (max-width: 600px) {
-  /* line 531, assets/sass/_custom.sass */
+  /* line 521, assets/sass/_custom.sass */
   .section-button {
     text-align: center;
   }
 }
 
-/* line 538, assets/sass/_custom.sass */
+/* line 528, assets/sass/_custom.sass */
 .animated {
   animation-duration: 1s;
   animation-fill-mode: both;
@@ -10564,7 +10546,7 @@ p {
     opacity: 1;
   }
 }
-/* line 550, assets/sass/_custom.sass */
+/* line 540, assets/sass/_custom.sass */
 .fadeIn {
   animation-name: fadeIn;
 }
@@ -10577,24 +10559,24 @@ p {
     opacity: 0;
   }
 }
-/* line 561, assets/sass/_custom.sass */
+/* line 551, assets/sass/_custom.sass */
 .fadeOut {
   animation-name: fadeOut;
 }
 
-/* line 566, assets/sass/_custom.sass */
+/* line 556, assets/sass/_custom.sass */
 .is-mfullheight {
   width: 100%;
   min-height: 100vh;
 }
 
-/* line 571, assets/sass/_custom.sass */
+/* line 561, assets/sass/_custom.sass */
 #upload-doc .box {
   position: relative;
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 576, assets/sass/_custom.sass */
+/* line 566, assets/sass/_custom.sass */
 #upload-doc .box .file-input {
   width: 100%;
   height: 80%;
@@ -10602,28 +10584,28 @@ p {
   cursor: pointer;
   opacity: 0;
 }
-/* line 582, assets/sass/_custom.sass */
+/* line 572, assets/sass/_custom.sass */
 #upload-doc .box:hover {
   box-shadow: 1px 1px 10px #212121;
 }
-/* line 585, assets/sass/_custom.sass */
+/* line 575, assets/sass/_custom.sass */
 #upload-doc .box p.is-icon {
   font-size: 4rem;
 }
-/* line 587, assets/sass/_custom.sass */
+/* line 577, assets/sass/_custom.sass */
 #upload-doc .box.dragged {
   box-shadow: 4px 4px 30px #212121;
 }
-/* line 590, assets/sass/_custom.sass */
+/* line 580, assets/sass/_custom.sass */
 #upload-doc #doc-count {
   font-size: 2rem;
 }
-/* line 594, assets/sass/_custom.sass */
+/* line 584, assets/sass/_custom.sass */
 #upload-doc .todo li {
   font-size: 1.5rem;
   margin-top: 1em;
 }
-/* line 598, assets/sass/_custom.sass */
+/* line 588, assets/sass/_custom.sass */
 #upload-doc .step {
   background-color: #fdd835;
   display: inline-block;
@@ -10635,38 +10617,38 @@ p {
   font-weight: bolder;
   margin-bottom: 1em;
 }
-/* line 609, assets/sass/_custom.sass */
+/* line 599, assets/sass/_custom.sass */
 #upload-doc form {
   width: 100%;
   max-width: 800px;
   margin: 1em auto;
 }
-/* line 613, assets/sass/_custom.sass */
+/* line 603, assets/sass/_custom.sass */
 #upload-doc .butts {
   display: inline-block;
 }
-/* line 616, assets/sass/_custom.sass */
+/* line 606, assets/sass/_custom.sass */
 #upload-doc .upload {
   transition: all 200ms ease-in-out;
 }
-/* line 620, assets/sass/_custom.sass */
+/* line 610, assets/sass/_custom.sass */
 #upload-doc .progress {
   height: 0.5em;
   transition: background-color 1s ease-in-out;
 }
 
-/* line 625, assets/sass/_custom.sass */
+/* line 615, assets/sass/_custom.sass */
 .in {
   display: inline-block;
   z-index: 2;
 }
-/* line 628, assets/sass/_custom.sass */
+/* line 618, assets/sass/_custom.sass */
 .ina {
   width: 100%;
   height: 100%;
 }
 
-/* line 634, assets/sass/_custom.sass */
+/* line 624, assets/sass/_custom.sass */
 #snackbar {
   visibility: hidden;
   min-width: 250px;
@@ -10681,12 +10663,12 @@ p {
   bottom: 30px;
 }
 @media only screen and (max-width: 600px) {
-  /* line 634, assets/sass/_custom.sass */
+  /* line 624, assets/sass/_custom.sass */
   #snackbar {
     right: 50%;
   }
 }
-/* line 650, assets/sass/_custom.sass */
+/* line 640, assets/sass/_custom.sass */
 #snackbar.show {
   visibility: visible !important;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -10733,83 +10715,83 @@ p {
     opacity: 0;
   }
 }
-/* line 690, assets/sass/_custom.sass */
+/* line 680, assets/sass/_custom.sass */
 #user-dashboard h3.title {
   margin-bottom: 0;
 }
-/* line 693, assets/sass/_custom.sass */
+/* line 683, assets/sass/_custom.sass */
 #user-dashboard .media + .media {
   border-top: none;
   margin-top: 0;
   padding-top: 0;
 }
-/* line 698, assets/sass/_custom.sass */
+/* line 688, assets/sass/_custom.sass */
 #user-dashboard .box.padded-small {
   padding: 0.5rem;
 }
-/* line 700, assets/sass/_custom.sass */
+/* line 690, assets/sass/_custom.sass */
 #user-dashboard .button {
   border-radius: 0;
   margin-bottom: 0.5rem;
 }
-/* line 703, assets/sass/_custom.sass */
+/* line 693, assets/sass/_custom.sass */
 #user-dashboard p {
   padding-top: 1em;
 }
 
-/* line 707, assets/sass/_custom.sass */
+/* line 697, assets/sass/_custom.sass */
 .box.has-top-blue {
   border-top: 1px solid #455a64;
 }
-/* line 709, assets/sass/_custom.sass */
+/* line 699, assets/sass/_custom.sass */
 .box.has-top-yellow {
   border-top: 1px solid #fdd835;
 }
-/* line 711, assets/sass/_custom.sass */
+/* line 701, assets/sass/_custom.sass */
 .box.has-top-gray {
   border-top: 1px solid #212121;
 }
-/* line 713, assets/sass/_custom.sass */
+/* line 703, assets/sass/_custom.sass */
 .box.has-top-light {
   border-top: 1px solid #757575;
 }
 
-/* line 717, assets/sass/_custom.sass */
+/* line 707, assets/sass/_custom.sass */
 #user_activities .page-button {
   border-radius: 50%;
 }
-/* line 720, assets/sass/_custom.sass */
+/* line 710, assets/sass/_custom.sass */
 #user_activities .media-content {
   position: relative;
   max-width: 100%;
 }
-/* line 723, assets/sass/_custom.sass */
+/* line 713, assets/sass/_custom.sass */
 #user_activities .media-content .content {
   width: 900px;
   max-width: 90%;
 }
-/* line 726, assets/sass/_custom.sass */
+/* line 716, assets/sass/_custom.sass */
 #user_activities .media-content .time {
   float: right;
 }
 
-/* line 729, assets/sass/_custom.sass */
+/* line 719, assets/sass/_custom.sass */
 .media-right {
   padding-top: 1rem;
 }
 
-/* line 732, assets/sass/_custom.sass */
+/* line 722, assets/sass/_custom.sass */
 .padded-top {
   display: inline-block;
   padding-top: 1em;
 }
 
-/* line 737, assets/sass/_custom.sass */
+/* line 727, assets/sass/_custom.sass */
 tr.clickable:hover {
   background-color: #f5f5f5 !important;
 }
 
-/* line 740, assets/sass/_custom.sass */
+/* line 730, assets/sass/_custom.sass */
 .truncate {
   display: inline-block;
   width: 60%;
@@ -10818,23 +10800,23 @@ tr.clickable:hover {
   text-overflow: ellipsis;
 }
 
-/* line 747, assets/sass/_custom.sass */
+/* line 737, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(odd) {
   background-color: #fafafa;
 }
 
-/* line 749, assets/sass/_custom.sass */
+/* line 739, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
   background-color: #fff;
 }
 
-/* line 753, assets/sass/_custom.sass */
+/* line 743, assets/sass/_custom.sass */
 #register-business .box {
   position: relative;
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 758, assets/sass/_custom.sass */
+/* line 748, assets/sass/_custom.sass */
 #register-business .step {
   background-color: #fdd835;
   display: inline-block;
@@ -10846,35 +10828,35 @@ tr.clickable:hover {
   font-weight: bolder;
   margin-bottom: 1em;
 }
-/* line 769, assets/sass/_custom.sass */
+/* line 759, assets/sass/_custom.sass */
 #register-business form {
   margin: 1em auto;
 }
-/* line 771, assets/sass/_custom.sass */
+/* line 761, assets/sass/_custom.sass */
 #register-business .butts {
   display: inline-block;
 }
-/* line 775, assets/sass/_custom.sass */
+/* line 765, assets/sass/_custom.sass */
 #register-business .upload .box-cont {
   transition: all 200ms ease-in-out;
 }
-/* line 778, assets/sass/_custom.sass */
+/* line 768, assets/sass/_custom.sass */
 #register-business .progress {
   height: 0.5em;
   transition: background-color 1s ease-in-out;
 }
 
-/* line 782, assets/sass/_custom.sass */
+/* line 772, assets/sass/_custom.sass */
 .has-padding-top {
   padding-top: 1rem;
 }
 
-/* line 785, assets/sass/_custom.sass */
+/* line 775, assets/sass/_custom.sass */
 .has-margin-top {
   margin-top: 1rem;
 }
 
-/* line 788, assets/sass/_custom.sass */
+/* line 778, assets/sass/_custom.sass */
 .has-margin-top-2 {
   margin-top: 2rem;
 }
