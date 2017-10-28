@@ -614,13 +614,14 @@ p
     display: inline-block
 
   .upload
-    -box-cont
+    .box-cont
     transition: all 200ms ease-in-out
     
   .progress
     height: .5em
     transition: background-color 1s ease-in-out
-    
+
+
 .in
   display: inline-block
   z-index: 2
@@ -747,3 +748,42 @@ tr.clickable
   background-color: #fafafa
 .table.is-striped tbody tr:not(.is-selected):nth-child(even) 
   background-color: #fff
+
+#register-business
+  .box
+    position: relative
+    transition: 200ms
+    transition-timing-function: ease-in-out
+
+  .step
+    background-color: $darker-yellow
+    display: inline-block
+    height: 35px
+    width: 35px
+    border-radius: 50%
+    text-align: center
+    font-size: 1.3rem
+    font-weight: bolder
+    margin-bottom: 1em
+
+  form
+    margin: 1em auto
+  .butts
+    display: inline-block
+
+  .upload
+    .box-cont
+      transition: all 200ms ease-in-out
+
+  .progress
+    height: .5em
+    transition: background-color 1s ease-in-out
+
+.has-padding-top
+  padding-top: 1rem 
+
+.has-margin-top
+  margin-top: 1rem 
+
+.has-margin-top-2
+  margin-top: 2rem 

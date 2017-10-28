@@ -4,7 +4,7 @@ $user = $USER_PAYLOAD['data'];
 $requests = getAllRequests(20);
 ?>
 
-<aside class="menu is-primary">
+<aside class="menu is-primary is-hidden-touch">
     <p class="has-text-centered">
         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" alt="logo brand" class="user-avatar"><br>
         <b><?php echo ($user -> full_name) ?></b>
@@ -79,7 +79,7 @@ $requests = getAllRequests(20);
 
             <ul>
                 <li>
-                    <a href="/user/review_document" data-href="review_document">Review a Document</a>
+                    <a href="/user/review_document" data-href="review_document">Upload a Document</a>
                 </li>
             </ul>
         </li>

@@ -40,7 +40,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="control is-expanded">
                         <input class="input" type="text" id="request-search" placeholder="Search here for requests made">
                     </div>
-                    <div class="control" id="req-search-btn">
+                    <div class="control" id="req-search-btn" data-url="attorney_requests">
                         <a class="button is-warning">
                             Search
                         </a>
@@ -110,7 +110,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <?php
                         $c = count($requests);
                         if ($c < 1){
-                            echo ("<p class=\"has-text-centered has-text-darker-blue\">You have made no requests so far...</p>");
+                            echo ("<p class=\"has-text-centered has-text-darker-blue\">No requests found...</p>");
                         } else {
                             foreach($requests as $req){
                                 echo('<tr data-href=/user/request_messages/?req_id=' . $req -> id . ' class=clickable>');

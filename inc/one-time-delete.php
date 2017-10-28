@@ -10,6 +10,12 @@ function deleteTables(){
     $table_requests = _REQUEST_TABLE_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_requests" );
 
+    $table_reg_mess = _BUS_MESS_TABLE_;
+    $wpdb->query( "DROP TABLE IF EXISTS $table_reg_mess" );
+
+    $table_regs = _BUS_REG_TABLE_;
+    $wpdb->query( "DROP TABLE IF EXISTS $table_regs" );
+    
     $table_doc_files = _DOC_FILES_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_doc_files" );
 

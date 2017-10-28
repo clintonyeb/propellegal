@@ -27,7 +27,7 @@ if ($limit * $PAGE < $DATA_COUNT){
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Review Document
+        Upload a Document
     </h2>
 
     <div class="columns">
@@ -101,7 +101,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <p class="step">
                             1.
                         </p>
-                        <h2 class="title is-4">
+                        <h2 class="title is-5">
                             Upload Documents
                         </h2>
                     </div>
@@ -110,7 +110,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <p class="step">
                             2.
                         </p>
-                        <h2 class="title is-4">
+                        <h2 class="title is-5">
                             Provide Information
                         </h2>
                     </div>
@@ -118,7 +118,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <p class="step">
                             3.
                         </p>
-                        <h2 class="title is-4">
+                        <h2 class="title is-5">
                             Confirmation
                         </h2>
                     </div>
@@ -126,8 +126,8 @@ if ($limit * $PAGE < $DATA_COUNT){
                 
                 <progress class="progress is-warning" value="2" max="100">2%</progress>
 
-                <section class="upload-box-cont is-hidden">
-                    <div class="box" id="file-box">
+                <div class="upload-box-cont is-hidden">
+                    <div class="" id="file-box">
                         <div class="" ondrop="dropEvent(event)" ondragover="dragOverEvent(event)" ondragleave="dragLeave(event)">
                             <input class="file-input" type="file" name="document" id="file-upload" multiple>
 
@@ -142,7 +142,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 <h2 class="title is-3 has-text-centered is-hidden-touch">
                                     Drag and Drop your files here
                                 </h2>
-
                                 <p class="has-text-centered is-icon">
                                     <span class="icon is-large  has-text-darker-yellow">
                                         <i class="fa fa-upload"></i>
@@ -150,7 +149,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 </p>
                             </div>
                         </div>
-
                         <hr>
                         <div class="has-text-centered">
                             <p class="in">
@@ -162,7 +160,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 </a>
                             </p>
                         </div>
-                        
                     </div>
                     
                     <div class="files">
@@ -173,22 +170,22 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <div id="docs" class="tags"></div>
                         
                     </div>
-                </section>
+                </div>
 
                 <div class="upload-box-cont is-hidden">
-                    <div class="box">
+                    <div class="">
                         <form action="" id="details">
                             <div class="field">
-                                <label class="label is-medium has-text-primary">Full Name</label>
+                                <label class="label has-text-primary">Full Name</label>
                                 <div class="control">
-                                    <input autofocus class="input is-medium is-primary" name="user_name" type="text" placeholder="Please provide fullname">
+                                    <input autofocus class="input is-primary" name="user_name" type="text" placeholder="Please provide fullname">
                                 </div>
                             </div>
 
                             <div class="field">
-                                <label class="label is-medium has-text-primary">Message</label>
+                                <label class="label has-text-primary">Message</label>
                                 <div class="control">
-                                    <textarea class="textarea is-medium is-primary" name="content" rows="8" placeholder="Please provide any additional information..."></textarea>
+                                    <textarea class="textarea is-primary" name="content" rows="8" placeholder="Please provide any additional information..."></textarea>
                                 </div>
                             </div>
                         </form>

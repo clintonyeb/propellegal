@@ -10655,18 +10655,18 @@ p {
   transition: background-color 1s ease-in-out;
 }
 
-/* line 624, assets/sass/_custom.sass */
+/* line 625, assets/sass/_custom.sass */
 .in {
   display: inline-block;
   z-index: 2;
 }
-/* line 627, assets/sass/_custom.sass */
+/* line 628, assets/sass/_custom.sass */
 .ina {
   width: 100%;
   height: 100%;
 }
 
-/* line 633, assets/sass/_custom.sass */
+/* line 634, assets/sass/_custom.sass */
 #snackbar {
   visibility: hidden;
   min-width: 250px;
@@ -10681,12 +10681,12 @@ p {
   bottom: 30px;
 }
 @media only screen and (max-width: 600px) {
-  /* line 633, assets/sass/_custom.sass */
+  /* line 634, assets/sass/_custom.sass */
   #snackbar {
     right: 50%;
   }
 }
-/* line 649, assets/sass/_custom.sass */
+/* line 650, assets/sass/_custom.sass */
 #snackbar.show {
   visibility: visible !important;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -10733,83 +10733,83 @@ p {
     opacity: 0;
   }
 }
-/* line 689, assets/sass/_custom.sass */
+/* line 690, assets/sass/_custom.sass */
 #user-dashboard h3.title {
   margin-bottom: 0;
 }
-/* line 692, assets/sass/_custom.sass */
+/* line 693, assets/sass/_custom.sass */
 #user-dashboard .media + .media {
   border-top: none;
   margin-top: 0;
   padding-top: 0;
 }
-/* line 697, assets/sass/_custom.sass */
+/* line 698, assets/sass/_custom.sass */
 #user-dashboard .box.padded-small {
   padding: 0.5rem;
 }
-/* line 699, assets/sass/_custom.sass */
+/* line 700, assets/sass/_custom.sass */
 #user-dashboard .button {
   border-radius: 0;
   margin-bottom: 0.5rem;
 }
-/* line 702, assets/sass/_custom.sass */
+/* line 703, assets/sass/_custom.sass */
 #user-dashboard p {
   padding-top: 1em;
 }
 
-/* line 706, assets/sass/_custom.sass */
+/* line 707, assets/sass/_custom.sass */
 .box.has-top-blue {
   border-top: 1px solid #455a64;
 }
-/* line 708, assets/sass/_custom.sass */
+/* line 709, assets/sass/_custom.sass */
 .box.has-top-yellow {
   border-top: 1px solid #fdd835;
 }
-/* line 710, assets/sass/_custom.sass */
+/* line 711, assets/sass/_custom.sass */
 .box.has-top-gray {
   border-top: 1px solid #212121;
 }
-/* line 712, assets/sass/_custom.sass */
+/* line 713, assets/sass/_custom.sass */
 .box.has-top-light {
   border-top: 1px solid #757575;
 }
 
-/* line 716, assets/sass/_custom.sass */
+/* line 717, assets/sass/_custom.sass */
 #user_activities .page-button {
   border-radius: 50%;
 }
-/* line 719, assets/sass/_custom.sass */
+/* line 720, assets/sass/_custom.sass */
 #user_activities .media-content {
   position: relative;
   max-width: 100%;
 }
-/* line 722, assets/sass/_custom.sass */
+/* line 723, assets/sass/_custom.sass */
 #user_activities .media-content .content {
   width: 900px;
   max-width: 90%;
 }
-/* line 725, assets/sass/_custom.sass */
+/* line 726, assets/sass/_custom.sass */
 #user_activities .media-content .time {
   float: right;
 }
 
-/* line 728, assets/sass/_custom.sass */
+/* line 729, assets/sass/_custom.sass */
 .media-right {
   padding-top: 1rem;
 }
 
-/* line 731, assets/sass/_custom.sass */
+/* line 732, assets/sass/_custom.sass */
 .padded-top {
   display: inline-block;
   padding-top: 1em;
 }
 
-/* line 736, assets/sass/_custom.sass */
+/* line 737, assets/sass/_custom.sass */
 tr.clickable:hover {
   background-color: #f5f5f5 !important;
 }
 
-/* line 739, assets/sass/_custom.sass */
+/* line 740, assets/sass/_custom.sass */
 .truncate {
   display: inline-block;
   width: 60%;
@@ -10818,12 +10818,63 @@ tr.clickable:hover {
   text-overflow: ellipsis;
 }
 
-/* line 746, assets/sass/_custom.sass */
+/* line 747, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(odd) {
   background-color: #fafafa;
 }
 
-/* line 748, assets/sass/_custom.sass */
+/* line 749, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
   background-color: #fff;
+}
+
+/* line 753, assets/sass/_custom.sass */
+#register-business .box {
+  position: relative;
+  transition: 200ms;
+  transition-timing-function: ease-in-out;
+}
+/* line 758, assets/sass/_custom.sass */
+#register-business .step {
+  background-color: #fdd835;
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bolder;
+  margin-bottom: 1em;
+}
+/* line 769, assets/sass/_custom.sass */
+#register-business form {
+  margin: 1em auto;
+}
+/* line 771, assets/sass/_custom.sass */
+#register-business .butts {
+  display: inline-block;
+}
+/* line 775, assets/sass/_custom.sass */
+#register-business .upload .box-cont {
+  transition: all 200ms ease-in-out;
+}
+/* line 778, assets/sass/_custom.sass */
+#register-business .progress {
+  height: 0.5em;
+  transition: background-color 1s ease-in-out;
+}
+
+/* line 782, assets/sass/_custom.sass */
+.has-padding-top {
+  padding-top: 1rem;
+}
+
+/* line 785, assets/sass/_custom.sass */
+.has-margin-top {
+  margin-top: 1rem;
+}
+
+/* line 788, assets/sass/_custom.sass */
+.has-margin-top-2 {
+  margin-top: 2rem;
 }

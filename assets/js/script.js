@@ -175,12 +175,15 @@ document.addEventListener('DOMContentLoaded', function () {
             success:function(data){
                 if (data.status){
                     localStorage.setItem('token', data.token);
+                    displayMessage('Login success', 'is-info');
                     if(!sendUnsentUserPayload())
                         window.location = '/user';
+                    
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
                 }
+                
                 loading = false;
                 
             },
@@ -191,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 loading = false;
             }
         });
+        return true;
     }
 
     // End of Log-in functions
@@ -727,7 +731,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     client_key: $wp_data.client_auth
                 };
 
-                if (!makeSureUserAuthenticated(data))
+                if (!makeSureUserAuthenticated(data, '/user/request_messages'))
                     return false;
                 
                 postData(data, function(data){
@@ -1099,10 +1103,150 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of File Upload
 
+    
+    // Register Business
 
+    var regBuss  = document.getElementById('register-business');
+
+    if (regBuss){
+        step = 0;
+        hiddens = document.querySelectorAll('.upload-box-cont');
+        buttons = document.querySelectorAll('[data-step]');
+        progressBar = document.querySelector('.progress');
+        var firstname = document.getElementById('firstname'),
+            lastname =  document.getElementById('lastname'),
+            phone =  document.getElementById('phone'),
+            address =  document.getElementById('address'),
+            city =  document.getElementById('city'),
+            state =  document.getElementById('state'),
+            zip =  document.getElementById('zip'),
+            busType =  document.getElementById('bus-type'),
+            comName =  document.getElementById('com-name'),
+            comDesc =  document.getElementById('com-desc'),
+            mess = document.getElementById('mess');
+        
+        for(var i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('click', function ($ev) {
+                var b = $ev.currentTarget;
+                var s = b.getAttribute('data-step');
+                
+                s = Number(s);
+                removeError('is-danger');
+                
+                if (!isNaN(s)){
+                    switch (s) {
+                    case 0:
+                        hideBoxes();
+                        step = 0;
+                        showBox(step);
+                        updateProgress(10);
+                        break;
+                    case 1:
+
+                        removeErrorField(firstname);
+                        removeErrorField(lastname);
+                        removeErrorField(phone);
+                        
+                        if(!rules.required(firstname.value, true)){
+                            showError(firstname, 'Name', rules.required.reason);
+                            return false;
+                        }
+
+                        if(!rules.required(lastname.value, true)){
+                            showError(lastname, 'Name', rules.required.reason);
+                            return false;
+                        }
+
+                        if(!rules.required(phone.value, true)){
+                            showError(phone, 'Phone number', rules.required.reason);
+                            return false;
+                        }
+
+                        hideBoxes();
+                        step = 1;
+                        showBox(step);
+                        updateProgress(40);
+                        break;
+                    case 2:
+                        if (loading) return false;
+                        
+                        removeErrorField(mess);
+                        
+                        // removeErrorField(city);
+                        // removeErrorField(state);
+                        // removeErrorField(zip);
+                        // removeErrorField(busType);
+                        // removeErrorField(comName);
+                        // removeErrorField(comDesc);
+
+                        if(!rules.required(mess.value, true)){
+                            showError(mess, 'Please provide us', 'additional message');
+                            return false;
+                        }
+                        
+                        loading = true;
+                        showLoadingButton(b, true);
+
+                        var data = {
+                            action: 'ask_business',
+                            client_key: $wp_data.client_auth,
+                            firstname: firstname.value,
+                            lastname: lastname.value,
+                            phone: phone.value,
+                            address: address.value,
+                            city: city.value,
+                            state: state.value,
+                            zip: zip.value,
+                            busType: busType.value,
+                            comName: comName.value,
+                            comDesc: comDesc.value,
+                            mess: mess.value
+                        };
+
+                        postData(data, function (data) {
+                            if (data.status){
+                                location.href= "/user/business_registrations";
+                            } else {
+                                showSnackBar(data.message);
+                                showLoadingButton(b, false);
+                            }
+                            loading  = false;
+                        }, function (err) {
+                            showSnackBar("Error submitting data");
+                            showLoadingButton(b, false);
+                            loading = false;
+                        });
+
+                        break;
+                    }
+                }
+                return true;
+            });
+        }
+
+        function updateProgress(v) {
+            progressBar.setAttribute('value', v);
+        }
+
+
+        function hideBoxes(){
+            for(var i = 0; i < hiddens.length; i++) {
+                var h = hiddens[i];
+                h.classList.add('is-hidden') ;
+            }
+        }
+
+        function showBox(i){
+            hiddens[i].classList.remove('is-hidden');
+        }
+    }
+    
+    // End of Register Business
+    
     var requestSearch = document.getElementById('request-search');
     if(requestSearch) {
         var btn = document.getElementById('req-search-btn');
+        var path = btn.getAttribute('data-url');
         btn.addEventListener('click', function ($event) {
             var query = requestSearch.value;
 
@@ -1111,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return false;
             }
 
-            location.href= "/attorney_requests/?page=0&query=" + query;
+            location.href= "/" + path  + "/?page=0&query=" + query;
             
             return true;
         });
@@ -1251,9 +1395,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var data;
 
         var req_id = document.getElementById('req_id').value;
-        
+        var url = requestBtn.getAttribute('data-url');
+
         data = {
-            action: 'rev_mess',
+            action: url,
             content: v,
             req_id: req_id,
             client_key: $wp_data.client_auth
@@ -1268,7 +1413,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 loading  = false;
                 showSnackBar(data.message);
             }
-            console.log(data);
+            
         }, function (err) {
             showLoadingButton(requestBtn, false);
             loading  = false;
@@ -1303,8 +1448,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function showLoadingButton(button, state){
         if(state) {
             button.classList.add('is-loading');
+            button.setAttribute('disabled', true);
         } else {
             button.classList.remove('is-loading');
+            button.removeAttribute('disabled');
         }
     }
 
@@ -1486,11 +1633,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return arr;
     }
 
-    function makeSureUserAuthenticated(data) {
+    function makeSureUserAuthenticated(data, url) {
         if(authenticated){
             return true;
         } else {
-            localStorage.setItem('redirect', JSON.stringify(location.pathname));
+            localStorage.setItem('redirect', JSON.stringify(url));
             localStorage.setItem('redirect-data', JSON.stringify(data));
             location.href = "/login";
         }
@@ -1554,56 +1701,6 @@ document.addEventListener('DOMContentLoaded', function () {
             location.reload();
         });
     }
-
-    
     // End of Utility Functions
 
-
-
-    
-    // var docDown = document.getElementById('down-doc');
-
-    // if (docDown){
-
-    //     var s = document.getElementById('doc-type');
-    //     var format = document.getElementById('format');
-    //     var data = JSON.parse(localStorage.getItem('data'));
-    //     var path =  $wp_data.home + "/assets/generated_documents/";
-    //     var st = path + data.output + '.';
-
-    //     docDown.setAttribute('href', st + 'pdf');
-    //     format.addEventListener('change', function($event){
-    //         var v = $event.target.value;
-    //         s.textContent = v.toUpperCase();
-    //         docDown.setAttribute('href', st + v);
-    //     });
-
-    //     docDown.addEventListener('click', function($event){
-
-    //     });
-
-
-
-    // jQuery.ajax({
-    //     type:"POST",
-    //     url: $wp_data.ajaxUrl,
-    //     data: {
-    //         action: 'get_pdf',
-    //         doc: data.output
-    //     },
-    //     responseType: 'blob',
-    //     beforeSend: function(d){
-    //     },
-    //     success:function(data){
-    //         if (data.status){
-    //             //
-    //         } else {
-    //             console.log('Error fetching data', data);
-    //         }
-    //     },
-    //     error: function(errorThrown){
-    //         console.log('Error fetching data err', errorThrown);
-    //     }
-    // });
-    //}
 }.bind(this));

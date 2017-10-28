@@ -10,6 +10,8 @@ define("_REQUEST_MESS_", $wpdb -> prefix . "my_req_mess");
 define("_DOC_REVIEW_TABLE_", $wpdb -> prefix . "my_doc_reviews");
 define("_DOC_REVIEW_MESS_", $wpdb -> prefix . "my_doc_rev_mess");
 define("_DOC_FILES_", $wpdb -> prefix . "my_doc_files");
+define("_BUS_REG_TABLE_", $wpdb -> prefix . "my_buss");
+define("_BUS_MESS_TABLE_", $wpdb -> prefix . "my_buss_mess");
 
 // USER ROLES
 define("_USER_ROLE_", "USER");

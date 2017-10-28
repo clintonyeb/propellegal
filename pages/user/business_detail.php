@@ -4,26 +4,25 @@ $user = $USER_PAYLOAD['data'];
 
 parse_str($_SERVER['QUERY_STRING']);
 
-$doc_rev = getDocRevDetails($req_id);
-$file_count = getFileCount($req_id);
-$messages = getReviewMessages($req_id);
+$bus_reg = getRegDetails($req_id);
+$messages = getRegMessages($req_id);
 ?>
 
-<span data-href="document_reviews"></span>
+<span data-href="business_registrations"></span>
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Review Details
+        Registration Details
     </h2>
     
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
-                <a class="button is-warning" href="/user/document_reviews">
+                <a class="button is-warning" href="/user/business_registrations">
                     <span class="icon">
                         <i class="fa fa-angle-left"></i>
                     </span>
-                    <span> Go To Reviews</span>
+                    <span> Go To Registrations</span>
                 </a>
             </div>
             <div class="level-right">
@@ -37,9 +36,9 @@ $messages = getReviewMessages($req_id);
         </div>
         <hr>
         <?php
-        echo getDocrevdetailstemplate($doc_rev, $file_count);
+        echo getRegDetailsTemp($bus_reg);
         foreach($messages as $mess){
-            echo (getRevMessTemplate($mess));
+            echo (getRevMesstemplate($mess));
         }
         ?>
 
@@ -58,7 +57,7 @@ $messages = getReviewMessages($req_id);
                 <nav class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <a class="button is-primary is-medium" id="req-submit" data-url="rev_mess">Send Message</a>
+                            <a class="button is-primary is-medium" id="req-submit" data-url="reg_mess">Send Message</a>
                         </div>
                     </div>
                     <div class="level-right">

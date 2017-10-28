@@ -145,6 +145,44 @@ function createTables(){
 
     dbDelta($query);
 
+    $table_registrations = _BUS_REG_TABLE_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_registrations (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    act_id mediumint(9) NOT NULL,
+    mess nvarchar(10000) NOT NULL,
+    status nvarchar(100) NOT NULL,
+    last_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    viewed bit DEFAULT 0,
+    bus_fname nvarchar(255),
+    bus_lname nvarchar(255),
+    bus_phone nvarchar(50),
+    bus_city nvarchar(255),
+    bus_state nvarchar(255),
+    bus_zipcode nvarchar(255),
+    bus_address nvarchar(1000),
+    bus_type  nvarchar(50),
+    com_name  nvarchar(255),
+    com_desc nvarchar(1000),
+    FOREIGN KEY (act_id) REFERENCES $table_activities(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+    $table_reg_mess = _BUS_MESS_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_reg_mess (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    reg_id mediumint(9) NOT NULL,
+    user_id mediumint(9) NOT NULL,
+    content nvarchar(10000) NOT NULL,
+    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (reg_id) REFERENCES $table_registrations(id),
+    FOREIGN KEY (user_id) REFERENCES $table_users(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
 }
 
 createTables();

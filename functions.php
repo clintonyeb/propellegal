@@ -64,6 +64,8 @@ add_action('wp_ajax_req_mess', 'req_mess');
 add_action('wp_ajax_nopriv_req_mess', 'req_mess');
 add_action('wp_ajax_rev_mess', 'rev_mess');
 add_action('wp_ajax_nopriv_rev_mess', 'rev_mess');
+add_action('wp_ajax_reg_mess', 'reg_mess');
+add_action('wp_ajax_nopriv_reg_mess', 'reg_mess');
 
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
@@ -1090,21 +1092,12 @@ function req_mess(){
     die();
 }
 
-function addReviewMessage($user_id, $req_id, $content){
+function addReviewMessage($d, $table_name){
     global $wpdb;
     
-    $date = date('Y-m-d H:i:s');
-
-    $table_rev_mess = _DOC_REVIEW_MESS_;
-    
     $res = $wpdb -> insert(
-        $table_rev_mess,
-        array(
-            "doc_id" => $req_id,
-            "user_id" => $user_id,
-            "content" => $content,
-            "date_created" => $date
-        ),
+        $table_name,
+        $d,
         array(
             "%d",
             "%d",
@@ -1117,12 +1110,53 @@ function addReviewMessage($user_id, $req_id, $content){
 }
 
 function rev_mess(){
+    global $USER_PAYLOAD;
+
     $content = $_POST['content'];
     $req_id =  $_POST['req_id'];
-    global $USER_PAYLOAD;
     $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+    $date = date('Y-m-d H:i:s');
+    $table_rev_mess = _DOC_REVIEW_MESS_;
 
-    if (addReviewMessage($user -> user_id, $req_id, $content)) {
+    $d = array(
+        "doc_id" => $req_id,
+        "user_id" => $user_id,
+        "content" => $content,
+        "date_created" => $date
+    );
+
+    if (addReviewMessage($d, $table_rev_mess)) {
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true));
+    } else {
+        wp_send_json(array(
+            'message' => 'error adding review',
+            'status' => false));
+    }
+
+    die();
+}
+
+function reg_mess(){
+    global $USER_PAYLOAD;
+
+    $content = $_POST['content'];
+    $req_id =  $_POST['req_id'];
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+    $date = date('Y-m-d H:i:s');
+
+    $table_reg_mess = _BUS_MESS_TABLE_;
+    $d = array(
+        "reg_id" => $req_id,
+        "user_id" => $user_id,
+        "content" => $content,
+        "date_created" => $date
+    );
+
+    if (addReviewMessage($d, $table_reg_mess)) {
         wp_send_json(array(
             'message' => 'Success',
             'status' => true));
@@ -1136,9 +1170,59 @@ function rev_mess(){
 }
 
 function ask_business(){
-    wp_send_json(array(
-        'message' => 'Success',
-        'status' => true));
+    global $wpdb;
+    global $USER_PAYLOAD;
+
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $zip = $_POST['zip'];
+    $busType = $_POST['busType'];
+    $comName = $_POST['comName'];
+    $comDesc = $_POST['comDesc'];
+    $mess = $_POST['mess'];
+
+    $table_registrations = _BUS_REG_TABLE_;
+    $user = $USER_PAYLOAD['data'];
+    $date = date('Y-m-d H:i:s');
+
+    $act_id = addActivity(_REGISTER_BUSINESS_, $user -> user_id);
+
+    $res = $wpdb -> insert($table_registrations,
+                           array(
+                               "act_id" => $act_id,
+                               "mess" => $mess,
+                               "status" => _RECEIVED_,
+                               "last_updated" => $date,
+                               "viewed" => 0,
+                               "bus_fname" => $firstname,
+                               "bus_lname" => $lastname,
+                               "bus_phone" => $phone,
+                               "bus_city" => $city,
+                               "bus_state" => $state,
+                               "bus_zipcode" => $zip,
+                               "bus_address" => $address,
+                               "bus_type" => $busType,
+                               "com_name" => $comName,
+                               "com_desc" => $comDesc
+                           ), array(
+                               "%d", "%s", "%s", "%s", "%d", "%s", "%s",
+                               "%s", "%s", "%s", "%s", "%s", "%s", "%s"
+                           ));
+
+    if ($res){
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true));
+    } else {
+        wp_send_json(array(
+            'message' => 'Failed',
+            'status' => false));
+    }
+    
     die();
 }
 
@@ -1678,22 +1762,25 @@ function getFileCount($req_id){
     return $results;
 }
 
-function getReviewMessages($doc_id){
+function getMessages($id, $type_id, $table_name){
     global $wpdb;
 
     $table_users = _USER_TABLE_;
-    $table_mess = _DOC_REVIEW_MESS_;
 
-    
-    $query = "SELECT content, $table_mess.date_created, full_name 
-             FROM $table_mess
+    $query = "SELECT content, $table_name.date_created, full_name 
+             FROM $table_name
              INNER JOIN $table_users
-             ON $table_mess.user_id = $table_users.id
-             WHERE doc_id = $doc_id;";
+             ON $table_name.user_id = $table_users.id
+             WHERE $type_id = $id;";
 
     
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
+}
+
+function getReviewMessages($doc_id){
+    $table_mess = _DOC_REVIEW_MESS_;
+    return getMessages($doc_id, 'doc_id', $table_mess);
 }
 
 function getRevMessTemplate($rev){
@@ -1721,4 +1808,188 @@ function getRevMessTemplate($rev){
         </article>
         "
     );
+}
+
+function getAllBusRegs($limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $USER_PAYLOAD;
+    global $DATA_COUNT;
+
+    $table_regs = _BUS_REG_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_regs.id)
+             FROM $table_regs
+             INNER JOIN $table_activities
+             ON $table_regs.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+        
+        $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
+             FROM $table_regs
+             INNER JOIN $table_activities
+             ON $table_regs.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s'
+             ORDER BY last_updated DESC
+             LIMIT $limit";
+        
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+        
+        $results = $wpdb -> get_results($query, OBJECT);
+        
+        return $results;
+    }
+    
+    $query = "SELECT COUNT($table_regs.id)
+             FROM $table_regs
+             INNER JOIN $table_activities
+             ON $table_regs.act_id = $table_activities.id
+             WHERE user_id = $user_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+    
+    $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
+             FROM $table_regs
+             INNER JOIN $table_activities
+             ON $table_regs.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             ORDER BY last_updated DESC
+             LIMIT $limit;";
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getRegDetails($req_id){
+    global $wpdb;
+
+    $table_regs = _BUS_REG_TABLE_;
+    $table_users = _USER_TABLE_;
+    $table_mess = _BUS_MESS_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    
+    $query = "SELECT $table_regs.id, mess, $table_activities.date_created, full_name, status, bus_fname, bus_lname, bus_phone, bus_city, bus_state, bus_zipcode, bus_address, bus_type, com_name, com_desc
+             FROM $table_regs
+             INNER JOIN $table_activities
+             ON $table_regs.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             WHERE $table_regs.id = $req_id
+             LIMIT 1;";
+
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results[0];
+}
+
+function getRegDetailsTemp($reg) {
+    $full_name = $reg -> full_name;
+    $date = time_elapsed_string($reg -> date_created);
+    $mess = $reg-> mess;
+    $firtname = $reg -> bus_fname;
+    $lastname = $reg -> bus_lname;
+    $bus_phone = $reg -> bus_phone;
+    $bus_city = $reg -> bus_city;
+    $bus_state = $reg -> bus_state;
+    $bus_zipcode = $reg -> bus_zipcode;
+    $bus_address = $reg -> bus_address;
+    $bus_type = $reg -> bus_type;
+    $com_name = $reg -> com_name;
+    $com_desc = $reg -> com_desc;
+
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> <small>$date</small>
+        <br>
+           $mess
+        </p>
+        </div>
+        </div>
+        </article>
+
+        <div class=\"has-margin-top-2\">
+        <div class=\"columns\">
+           <div class=\"column\">
+              <strong>FirstName: </strong> $firtname
+           </div>
+           <div class=\"column\">
+               <strong>LastName</strong> $lastname 
+           </div>
+        </div>
+
+        <div class=\"columns\">
+           <div class=\"column\">
+              <strong>Phone Number: </strong> $bus_phone
+           </div>
+           <div class=\"column\">
+               <strong>Business City: </strong> $bus_city
+           </div>
+        </div>
+
+        <div class=\"columns\">
+           <div class=\"column\">
+              <strong>Business State: </strong> $bus_state
+           </div>
+           <div class=\"column\">
+               <strong>Business ZIPCode: </strong> $bus_zipcode
+           </div>
+        </div>
+
+        <div class=\"columns\">
+           <div class=\"column\">
+              <strong>Business Address: </strong> $bus_address
+           </div>
+           <div class=\"column\">
+               <strong>Business Type: </strong> $bus_type
+           </div>
+        </div>
+
+         <div class=\"columns\">
+           <div class=\"column\">
+              <strong>Company Name: </strong> $com_name
+           </div>
+           <div class=\"column\">
+               <strong>Company Description: </strong> $com_desc
+           </div>
+        </div>
+        </div>
+        <hr />
+        "
+    );
+}
+
+function getRegMessages($reg_id){
+    $table_mess = _BUS_MESS_TABLE_;
+    return getMessages($reg_id, 'reg_id', $table_mess);
 }
