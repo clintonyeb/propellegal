@@ -10810,14 +10810,16 @@ tr.clickable:hover {
   background-color: #fff;
 }
 
-/* line 743, assets/sass/_custom.sass */
-#register-business .box {
+/* line 744, assets/sass/_custom.sass */
+#register-business .box,
+#document-form .box {
   position: relative;
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 748, assets/sass/_custom.sass */
-#register-business .step {
+/* line 749, assets/sass/_custom.sass */
+#register-business .step,
+#document-form .step {
   background-color: #fdd835;
   display: inline-block;
   height: 35px;
@@ -10828,35 +10830,39 @@ tr.clickable:hover {
   font-weight: bolder;
   margin-bottom: 1em;
 }
-/* line 759, assets/sass/_custom.sass */
-#register-business form {
+/* line 760, assets/sass/_custom.sass */
+#register-business form,
+#document-form form {
   margin: 1em auto;
 }
-/* line 761, assets/sass/_custom.sass */
-#register-business .butts {
+/* line 762, assets/sass/_custom.sass */
+#register-business .butts,
+#document-form .butts {
   display: inline-block;
 }
-/* line 765, assets/sass/_custom.sass */
-#register-business .upload .box-cont {
+/* line 766, assets/sass/_custom.sass */
+#register-business .upload .box-cont,
+#document-form .upload .box-cont {
   transition: all 200ms ease-in-out;
 }
-/* line 768, assets/sass/_custom.sass */
-#register-business .progress {
+/* line 769, assets/sass/_custom.sass */
+#register-business .progress,
+#document-form .progress {
   height: 0.5em;
   transition: background-color 1s ease-in-out;
 }
 
-/* line 772, assets/sass/_custom.sass */
+/* line 773, assets/sass/_custom.sass */
 .has-padding-top {
   padding-top: 1rem;
 }
 
-/* line 775, assets/sass/_custom.sass */
+/* line 776, assets/sass/_custom.sass */
 .has-margin-top {
   margin-top: 1rem;
 }
 
-/* line 778, assets/sass/_custom.sass */
+/* line 779, assets/sass/_custom.sass */
 .has-margin-top-2 {
   margin-top: 2rem;
 }

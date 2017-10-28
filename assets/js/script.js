@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if ($submitBtn){
         var docForm = document.forms['create-document'];
         var selectForm = document.forms['select-document'];
-        var form1 = document.forms['doc-form-1'];
+        var form = document.getElementById('document-form');
         var docDown = document.forms['doc-down'];
 
         // categories section
@@ -386,12 +386,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('da', data);
                     loading = false;
                     showLoadingButton($submitBtn, false);
-                }, function(errorThrown){
-                    showSnackBar("Error fetching documents");
-                    showLoadingButton($submitBtn, false);
-                    loading = false;
-                    console.log('err', errorThrown);
-                });
+                }, function(errorThrown){nnnn
+                                         showSnackBar("Error fetching documents");
+                                         showLoadingButton($submitBtn, false);
+                                         loading = false;
+                                         console.log('err', errorThrown);
+                                        });
             });
 
             docForm.addEventListener('reset', function($ev){
@@ -486,50 +486,96 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // form 1 section
-        if(form1){
-            form1.addEventListener('submit', function($ev){
-                $ev.preventDefault();
+        // form section
+        if(form){
+            var firstname = document.getElementById('firstname'),
+                lastname =  document.getElementById('lastname'),
+                address =  document.getElementById('address'),
+                city =  document.getElementById('city'),
+                country =  document.getElementById('country'),
+                doc_state =  document.getElementById('state');
+            var state = JSON.parse(localStorage.getItem('state'));
+            var category = JSON.parse(localStorage.getItem('category'));
+            var docName = JSON.parse(localStorage.getItem('doc_name'));
+            var buttons = document.querySelectorAll('[data-doc]'),
+                step = 0;
 
-                var user_name = form1['user_name'];
-                var address = form1['address'];
-                var city = form1['city'];
-                var country = form1['country'];
-                var state = JSON.parse(localStorage.getItem('state'));
-                var category = JSON.parse(localStorage.getItem('category'));
-                var docName = JSON.parse(localStorage.getItem('doc_name'));
+            for(var i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener('click', function ($ev) {
+                    var b = $ev.currentTarget;
+                    var s = b.getAttribute('data-doc');
+                    
+                    s = Number(s);
+                    removeError('is-danger');
+                    
+                    if (!isNaN(s)){
+                        switch (s) {
+                        case 0:
+                            hideBoxes();
+                            step = 0;
+                            showBox(step);
+                            updateProgress(10);
+                            break;
+                        case 1:
+                            if (loading) return;
+                            
+                            loading = true;
+                            showLoadingButton(b, true);
 
-                // submit data
-                postData({
-                    action: 'generate_document',
-                    user_name: user_name.value,
-                    address: address.value,
-                    city: city.value,
-                    country: country.value,
-                    state: state,
-                    category: category,
-                    docName: docName
-                }, function(data){
-                    if(data.status){
-                        localStorage.setItem('output', JSON.stringify(data.data));
-                        // done here so navigate to download page
-                        navigateLink('/preview-document');
+                            var data = {
+                                action: 'generate_document',
+                                firstname: firstname.value,
+                                lastname: lastname.value,
+                                address: address.value,
+                                city: city.value,
+                                country: country.value,
+                                doc_state: doc_state.value,
+                                state: state,
+                                category: category,
+                                docName: docName
+                            };
+                            
+                            postData(data,
+                                     function(data){
+                                         if(data.status){
+                                             localStorage.setItem('output', JSON.stringify(data.data));
+                                             hideBoxes();
+                                             step = 1;
+                                             showBox(step);
+                                             updateProgress(90);
+                                             setUpDownload();
+                                             
+                                         }
+                                         else {
+                                             showSnackBar("Error submitting data");
+                                         }
+                                         showLoadingButton(b, false);
+                                         loading = false;
+                                         console.log('data', data);
+                                     }, function(err){
+                                         showLoadingButton(b, false);
+                                         loading = false;
+                                         showSnackBar("Error submitting data");
+                                     });
+
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        }
                     }
-                    else {
-                        // show error
-                    }
-                }, function(err){
-                    // show error
                 });
-            });
+            }
+            
+            
         }
 
-        // Document Preview Section
-        if (docDown){
+        function setUpDownload() {
             var docPrev = document.querySelector('#doc_prev .image');
             var file = JSON.parse(localStorage.getItem('output'));
 
-            var path =  $wp_data.home + '/assets/generated_documents/' + file;
+            var path =  '/wp-content/themes/clinton-child/assets/generated_documents/' + file;
             docPrev.setAttribute('src', path + '.jpg');
 
             var downBtn = document.querySelectorAll('.down-doc');
@@ -609,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         localStorage.setItem('option', JSON.stringify(option));
         localStorage.setItem('doc_name', JSON.stringify(docName));
-        navigateLink('/document-form1');
+        location.href = '/user/document_forms';
     }
 
     // End of create document functions

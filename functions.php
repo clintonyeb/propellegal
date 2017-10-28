@@ -730,17 +730,22 @@ $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
 
 function generate_document(){
-    $category = $_POST['category'];
-    $user_name = $_POST['user_name'];
+    global $phpWord;
+    global $wpdb;
+    global $USER_PAYLOAD;
+
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
     $address = $_POST['address'];
     $city = $_POST['city'];
     $country = $_POST['country'];
+    $doc_state = $_POST['doc_state'];
     $state = $_POST['state'];
+    $category = $_POST['category'];
     $doc_name = $_POST['docName'];
 
     $m = new Mustache_Engine;
-    global $phpWord;
-
+    $user = $USER_PAYLOAD['data'];
 
     $path = get_stylesheet_directory() . "/assets/docs/$state/$category";
     $template = $path . "/$doc_name" . '.tpl';
@@ -748,7 +753,7 @@ function generate_document(){
     $tmp_content =  file_get_contents($template);
 
     $result = $m -> render($tmp_content, array(
-        'user_name' => $user_name,
+        'user_name' => $firstname . ' ' . $lastname,
         'category' => $category,
         'address' => $address,
         'city' => $city,
@@ -756,21 +761,21 @@ function generate_document(){
         'state' => $state
     ));
 
-    $section = $phpWord->addSection();
+    $section = $phpWord -> addSection();
 
-    $section->addText($result);
+    $section -> addText($result);
 
     $out_path = get_stylesheet_directory() . "/assets/generated_documents/";
     $out_file = uniqid('output-', true);
     
-    $gen_file_docx = $out_path . $out_file . '.docx';
-    $gen_file_odt = $out_path . $out_file . '.odt';
+    /* $gen_file_docx = $out_path . $out_file . '.docx';
+     * $gen_file_odt = $out_path . $out_file . '.odt';*/
     $gen_file_html = $out_path . $out_file . '.html';
     $gen_file_pdf = $out_path . $out_file . '.pdf';
     $gen_file_jpg = $out_path . $out_file . '.jpg';
 
-    $docWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-    $docWriter->save($gen_file_docx);
+    /* $docWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+     * $docWriter->save($gen_file_docx);*/
 
     /* $odtWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'ODText');
      * $odtWriter-> save($gen_file_odt);*/
@@ -782,7 +787,9 @@ function generate_document(){
 
     $pdf = new Spatie\PdfToImage\Pdf($gen_file_pdf);
     $pdf->saveImage($gen_file_jpg);
-    
+
+    addActivity(_CREATE_DOCUMENT_, $user -> user_id);
+
     wp_send_json(array(
         'message' => 'Success',
         'status' => true,
@@ -875,52 +882,6 @@ function upload_doc(){
     die();
 }
 
-/* function get_doc(){
- * global $wpdb;
- * global $DOC_TABLE;
- *
- * // TODO: authenticate user
- *
- * $table_doc = $wpdb->prefix. $DOC_TABLE;
- * $category = $_GET['query'];
- *
- * $results = $wpdb -> get_results("SELECT id, category, doc_name, zip_code, file_path FROM $table_doc WHERE category = '$category' LIMIT 20;");
- *
- * wp_send_json(array(
- *     'message' => 'Success',
- *         'status' => true,
- *         'data'=> $results));
- *
- * die();
- * }*/
-
-/* function get_file(){
- * global $wpdb;
- * global $DOC_TABLE;
- *
- * // TODO: Authenticate user
- *
- * $table_doc = $wpdb->prefix. $DOC_TABLE;
- * $id = $_GET['id'];
- *
- * $results = $wpdb -> get_results("SELECT id, category, doc_name, zip_code, doc_name FROM $table_doc WHERE id = '$id' LIMIT 1;");
- *
- * foreach ($results as $data) {
- * $path = get_bloginfo( 'stylesheet_directory' ) . "/assets/docs/" . $data -> zip_code . "/" . $data -> category . "/";
- * $file = $data ->doc_name;
- * $theData = file_get_contents($path.$file);
- *      wp_send_json(array(
- *     'message' => 'Success',
- *         'status' => true,
- *         'data'=> $theData));
- *       exit;
- * }
- *
- * wp_send_json(array(
- *     'message' => 'Failed',
- *         'status' => false));
- *  die();
- * }*/
 
 function _saveFile($files, $i, $crush = 0){
     $target_dir =  "assets/uploads/";
