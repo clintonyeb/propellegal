@@ -22,16 +22,9 @@ $requests = getAllRequests(20);
                 &nbsp;&nbsp;My Dashboard
             </a>
         </li>
-        <li class="menu-item">
-            <a href="/user/notifications" data-href="notifications">
-                <span class="icon is-small has-text-darker-yellow">
-                    <i class="fa fa-bell"></i>
-                </span>
-                &nbsp;&nbsp;My Notifications
-            </a>
-        </li>
         
-    </ul>
+        
+    </uln>
 
     <p class="menu-label has-text-darker-blue">
         ACTIVITIES
@@ -108,7 +101,7 @@ $requests = getAllRequests(20);
     <ul class="menu-list">
 
         <li class="menu-item">
-            <a>
+            <a href="/user/user_profile" data-href="user_profile">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-user"></i>
                 </span>
@@ -130,6 +123,14 @@ $requests = getAllRequests(20);
                     <i class="fa fa-paper-plane"></i>
                 </span>
                 &nbsp;&nbsp;Activity History
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/user/notifications" data-href="notifications">
+                <span class="icon is-small has-text-darker-yellow">
+                    <i class="fa fa-bell"></i>
+                </span>
+                &nbsp;&nbsp;My Notifications
             </a>
         </li>
         <li class="menu-item">

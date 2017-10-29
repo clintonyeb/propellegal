@@ -72,12 +72,26 @@ if ($limit * $PAGE < $DATA_COUNT){
 
                 <div class="level">
                     <div class="level-left">
-                        <div class="select" style="margin-bottom: .5em">
-                            <select>
-                                <option>Most Recent</option>
-                                <option>Least Recent</option>
-                            </select>
-                        </div>
+                        <p>
+                            <span class="icon has-text-warning">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Received
+                            </span>
+                            <span class="icon has-text-info">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Processing
+                            </span>
+                            <span class="icon has-text-success">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Completed
+                            </span>
+                        </p>
                     </div>
                     <div class="level-right">
                         <p class="has-text-light-gray">

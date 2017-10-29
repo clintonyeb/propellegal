@@ -788,13 +788,34 @@ function generate_document(){
     $pdf = new Spatie\PdfToImage\Pdf($gen_file_pdf);
     $pdf->saveImage($gen_file_jpg);
 
-    addActivity(_CREATE_DOCUMENT_, $user -> user_id);
+    $table_doc = _DOC_TABLE_;
+    
+    $act_id = addActivity(_CREATE_DOCUMENT_, $user -> user_id);
 
-    wp_send_json(array(
-        'message' => 'Success',
-        'status' => true,
-        'data' => $out_file
-    ));
+    $res = $wpdb -> insert($table_doc,
+                           array(
+                               "act_id" => $act_id,
+                               "category" => $category,
+                               "state" => $state,
+                               "request_type" => "self",
+                               "file_name" => $out_file
+                           ), array(
+                               "%d", "%s", "%s", "%s", "%s"
+                           )
+    );
+
+    if ($res){
+        wp_send_json(array(
+            'message' => 'Success',
+            'status' => true,
+            'data' => $out_file
+        ));
+    } else {
+        wp_send_json(array(
+            'message' => 'Error creating document',
+            'status' => false,
+        ));
+    }
 
     die();
 }
@@ -1953,4 +1974,195 @@ function getRegDetailsTemp($reg) {
 function getRegMessages($reg_id){
     $table_mess = _BUS_MESS_TABLE_;
     return getMessages($reg_id, 'reg_id', $table_mess);
+}
+
+
+function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $USER_PAYLOAD;
+    global $DATA_COUNT;
+
+    $table_doc = _DOC_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_doc.id)
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+        
+        $query = "SELECT $table_doc.id, date_created, category, state
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             AND mess LIKE '%s'
+             ORDER BY date_created DESC
+             LIMIT $limit";
+        
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%" 
+            )
+        );
+        
+        $results = $wpdb -> get_results($query, OBJECT);
+        
+        return $results;
+    }
+    
+    $query = "SELECT COUNT($table_doc.id)
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             WHERE user_id = $user_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+    
+    $query = "SELECT $table_doc.id, date_created, category, state
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             WHERE user_id = $user_id
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getAllDocTemp($doc){
+    $status = _COMPLETED_;
+    $date = time_elapsed_string($req -> date_created);
+    $doc_id = $doc -> id;
+    $status_color = get_color($status);
+    $category = $doc -> category;
+    $state = $doc -> state;
+    $mess = "Created a document under $category in $state state";
+
+    return (
+        "
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+         
+        <td  style=\"width: 85%\">
+           <p>$mess</p>
+       </td>
+       <td  style=\"width: 10%; padding-top: 1.5rem\">
+         <small class=\"has-text-centered\">$date</small>
+       </td>  
+        "
+    );
+}
+
+
+function getDetailCreatDoc($doc_id){
+    global $wpdb;
+
+    $table_doc = _DOC_TABLE_;
+    $table_users = _USER_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    
+    $query = "SELECT $table_doc.id, $table_activities.date_created, full_name, state, request_type, category, file_name
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             WHERE $table_doc.id = $doc_id
+             LIMIT 1;";
+
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results[0];
+}
+
+function getCreDocDetailTemp($doc){
+    $state = $doc -> state;
+    $request_type = $doc -> request_type;
+    $date = time_elapsed_string($doc -> date_created);
+    $doc_id = $doc -> id;
+    $category = $doc -> category;
+    $full_name = $doc -> full_name;
+    $file_name = $doc -> file_name;
+    $file_pdf = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . ".pdf";
+    $file_image =  '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
+    $mess = "Created a document under $category in $state state";
+
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> &middot; <small>$date</small>
+        <br>
+           $mess
+        </p>
+        <div class=\"columns\">
+            <div class=\"column\">
+               <strong>Category: </strong> $category
+            </div>
+            <div class=\"column\">
+               <strong>State: </strong> $state
+            </div>
+        </div>
+        <p class=\"hs-text-centered\">
+           <a class=\" button is-primary is-fullwidth\" download=\"propellegal-document\" href=\"$file_pdf\">Download PDF File</a>
+        </p>
+        <p class=\"box\">
+           <img class=\"image is-128-128\" src=\"$file_image\">
+        </p>
+        
+        </div>
+        </div>
+        </article>
+        "
+    );
+}
+
+function getUserDetails(){
+    global $wpdb;
+    global $USER_PAYLOAD;
+
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+    $table_users = _USER_TABLE_;
+    
+    $query = "SELECT id, date_created, full_name, email, role_auth, activated
+             FROM $table_users
+             WHERE $table_users.id = $user_id
+             LIMIT 1;";
+
+    
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results[0];
 }

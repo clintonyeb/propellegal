@@ -778,3 +778,14 @@ tr.clickable
 
 .has-margin-top-2
   margin-top: 2rem 
+
+.table
+  &.is-hoverable
+    tr
+      &:hover
+        cursor: pointer
+
+#activity-history, #notifications
+  .media
+    & + .media
+      border-top: none

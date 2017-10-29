@@ -544,18 +544,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                              showBox(step);
                                              updateProgress(90);
                                              setUpDownload();
-                                             
+                                             return true;
                                          }
-                                         else {
-                                             showSnackBar("Error submitting data");
-                                         }
+                                         showSnackBar("Error submitting data");
                                          showLoadingButton(b, false);
                                          loading = false;
                                          console.log('data', data);
+                                         return false;
                                      }, function(err){
                                          showLoadingButton(b, false);
                                          loading = false;
                                          showSnackBar("Error submitting data");
+                                         return false;
                                      });
 
                             break;

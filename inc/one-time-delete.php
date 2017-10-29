@@ -4,6 +4,10 @@ require_once(SITE_ROOT . "/inc/global.php");
 function deleteTables(){
     global $wpdb;
 
+    
+    $table_doc = _DOC_TABLE_;
+    $wpdb->query("DROP TABLE IF EXISTS $table_doc");
+    
     $table_req_mess = _REQUEST_MESS_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_req_mess" );
     

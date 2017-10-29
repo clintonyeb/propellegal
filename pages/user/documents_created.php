@@ -8,7 +8,7 @@ parse_str($_SERVER['QUERY_STRING']);
 
 $limit = 20;
 $user = $USER_PAYLOAD['data'];
-$requests = getAllDocReviews($limit, $page, $query);
+$requests = getAllCreatDocuments($limit, $page, $query);
 $back = "";
 $forward = "";
 
@@ -72,12 +72,26 @@ if ($limit * $PAGE < $DATA_COUNT){
 
                 <div class="level">
                     <div class="level-left">
-                        <div class="select" style="margin-bottom: .5em">
-                            <select>
-                                <option>Most Recent</option>
-                                <option>Least Recent</option>
-                            </select>
-                        </div>
+                        <p>
+                            <span class="icon has-text-warning">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Received
+                            </span>
+                            <span class="icon has-text-info">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Processing
+                            </span>
+                            <span class="icon has-text-success">
+                                <i class="fa fa-circle"></i>
+                            </span>
+                            <span>
+                                Completed
+                            </span>
+                        </p>
                     </div>
                     <div class="level-right">
                         <p class="has-text-light-gray">
@@ -113,8 +127,8 @@ if ($limit * $PAGE < $DATA_COUNT){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No documents found...</p>");
                         } else {
                             foreach($requests as $req){
-                                echo('<tr data-href=/user/document_details/?req_id=' . $req -> id . ' class=clickable>');
-                                echo (getAllDocReviewstemplate($req));
+                                echo('<tr data-href=/user/created_details/?req_id=' . $req -> id . ' class=clickable>');
+                                echo (getAllDocTemp($req));
                                 echo("</tr>");
                             }
                         }

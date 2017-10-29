@@ -10866,3 +10866,13 @@ tr.clickable:hover {
 .has-margin-top-2 {
   margin-top: 2rem;
 }
+
+/* line 785, assets/sass/_custom.sass */
+.table.is-hoverable tr:hover {
+  cursor: pointer;
+}
+
+/* line 790, assets/sass/_custom.sass */
+#activity-history .media + .media, #notifications .media + .media {
+  border-top: none;
+}

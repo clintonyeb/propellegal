@@ -183,6 +183,21 @@ function createTables(){
 ) $charset_collate;";
 
     dbDelta($query);
+
+    $table_create_doc = _DOC_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_create_doc (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    act_id mediumint(9) NOT NULL,
+    category text NOT NULL,
+    state text NOT NULL,
+    request_type tinytext NOT NULL,
+    file_name text NOT NULL,
+    FOREIGN KEY (act_id) REFERENCES $table_activities(id),
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
 }
 
 createTables();
