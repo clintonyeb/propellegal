@@ -1,7 +1,9 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
-
+$avatar_name = $user -> avatar;
+$avatar = getAvatar();
+$avatar_name = $avatar -> avatar_name;
 parse_str($_SERVER['QUERY_STRING']);
 
 $doc_rev = getDocRevDetails($req_id);
@@ -15,7 +17,7 @@ $messages = getReviewMessages($req_id);
     <h2 class="title is-3">
         Review Details
     </h2>
-    
+
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
@@ -46,7 +48,7 @@ $messages = getReviewMessages($req_id);
         <article class="media">
             <figure class="media-left">
                 <p class="image is-64x64">
-                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" height="55" width="55">
+                    <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="55" width="55">
                 </p>
             </figure>
             <div class="media-content">
@@ -72,7 +74,7 @@ $messages = getReviewMessages($req_id);
                 <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
         </article>
-        
+
     </div>
     </div>
 </section>

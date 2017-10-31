@@ -1,7 +1,8 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
-
+$avatar = getAvatar();
+$avatar_name = $avatar -> avatar_name;
 parse_str($_SERVER['QUERY_STRING']);
 
 $messages = getRequestMessages($req_id);
@@ -13,7 +14,7 @@ $messages = getRequestMessages($req_id);
     <h2 class="title is-3">
         Requests to an Attorney
     </h2>
-    
+
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
@@ -47,18 +48,18 @@ $messages = getRequestMessages($req_id);
             </div>
         </div>
         <hr>
-        
+
         <?php
         foreach($messages as $mess){
             echo getRequestMessagesTemplate($mess);
         }
-        
+
         ?>
 
         <article class="media">
             <figure class="media-left">
                 <p class="image is-64x64">
-                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" height="55" width="55">
+                    <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="55" width="55">
                 </p>
             </figure>
             <div class="media-content">
@@ -84,7 +85,7 @@ $messages = getRequestMessages($req_id);
                 <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
         </article>
-        
+
     </div>
     </div>
 </section>

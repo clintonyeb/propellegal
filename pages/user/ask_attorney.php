@@ -1,7 +1,8 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
-
+$avatar = getAvatar();
+$avatar_name = $avatar -> avatar_name;
 ?>
 
 <span data-href="attorney_requests"></span>
@@ -84,7 +85,7 @@ $user = $USER_PAYLOAD['data'];
                 <article class="media">
                     <figure class="media-left">
                         <p class="image is-64x64">
-                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" height="55" width="55">
+                            <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="55" width="55">
                         </p>
                     </figure>
                     <div class="media-content">
