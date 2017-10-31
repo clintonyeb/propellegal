@@ -25,16 +25,16 @@ if ($limit * $PAGE < $DATA_COUNT){
 }
 ?>
 
-<section class="section" id="user_activities">
+<section class="section">
     <h2 class="title is-3">
         Upload a Document
     </h2>
 
     <div class="columns">
         <div class="column is-4">
-            
-            
-            <div class="box has-yellow-top">
+
+
+            <div class="box has-top-yellow">
                 <article class="media">
                     <figure class="media-left">
                         <p class="media-icon">
@@ -46,7 +46,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                You upload your documents                                    
+                                You upload your documents
                             </p>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                We notify you when a response is ready                
+                                We notify you when a response is ready
                             </p>
                         </div>
                     </div>
@@ -95,7 +95,7 @@ if ($limit * $PAGE < $DATA_COUNT){
             </p>
         </div>
         <div class="column" id="upload-doc">
-            <div class="box has-blue-top">
+            <div class="box has-top-blue">
                 <div class="columns">
                     <div class="column">
                         <p class="step">
@@ -105,7 +105,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                             Upload Documents
                         </h2>
                     </div>
-                    
+
                     <div class="column">
                         <p class="step">
                             2.
@@ -123,7 +123,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </h2>
                     </div>
                 </div>
-                
+
                 <progress class="progress is-warning" value="2" max="100">2%</progress>
 
                 <div class="upload-box-cont is-hidden">
@@ -161,14 +161,14 @@ if ($limit * $PAGE < $DATA_COUNT){
                             </p>
                         </div>
                     </div>
-                    
+
                     <div class="files">
                         <h2 class="title is-5">
                             Number of documents added: <span id="doc-count" class="has-text-darker-yellow">0</span>
                         </h2>
 
                         <div id="docs" class="tags"></div>
-                        
+
                     </div>
                 </div>
 
@@ -191,7 +191,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </form>
 
                         <br>
-                        
+
                         <p class="butts">
                             <a class="button is-warning is-large" data-step="0">
                                 <span class="icon">
@@ -200,9 +200,9 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 <span> Go back</span>
                             </a>
                         </p>
-                        
+
                         <p class="butts" style="float:right">
-                            <a class="button is-primary is-large" data-step="2">                                
+                            <a class="button is-primary is-large" data-step="2">
                                 <span>Submit Documents</span>
                             </a>
                         </p>

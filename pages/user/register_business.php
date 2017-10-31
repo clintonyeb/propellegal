@@ -25,16 +25,16 @@ if ($limit * $PAGE < $DATA_COUNT){
 }
 ?>
 
-<section class="section" id="user_activities">
+<section class="section">
     <h2 class="title is-3">
         Upload a Document
     </h2>
 
     <div class="columns">
         <div class="column is-4 is-hidden-touch">
-            
-            
-            <div class="box has-yellow-top">
+
+
+            <div class="box has-top-yellow">
                 <article class="media">
                     <figure class="media-left">
                         <p class="media-icon">
@@ -46,7 +46,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                You upload your documents                                    
+                                You upload your documents
                             </p>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                We notify you when a response is ready                
+                                We notify you when a response is ready
                             </p>
                         </div>
                     </div>
@@ -95,7 +95,7 @@ if ($limit * $PAGE < $DATA_COUNT){
             </p>
         </div>
         <div class="column" id="register-business">
-            <div class="box has-blue-top">
+            <div class="box has-top-blue">
                 <div class="columns">
                     <div class="column">
                         <p class="step">
@@ -105,7 +105,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                             Personal Details
                         </h2>
                     </div>
-                    
+
                     <div class="column">
                         <p class="step">
                             2.
@@ -123,7 +123,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </h2>
                     </div>
                 </div>
-                
+
                 <progress class="progress is-warning" value="2" max="100">2%</progress>
 
                 <div class="upload-box-cont">
@@ -169,7 +169,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="field is-horizontal has-padding-top">
                             <div class="field-label">
                                 <!-- Left empty for spacing -->
@@ -285,7 +285,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="field is-horizontal has-padding-top">
                             <div class="field-label">
                                 <!-- Left empty for spacing -->
@@ -302,7 +302,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </div>
                     </div>
                 </div>
-                
+
                 <article class="message is-hidden is-small has-margin-top" style="max-width:500px; margin: 1rem auto">
                     <div class="message-body">
                     </div>

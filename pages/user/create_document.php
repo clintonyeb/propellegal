@@ -13,7 +13,7 @@ $user = $USER_PAYLOAD['data'];
 
     <div class="columns">
         <div class="column is-4">
-            <div class="box has-yellow-top">
+            <div class="box has-top-yellow">
                 <article class="media">
                     <figure class="media-left">
                         <p class="media-icon">
@@ -75,7 +75,7 @@ $user = $USER_PAYLOAD['data'];
         </div>
         
         <div class="column">
-            <div class="box has-blue-top">
+            <div class="box has-top-blue">
                 <h3 class="title is-5">Create a Legal Document</h3>
                 <form name="create-document">
 

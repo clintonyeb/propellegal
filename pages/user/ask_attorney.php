@@ -6,14 +6,14 @@ $user = $USER_PAYLOAD['data'];
 
 <span data-href="attorney_requests"></span>
 
-<section class="section" id="user_activities">
+<section class="section">
     <h2 class="title is-3">
         Ask an Attorney
     </h2>
 
     <div class="columns">
-        <div class="column is-4">
-            <div class="box has-yellow-top">
+        <div class="column">
+            <div class="box has-top-yellow">
                 <article class="media">
                     <figure class="media-left">
                         <p class="media-icon">
@@ -25,7 +25,7 @@ $user = $USER_PAYLOAD['data'];
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                Send our attorneys a message                                    
+                                Send our attorneys a message
                             </p>
                         </div>
                     </div>
@@ -59,7 +59,7 @@ $user = $USER_PAYLOAD['data'];
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                We notify you when a response is ready                
+                                We notify you when a response is ready
                             </p>
                         </div>
                     </div>
@@ -73,8 +73,8 @@ $user = $USER_PAYLOAD['data'];
 	        <a class="button is-primary is-medium" href="/user/attorney_requests">See all requests</a>
             </p>
         </div>
-        <div class="column">
-            <div class="box has-blue-top">
+        <div class="column is-8">
+            <div class="box has-top-blue">
                 <div class="level">
                     <div class="level-left">
                         <h3 class="title is-5">Create a new Request</h3>
@@ -111,6 +111,5 @@ $user = $USER_PAYLOAD['data'];
                 </article>
             </div>
         </div>
-    </div>
     </div>
 </section>

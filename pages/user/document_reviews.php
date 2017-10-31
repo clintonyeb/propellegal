@@ -34,7 +34,7 @@ if ($limit * $PAGE < $DATA_COUNT){
         <div class="column is-4">
             
             
-            <div class="box has-yellow-top">
+            <div class="box has-top-yellow">
                 <p class="label">Search Documents</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
@@ -56,7 +56,7 @@ if ($limit * $PAGE < $DATA_COUNT){
             </p>
         </div>
         <div class="column">
-            <div class="box has-blue-top">
+            <div class="box has-top-blue">
                 <div class="level">
                     <div class="level-left">
                         <h3 class="title is-5">Documents</h3>

@@ -10,10 +10,10 @@ $user_full = getUserDetails();
     </h2>
 
     <div class="columns">
-        <div class="column is-4">
+        <div class="column is-narrow">
             
             
-            <div class="box has-yellow-top">
+            <div class="box has-top-yellow">
                 <img alt="User Image" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" width="height" class="is-128x128" />
             </div>
 
@@ -22,7 +22,7 @@ $user_full = getUserDetails();
             </p>
         </div>
         <div class="column">
-            <div class="box has-blue-top">
+            <div class="box has-top-blue">
                 <h3 class="title is-5">User Information</h3>
 
                 <p class="has-margin-top">

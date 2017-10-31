@@ -4,6 +4,10 @@ $doc_created_count = getActivityCount(_CREATE_DOCUMENT_);
 $doc_review_count = getActivityCount(_REVIEW_DOCUMENT_);
 $attorney_count = getActivityCount(_ASK_ATTORNEY_);
 $register_count = getActivityCount(_REGISTER_BUSINESS_);
+
+$notifications = array();
+
+$user_full = getUserDetails();
 ?>
 <section class="section" id="user-dashboard">
     <div class="container-fluid">
@@ -12,129 +16,28 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
             <div class="column">
                 <div class="box has-top-blue">
                     <h3 class="title is-5">Recent Notifications</h3>
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
+                    <?php
+                    foreach($notifications as $not){
+                        echo getActivitytemplate($not);
+                    }
+                    $c = count($notifications);
 
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article><article class="media">
-                        <figure class="media-left">
-                            <p class="media-icon">
-                                <span class="icon">
-                                    <i class="fa fa-bell-o"></i>
-                                </span>
-                            </p>
-                        </figure>
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    A <strong>response</strong> for your document is ready &middot; <small>31m</small>
-                                </p>
-                            </div>
-                        </div>
-                    </article>
+                    while($c < 7){
+                        echo getActivitytemplate(NULL);
+                        $c++;
+                    }
+                    ?>
                 </div>
             </div>
             <div class="column">
                 <div class="box has-top-yellow">
                     <h3 class="title is-5">Activities Summary</h3>
-                    <?php 
+                    <?php
                     foreach($activities as $act){
                         echo getActivitytemplate($act);
                     }
                     $c = count($activities);
-                    
+
                     while($c < 7){
                         echo getActivitytemplate(NULL);
                         $c++;
@@ -204,13 +107,13 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                 <div class="box has-top-gray">
                     <h3 class="title is-5">Profile Summary</h3>
                     <p>
-                        <strong>Name: </strong> Username Here
+                        <strong>Name: </strong> <?php echo $user_full -> full_name ?>
                     </p>
                     <p>
-                        <strong>Email Address: </strong> Email address Here
+                        <strong>Email Address: </strong> <?php echo $user_full -> email ?>
                     </p>
                     <p>
-                        <strong>Date joined: </strong> Date Here
+                        <strong>Date joined: </strong> <?php echo $user_full -> date_created ?>
                     </p>
                 </div>
             </div>
@@ -218,13 +121,13 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
                 <div class="box has-top-light">
                     <h3 class="title is-5">Subscription Summary</h3>
                     <p>
-                        <strong>Status: </strong> Active
+                        <strong>Status: </strong> Not Active
                     </p>
                     <p>
-                        <strong>Date of Renewal: </strong> Date Here
+                        <strong>Date of Renewal: </strong> Never
                     </p>
                     <p>
-                        <strong>Date of Expiry: </strong> Date Here
+                        <strong>Date of Expiry: </strong> Never
                     </p>
                 </div>
             </div>
