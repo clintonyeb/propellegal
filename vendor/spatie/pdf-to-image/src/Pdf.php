@@ -26,6 +26,8 @@ class Pdf
 
     protected $layerMethod = Imagick::LAYERMETHOD_FLATTEN;
 
+    protected $colorspace;
+
     /**
      * @param string $pdfFile The path or url to the pdffile.
      *
@@ -206,7 +208,49 @@ class Pdf
 
         $this->imagick->setResolution($this->resolution, $this->resolution);
 
+        if ($this->colorspace !== null) {
+            $this->imagick->setColorspace($this->colorspace);
+        }
+
+        if (filter_var($this->pdfFile, FILTER_VALIDATE_URL)) {
+            return $this->getRemoteImageData($pathToImage);
+        }
+
         $this->imagick->readImage(sprintf('%s[%s]', $this->pdfFile, $this->page - 1));
+
+        if (is_int($this->layerMethod)) {
+            $this->imagick = $this->imagick->mergeImageLayers($this->layerMethod);
+        }
+
+        $this->imagick->setFormat($this->determineOutputFormat($pathToImage));
+
+        return $this->imagick;
+    }
+
+    /**
+     * @param int $colorspace
+     *
+     * @return $this
+     */
+    public function setColorspace(int $colorspace)
+    {
+        $this->colorspace = $colorspace;
+
+        return $this;
+    }
+
+    /**
+     * Return remote raw image data.
+     *
+     * @param string $pathToImage
+     *
+     * @return \Imagick
+     */
+    protected function getRemoteImageData($pathToImage)
+    {
+        $this->imagick->readImage($this->pdfFile);
+
+        $this->imagick->setIteratorIndex($this->page - 1);
 
         if (is_int($this->layerMethod)) {
             $this->imagick = $this->imagick->mergeImageLayers($this->layerMethod);

@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
+    'Eventviva\\ImageResize' => $vendorDir . '/eventviva/php-image-resize/lib/ImageResize.php',
+    'Eventviva\\ImageResizeException' => $vendorDir . '/eventviva/php-image-resize/lib/ImageResize.php',
     'HTML5_Data' => $vendorDir . '/dompdf/dompdf/lib/html5lib/Data.php',
     'HTML5_InputStream' => $vendorDir . '/dompdf/dompdf/lib/html5lib/InputStream.php',
     'HTML5_Parser' => $vendorDir . '/dompdf/dompdf/lib/html5lib/Parser.php',

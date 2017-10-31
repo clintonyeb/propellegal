@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "65c4ae6ccc0328707e2cdd76190256b7",
+    "content-hash": "3aa7227e43a4d77717edea5bf4a22118",
     "packages": [
         {
             "name": "dompdf/dompdf",
@@ -67,6 +67,53 @@
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "time": "2017-09-14T01:36:24+00:00"
+        },
+        {
+            "name": "eventviva/php-image-resize",
+            "version": "1.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eventviva/php-image-resize.git",
+                "reference": "10c3ca9f58298713599600f358e35fc29599a9d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eventviva/php-image-resize/zipball/10c3ca9f58298713599600f358e35fc29599a9d4",
+                "reference": "10c3ca9f58298713599600f358e35fc29599a9d4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-exif": "Auto-rotate jpeg files"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aditya Patadia",
+                    "homepage": "http://aditya.patadia.org/"
+                }
+            ],
+            "description": "PHP class to re-size and scale images",
+            "homepage": "https://github.com/eventviva/php-image-resize",
+            "keywords": [
+                "image",
+                "php",
+                "resize",
+                "scale"
+            ],
+            "time": "2017-09-09T04:37:46+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -475,16 +522,16 @@
         },
         {
             "name": "spatie/pdf-to-image",
-            "version": "1.4.5",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/pdf-to-image.git",
-                "reference": "6a0938462f5a39cd9c9d582a41affc14ffe07940"
+                "reference": "05c22ed80422b34cdb5e6b0926ebfbbf554009f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/pdf-to-image/zipball/6a0938462f5a39cd9c9d582a41affc14ffe07940",
-                "reference": "6a0938462f5a39cd9c9d582a41affc14ffe07940",
+                "url": "https://api.github.com/repos/spatie/pdf-to-image/zipball/05c22ed80422b34cdb5e6b0926ebfbbf554009f5",
+                "reference": "05c22ed80422b34cdb5e6b0926ebfbbf554009f5",
                 "shasum": ""
             },
             "require": {
@@ -521,7 +568,7 @@
                 "pdf-to-image",
                 "spatie"
             ],
-            "time": "2017-07-18T15:41:52+00:00"
+            "time": "2017-10-26T21:39:29+00:00"
         },
         {
             "name": "zendframework/zend-escaper",

@@ -33,6 +33,7 @@ function createTables(){
   password nvarchar(60) NOT NULL,
   role_auth tinyint NOT NULL,
   activated int NOT NULL DEFAULT 0,
+  avatar_name tinytext,
   PRIMARY KEY (id),
   CONSTRAINT UC_Email UNIQUE (email),
   FOREIGN KEY (role_auth) REFERENCES $table_user_roles(authority)

@@ -1,13 +1,17 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
+$avatar = getAvatar();
+$avatar_name = $avatar -> avatar_name;
 $requests = getAllRequests(20);
 ?>
 
 <aside class="menu is-primary is-hidden-touch">
     <p class="has-text-centered">
-        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" alt="logo brand" class="user-avatar"><br>
+        <a href="/user/user_profile">
+        <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" alt="User Avatar" class="user-avatar"><br>
         <b><?php echo ($user -> full_name) ?></b>
+        </a>
     </p>
     <hr class="is-marginless" />
     <p class="menu-label has-text-darker-blue">
@@ -22,9 +26,9 @@ $requests = getAllRequests(20);
                 &nbsp;&nbsp;My Dashboard
             </a>
         </li>
-        
-        
-    </uln>
+
+
+    </ul>
 
     <p class="menu-label has-text-darker-blue">
         ACTIVITIES
@@ -46,7 +50,7 @@ $requests = getAllRequests(20);
             </ul>
         </li>
 
-        
+
         <li class="menu-item">
             <a href="/user/attorney_requests" data-href="attorney_requests">
                 <span class="icon is-small has-text-darker-yellow">
@@ -90,7 +94,7 @@ $requests = getAllRequests(20);
                     <a href="/user/register_business" data-href="register_business">Register a Business</a>
                 </li>
             </ul>
-            
+
         </li>
     </ul>
 
@@ -143,5 +147,5 @@ $requests = getAllRequests(20);
         </li>
     </ul>
 
-    
+
 </aside>

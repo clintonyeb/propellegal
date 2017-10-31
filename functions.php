@@ -66,6 +66,8 @@ add_action('wp_ajax_rev_mess', 'rev_mess');
 add_action('wp_ajax_nopriv_rev_mess', 'rev_mess');
 add_action('wp_ajax_reg_mess', 'reg_mess');
 add_action('wp_ajax_nopriv_reg_mess', 'reg_mess');
+add_action('wp_ajax_upload_avatar', 'upload_avatar');
+add_action('wp_ajax_nopriv_upload_avatar', 'upload_avatar');
 
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
@@ -193,7 +195,8 @@ function register_form(){
             'email' => $email,
             'full_name' => $full_name,
             'password' => $hashed_password,
-            'role_auth' => 1
+            'role_auth' => 1,
+            'avatar_name' => 'avatar.png'
         ),
         array(
             "%s",
@@ -304,7 +307,7 @@ function activate(){
 
                 if ($mail_res) {
                     error_log('Mail sent');
-                    addActivity(_ACTIVATED_ACCOUNT, $email_exists -> id);
+                    addActivity(_ACTIVATED_ACCOUNT_, $email_exists -> id);
                 } else {
                     error_log('Mail failed');
                 }
@@ -355,7 +358,7 @@ function login_form(){
     $table_user = _USER_TABLE_;
 
     $results = $wpdb -> get_results("
-                      SELECT email, password, id, full_name, role_auth, activated
+                      SELECT email, password, id, full_name, role_auth, activated, avatar_name
                       FROM $table_user
                       WHERE email = '$email'
                       LIMIT 1;
@@ -625,7 +628,8 @@ function encryptData($payload){
                 'user_id' => $payload -> id,
                 'user_name' => $payload -> email,
                 'role' => role_id_to_string($payload -> role_auth),
-                'full_name' => $payload -> full_name
+                'full_name' => $payload -> full_name,
+                'avatar' => $payload -> avatar_name
             ]
         ];
 
@@ -1374,9 +1378,6 @@ function getActivityTemplate($act){
         case _REGISTER_BUSINESS_:
             $content = 'You requested to <strong>register</strong> a business';
             break;
-    case _ACTIVATED_ACCOUNT_:
-            $content = 'You have successfully <strong>activated</strong> your account';
-            break;
         default:
             $date = "";
             $content = "";
@@ -1505,7 +1506,7 @@ function getRequestMessages($req_id){
     $table_users = _USER_TABLE_;
     $table_mess = _REQUEST_MESS_;
 
-    $query = "SELECT content, $table_mess.date_created, full_name
+    $query = "SELECT content, $table_mess.date_created, full_name, avatar_name
              FROM $table_mess
              INNER JOIN $table_users
              ON $table_mess.user_id = $table_users.id
@@ -1520,13 +1521,14 @@ function getRequestMessagesTemplate($mess){
     $full_name = $mess -> full_name;
     $date = time_elapsed_string($mess -> date_created);
     $content = $mess -> content;
-
+    $avatar = $mess -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
-      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+      <img src=\"$avatar_name\">
         </p>
         </figure>
         <div class=\"media-content\">
@@ -1671,7 +1673,7 @@ function getDocRevDetails($req_id){
     $table_files = _DOC_FILES_;
     $table_activities = _ACTIVITY_TABLE_;
 
-    $query = "SELECT $table_docs.id,  mess, $table_activities.date_created, full_name, doc_user_name, status
+    $query = "SELECT $table_docs.id,  mess, $table_activities.date_created, full_name, doc_user_name, status, avatar_name
              FROM $table_docs
              INNER JOIN $table_activities
              ON $table_docs.act_id = $table_activities.id
@@ -1695,6 +1697,8 @@ function getDocRevDetailsTemplate($req, $fn){
     $status_color = get_color($status);
     $full_name = $req -> full_name;
     $doc_user_name = $req -> doc_user_name;
+    $avatar = $req -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
     $files = "<strong>$fn</strong> file";
     if ($fn > 1)
@@ -1706,7 +1710,7 @@ function getDocRevDetailsTemplate($req, $fn){
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
-      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+      <img src=\"$avatar_name\">
         </p>
         </figure>
         <div class=\"media-content\">
@@ -1752,7 +1756,7 @@ function getMessages($id, $type_id, $table_name){
 
     $table_users = _USER_TABLE_;
 
-    $query = "SELECT content, $table_name.date_created, full_name
+    $query = "SELECT content, $table_name.date_created, full_name, avatar_name
              FROM $table_name
              INNER JOIN $table_users
              ON $table_name.user_id = $table_users.id
@@ -1772,13 +1776,15 @@ function getRevMessTemplate($rev){
     $full_name = $rev -> full_name;
     $date = time_elapsed_string($rev -> date_created);
     $content = $rev -> content;
+    $avatar = $rev -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
-      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+      <img src=\"$avatar_name\">
         </p>
         </figure>
         <div class=\"media-content\">
@@ -1875,7 +1881,7 @@ function getRegDetails($req_id){
     $table_mess = _BUS_MESS_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
 
-    $query = "SELECT $table_regs.id, mess, $table_activities.date_created, full_name, status, bus_fname, bus_lname, bus_phone, bus_city, bus_state, bus_zipcode, bus_address, bus_type, com_name, com_desc
+    $query = "SELECT $table_regs.id, mess, $table_activities.date_created, full_name, status, bus_fname, bus_lname, bus_phone, bus_city, bus_state, bus_zipcode, bus_address, bus_type, com_name, com_desc, avatar_name
              FROM $table_regs
              INNER JOIN $table_activities
              ON $table_regs.act_id = $table_activities.id
@@ -1903,13 +1909,15 @@ function getRegDetailsTemp($reg) {
     $bus_type = $reg -> bus_type;
     $com_name = $reg -> com_name;
     $com_desc = $reg -> com_desc;
+    $avatar = $reg -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
-      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+      <img src=\"$avatar_name\">
         </p>
         </figure>
         <div class=\"media-content\">
@@ -2089,7 +2097,7 @@ function getDetailCreatDoc($doc_id){
     $table_users = _USER_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
 
-    $query = "SELECT $table_doc.id, $table_activities.date_created, full_name, state, request_type, category, file_name
+    $query = "SELECT $table_doc.id, $table_activities.date_created, full_name, state, request_type, category, file_name, avatar_name
              FROM $table_doc
              INNER JOIN $table_activities
              ON $table_doc.act_id = $table_activities.id
@@ -2114,13 +2122,15 @@ function getCreDocDetailTemp($doc){
     $file_pdf = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . ".pdf";
     $file_image =  '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
     $mess = "Created a document under $category in $state state";
+    $avatar = $doc -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
-      <img src=\"https://bulma.io/images/placeholders/128x128.png\">
+      <img src=\"$avatar_name\">
         </p>
         </figure>
         <div class=\"media-content\">
@@ -2161,6 +2171,110 @@ function getUserDetails(){
     $table_users = _USER_TABLE_;
 
     $query = "SELECT id, date_created, full_name, email, role_auth, activated
+             FROM $table_users
+             WHERE $table_users.id = $user_id
+             LIMIT 1;";
+
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results[0];
+}
+
+
+function upload_avatar(){
+    global $wpdb;
+    global $USER_PAYLOAD;
+
+    $files = $_FILES['file'];
+
+    $user = $USER_PAYLOAD['data'];
+
+    $table_user = _USER_TABLE_;
+    $avatar = _saveAvatar($files);
+
+    if ($avatar){
+
+        // resize avatar
+        $target_dir =  "/assets/avatar/";
+        $target_file = $target_dir . $avatar;
+
+        $res = resizeImage($target_file, 100, 100);
+
+        // update database
+        $up = $wpdb -> update(
+            $table_user,
+            array(
+                'avatar_name' => $avatar
+            ),
+            array(
+                'id' => ($user -> user_id)
+            ),
+            array(
+                '%s'
+            ),
+            array(
+                '%d'
+            )
+        );
+
+        if ($up !== false) {
+            return wp_send_json(array(
+                'message' => 'Success',
+                'status' => true,
+                'data'=> $avatar
+            ));
+        }
+    }
+
+    wp_send_json(array(
+        'message' => 'Error saving avatar',
+        'status' => false,
+    ));
+
+    die();
+}
+
+function resizeImage($file, $w, $h){
+    $path = SITE_ROOT . $file;
+    error_log(print_r($path, true));
+    $image = new \Eventviva\ImageResize($path);
+    $image -> resizeToBestFit(100, 100);
+    $image -> save($path);
+
+}
+
+function _saveAvatar($files, $crush = 0){
+    $target_dir =  "assets/avatar/";
+    $target_file = $target_dir . basename($files['name'][0]);
+
+    if ($crush != 0){
+        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+        $imageName = pathinfo($target_file, PATHINFO_FILENAME);
+
+        $target_file = $target_dir . $imageName . '-' . $crush . '.' . $imageFileType;
+    }
+
+    if (file_exists(SITE_ROOT . '/' . $target_file)) {
+        return _saveAvatar($files, ++$crush);
+    }
+
+    $res = move_uploaded_file($files["tmp_name"][0], SITE_ROOT . '/' .  $target_file);
+
+    if ($res)
+        return pathinfo($target_file, PATHINFO_BASENAME);
+
+    return false;
+}
+
+function getAvatar(){
+    global $wpdb;
+    global $USER_PAYLOAD;
+
+    $user = $USER_PAYLOAD['data'];
+    $user_id = $user -> user_id;
+    $table_users = _USER_TABLE_;
+
+    $query = "SELECT id, avatar_name
              FROM $table_users
              WHERE $table_users.id = $user_id
              LIMIT 1;";

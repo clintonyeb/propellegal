@@ -178,14 +178,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     displayMessage('Login success', 'is-info');
                     if(!sendUnsentUserPayload())
                         window.location = '/user';
-                    
+
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
                 }
-                
+
                 loading = false;
-                
+
             },
             error: function(errorThrown){
                 showLoadingButton($loginButton, false);
@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             for(var i = 0; i < docEls.length; i++) {
-                
+
                 docEls[i].addEventListener('click', function($event){
                     removeSelected();
                     var c = $event.currentTarget;
@@ -504,10 +504,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 buttons[i].addEventListener('click', function ($ev) {
                     var b = $ev.currentTarget;
                     var s = b.getAttribute('data-doc');
-                    
+
                     s = Number(s);
                     removeError('is-danger');
-                    
+
                     if (!isNaN(s)){
                         switch (s) {
                         case 0:
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             break;
                         case 1:
                             if (loading) return;
-                            
+
                             loading = true;
                             showLoadingButton(b, true);
 
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 category: category,
                                 docName: docName
                             };
-                            
+
                             postData(data,
                                      function(data){
                                          if(data.status){
@@ -567,8 +567,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
-            
-            
+
+
         }
 
         function setUpDownload() {
@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for(var i = 0; i < array.length; i++){
             res.push(createDocumentNode(array[i], state, cat));
         }
-        
+
         res.push('</div>');
         return res.join('\n');
     }
@@ -629,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var customizeBtn = document.querySelectorAll('.customize-btn');
     var askBtn = document.querySelectorAll('.ask-btn');
     var heroHead = document.querySelector('.hero-head');
-    
+
     for(var i = 0; i < customizeBtn.length; i++) {
         customizeBtn[i].addEventListener('click', function($ev){
             submitDocSelected('customize', $ev.currentTarget.getAttribute('data-value'));
@@ -745,17 +745,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-        
+
         var askAttorneyBtn = document.getElementById('ask-attorney-btn');
         var askLoad = false;
-        
+
         if(askAttorneyBtn){
             askAttorneyBtn.addEventListener('click', function ($ev) {
                 if (askLoad) return false;
                 var contentEl = document.querySelector('.box.box-cont textarea');
 
                 removeErrorField(contentEl);
-                
+
                 if(!rules.required(contentEl.value, true)){
                     contentEl.classList.add('is-danger');
                     contentEl.focus();
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (!makeSureUserAuthenticated(data, '/user/request_messages'))
                     return false;
-                
+
                 postData(data, function(data){
                     if(data.status){
                         showSnackBar('Request submitted...');
@@ -816,7 +816,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 showLoadingButton(businessAskBtn, true);
                 businessLoad = true;
-                
+
                 postData({
                     action: 'ask_business',
                     state: state.value,
@@ -838,8 +838,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
-        
-        
+
+
         var mainbottom = $('#hero').offset().top + $('#hero').height();
 
         if(heroHead){
@@ -928,15 +928,15 @@ document.addEventListener('DOMContentLoaded', function () {
         progressBar = document.querySelector('.progress'),
         name, content,
         fileBox = document.getElementById('file-box');
-    
-    if(uploadDoc){    
+
+    if(uploadDoc){
         fileEl.addEventListener('change', function($event){
             var f = fileEl.files;
-            
+
             for(var i = 0; i < f.length; i++){
                 filesToUpload.push(f[i]);
             }
-            
+
             removeError('is-danger');
             updateFileText(filesToUpload.length, file_num);
             updateFiles(filesToUpload);
@@ -947,10 +947,10 @@ document.addEventListener('DOMContentLoaded', function () {
             buttons[i].addEventListener('click', function ($ev) {
                 var b = $ev.currentTarget;
                 var s = b.getAttribute('data-step');
-                
+
                 s = Number(s);
                 removeError('is-danger');
-                
+
                 if (!isNaN(s)){
                     switch (s) {
                     case 0:
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 2:
                         if (loading) return;
-                        
+
                         var detailsForm = document.getElementById('details');
 
                         var n = detailsForm['user_name'];
@@ -979,7 +979,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         removeErrorField(c);
                         removeErrorField(n);
-                        
+
                         if(!rules.required(n.value, true)){
                             showError(n, 'Username', rules.required.reason);
                             return false;
@@ -988,7 +988,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             showError(c, 'Please', 'write us a message');
                             return false;
                         }
-                        
+
                         name = n.value;
                         content = c.value;
                         loading = true;
@@ -997,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         uploadFilesToServer(filesToUpload, {
                             name: name,
                             content: content
-                        }, function (err, res) {
+                        }, 'upload_doc', function (err, res) {
                             if (err){
                                 displayMessage('There was an error uploading your files', 'is-danger');
                             } else {
@@ -1005,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     hideBoxes();
                                     step = 2;
                                     showBox(step);
-                                    updateProgress(98);                                
+                                    updateProgress(98);
                                 } else{
                                     displayMessage('There was an error uploading your files', 'is-danger');
                                 }
@@ -1013,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             showLoadingButton(b, false);
                             loading = false;
                         });
-                        
+
                         break;
                     case 3:
                         location.href = '/';
@@ -1022,9 +1022,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        
+
         showBox(step);
-        
+
     }
 
     function updateProgress(v) {
@@ -1042,17 +1042,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function showBox(i){
         hiddens[i].classList.remove('is-hidden');
     }
-    
+
     this.dropEvent = function($event){
         $event.preventDefault();
         fileBox.classList.remove('dragged');
-        
+
         var f = $event.dataTransfer.files;
 
         for(var i = 0; i < f.length; i++){
             filesToUpload.push(f[i]);
         }
-        
+
         removeError('is-danger');
         updateFileText(filesToUpload.length, file_num);
         updateFiles(filesToUpload);
@@ -1064,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fileBox.classList.add('dragged');
     };
 
-    
+
     this.dragLeave = function($event){
         fileBox.classList.remove('dragged');
     };
@@ -1093,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', function () {
         butt.classList.add('delete', 'is-small');
 
         tag.appendChild(butt);
-        
+
         tags.appendChild(tag);
 
         butt.addEventListener('click', function ($event) {
@@ -1107,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filesToUpload.splice(i, 1);
     }
 
-    function uploadFilesToServer(files, data, cb){
+    function uploadFilesToServer(files, data, path, cb){
         var fd = new FormData();
 
         for(var i = 0; i < files.length; i++) {
@@ -1122,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         fd.append('client_key', $wp_data.client_auth);
-        fd.append('action', 'upload_doc');
+        fd.append('action', path);
 
         jQuery.ajax({
             type:"POST",
@@ -1143,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of File Upload
 
-    
+
     // Register Business
 
     var regBuss  = document.getElementById('register-business');
@@ -1164,15 +1164,15 @@ document.addEventListener('DOMContentLoaded', function () {
             comName =  document.getElementById('com-name'),
             comDesc =  document.getElementById('com-desc'),
             mess = document.getElementById('mess');
-        
+
         for(var i = 0; i < buttons.length; i++) {
             buttons[i].addEventListener('click', function ($ev) {
                 var b = $ev.currentTarget;
                 var s = b.getAttribute('data-step');
-                
+
                 s = Number(s);
                 removeError('is-danger');
-                
+
                 if (!isNaN(s)){
                     switch (s) {
                     case 0:
@@ -1186,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         removeErrorField(firstname);
                         removeErrorField(lastname);
                         removeErrorField(phone);
-                        
+
                         if(!rules.required(firstname.value, true)){
                             showError(firstname, 'Name', rules.required.reason);
                             return false;
@@ -1209,9 +1209,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 2:
                         if (loading) return false;
-                        
+
                         removeErrorField(mess);
-                        
+
                         // removeErrorField(city);
                         // removeErrorField(state);
                         // removeErrorField(zip);
@@ -1223,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             showError(mess, 'Please provide us', 'additional message');
                             return false;
                         }
-                        
+
                         loading = true;
                         showLoadingButton(b, true);
 
@@ -1280,9 +1280,9 @@ document.addEventListener('DOMContentLoaded', function () {
             hiddens[i].classList.remove('is-hidden');
         }
     }
-    
+
     // End of Register Business
-    
+
     var requestSearch = document.getElementById('request-search');
     if(requestSearch) {
         var btn = document.getElementById('req-search-btn');
@@ -1296,7 +1296,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             location.href= "/" + path  + "/?page=0&query=" + query;
-            
+
             return true;
         });
     }
@@ -1307,7 +1307,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var enterToSend;
     var requestBtn;
     var replyFocus;
-    
+
     if(replyTextbox){
         enterToSend = document.getElementById('enter-send');
 
@@ -1329,7 +1329,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendRequestMessage(){
         if (loading) return false;
-        
+
         var v = replyTextbox.value.trim();
         if(!rules.required(v, true)){
             replyTextbox.value = "";
@@ -1337,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', function () {
             replyTextbox.focus();
             return false;
         }
-        
+
         showLoadingButton(requestBtn, true);
         loading = true;
 
@@ -1349,10 +1349,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 action: 'ask_attorney',
                 content: v,
                 client_key: $wp_data.client_auth
-            }; 
+            };
         } else {
             var req_id = document.getElementById('req_id').value;
-            
+
             data = {
                 action: 'req_mess',
                 content: v,
@@ -1360,7 +1360,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             };
         }
-        
+
         postData(data, function (data) {
             if(data.status){
                 showSnackBar("Request submitted...");
@@ -1378,7 +1378,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loading  = false;
             showSnackBar(data.message);
         });
-        
+
         return true;
     }
 
@@ -1411,7 +1411,7 @@ document.addEventListener('DOMContentLoaded', function () {
         requestBtn.addEventListener('click', sendReviewMessage);
 
         replyFocus = document.getElementById('reply-focus');
-        
+
         if (replyFocus)
             replyFocus.addEventListener('click', function ($event) {
                 reviewTextbox.focus();
@@ -1420,7 +1420,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendReviewMessage(){
         if (loading) return false;
-        
+
         var v = reviewTextbox.value.trim();
         if(!rules.required(v, true)){
             reviewTextbox.value = "";
@@ -1428,7 +1428,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewTextbox.focus();
             return false;
         }
-        
+
         showLoadingButton(requestBtn, true);
         loading = true;
 
@@ -1443,7 +1443,7 @@ document.addEventListener('DOMContentLoaded', function () {
             req_id: req_id,
             client_key: $wp_data.client_auth
         };
-        
+
         postData(data, function (data) {
             if(data.status){
                 showSnackBar("Request submitted...");
@@ -1453,14 +1453,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 loading  = false;
                 showSnackBar(data.message);
             }
-            
+
         }, function (err) {
             showLoadingButton(requestBtn, false);
             loading  = false;
             showSnackBar(data.message);
             console.log(err);
         });
-        
+
         return true;
     }
 
@@ -1478,7 +1478,47 @@ document.addEventListener('DOMContentLoaded', function () {
         el.removeEventListener('keypress', rsendOnEnter);
     }
 
-    
+    var avatarUpload = document.getElementById('avatar-upload');
+
+    if (avatarUpload){
+        avatarUpload.addEventListener('change', function($event){
+            var file = avatarUpload.files[0];
+
+            if (loading) return false;
+
+            if(!rules.fileSize(file, true)){
+                displayMessage('File size is too big', 'is-danger');
+                return false;
+            }
+
+            if(!rules.isFileImage(file)){
+                displayMessage('Please upload an image', 'is-danger');
+                return false;
+            }
+
+            loading = true;
+            showSnackBar('Uploading image');
+            // upload file to server
+
+            uploadFilesToServer(avatarUpload.files,
+                                {},
+                                'upload_avatar',
+                                function (err, data) {
+                                    if (err){
+                                        displayMessage(err, 'is-danger');
+                                    } else {
+                                        if (data.status){
+                                            showSnackBar("Upload success");
+                                            location.reload();
+                                        } else
+                                            displayMessage(data.message, 'is-danger');
+                                    }
+                                    loading = false;
+                                });
+            return true;
+        });
+    }
+
     // Utility functions
 
     function clearField(field){
@@ -1520,7 +1560,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var nPath = location.pathname.split('/');
     nPath = cleanArray(nPath);
     nPath = nPath.splice(nPath.length - 1, 1)[0];
-    
+
     var activeNav = document.querySelector('aside .menu-list a[data-href^="' + nPath + '"]');
     if (activeNav)
         activeNav.classList.add('is-active');
@@ -1534,8 +1574,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 activeNav.classList.add('is-active');
         }
     }
-    
-    
+
+
 
     var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
@@ -1544,7 +1584,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var $el = $navbarBurgers[i];
             $navbarBurgers[i].addEventListener('click', function ($event) {
                 var $el = $event.currentTarget;
-                
+
                 var target = $el.dataset.target;
                 var $target = document.getElementById(target);
                 $el.classList.toggle('is-active');
@@ -1649,14 +1689,14 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             $('html, body').animate({scrollTop: divPosition.top}, "slow");
         }
-        
+
     }
 
     function showSnackBar(text){
         if (snackBar){
             snackBar.textContent = text;
             snackBar.classList.add('show');
-            
+
             setTimeout(function(){
                 snackBar.classList.remove('show');
             }, 3000);

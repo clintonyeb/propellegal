@@ -4,6 +4,7 @@
         "mustache/mustache": "^2.12",
         "phpoffice/phpword": "^0.13.0",
         "dompdf/dompdf": "^0.8.1",
-        "spatie/pdf-to-image": "^1.4"
+        "spatie/pdf-to-image": "^1.4",
+        "eventviva/php-image-resize": "1.6.*"
     }
 }
