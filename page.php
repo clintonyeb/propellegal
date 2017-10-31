@@ -4,7 +4,7 @@
  *
  * This file serves as the container page for all templates
  *
- * Template Name: Dashboard Pages
+ * Template Name: USER Dashboard
  *
  * @package clinton-child
  * @author  Clinton
@@ -25,7 +25,7 @@ get_template_part('template-parts/usernav');
 <section>
     <div class="columns">
         <div class="column is-narrow box is-padded">
-            <?php get_template_part('template-parts/side', 'nav'); ?>
+            <?php get_template_part('template-parts/user', 'nav'); ?>
         </div>
         <div class="column">
             <?php

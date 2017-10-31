@@ -183,7 +183,7 @@ function register_form(){
     $p_options = [
         'cost' => 12,
     ];
-    
+
     $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
 
     $result =  $wpdb->insert(
@@ -205,9 +205,9 @@ function register_form(){
     );
 
     if ($result){
-        
+
         $user_id = $wpdb -> insert_id;
-        
+
         // send email
 
         //add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
@@ -264,8 +264,8 @@ function activate(){
 
     if ($email) {
         $email_exists = $wpdb->get_row("
-                    SELECT id, email, full_name 
-                    FROM $table_user 
+                    SELECT id, email, full_name
+                    FROM $table_user
                     WHERE email = '$email'
 ");
         if ($email_exists){
@@ -355,9 +355,9 @@ function login_form(){
     $table_user = _USER_TABLE_;
 
     $results = $wpdb -> get_results("
-                      SELECT email, password, id, full_name, role_auth, activated 
-                      FROM $table_user 
-                      WHERE email = '$email' 
+                      SELECT email, password, id, full_name, role_auth, activated
+                      FROM $table_user
+                      WHERE email = '$email'
                       LIMIT 1;
 ");
 
@@ -376,14 +376,14 @@ function login_form(){
         }
 
         $hashed_password = $res_data -> password;
-        
+
         if (password_verify($password, $hashed_password)) {
             $token = encryptData($res_data);
 
             setcookie('token', $token, time() + (86400 * 30 * 7), "/"); // 86400 = 7 days
 
             addActivity(_LOGGED_IN_, $res_data -> id);
-            
+
             wp_send_json(array(
                 'message' => "Login Success",
                 'status' => true,
@@ -408,7 +408,7 @@ function login_form(){
 function recover_pass(){
     global $wpdb;
     global $phpmailer;
-    
+
     // check if request is from our client
 
     if (trim($_POST['client_key']) != CLIENT_KEY)
@@ -474,7 +474,7 @@ function recover_pass(){
 
         if ($mail_res) {
             error_log('Mail sent');
-            
+
         } else {
             return  wp_send_json(array(
                 'message' => "Email failed to send " . $mail_res,
@@ -485,7 +485,7 @@ function recover_pass(){
         wp_send_json(array(
             'message' => "Recovery link has been sent to your email account. Please check and follow the steps to recover your account",
             'status' => true
-        ));  
+        ));
     } else {
         wp_send_json(array(
             'message' => "Email account does not exist",
@@ -497,7 +497,7 @@ function recover_pass(){
 
 function do_pass_recovery(){
     global $wpdb;
-    
+
     // check if request is from our client
 
     if (trim($_POST['client_key']) != CLIENT_KEY)
@@ -506,7 +506,7 @@ function do_pass_recovery(){
 
     $email = $_POST['email'];
     $password = $_POST['password'];
-    
+
     // validate payload
 
     if ($email == "" || $password == ""){
@@ -533,13 +533,13 @@ function do_pass_recovery(){
 
     if (count($results) == 1){
         $data = $results[0];
-        
+
         $p_options = [
             'cost' => 12,
         ];
-        
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);        
-        
+
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
+
         $up = $wpdb -> update(
             $table_user,
             array(
@@ -561,7 +561,7 @@ function do_pass_recovery(){
                 'message' => 'Error changing password db',
                 'status' => false
             ));
-            
+
             return die(0);
         } else {
             addActivity(_RECOVER_PASSWORD_, $data -> id);
@@ -577,7 +577,7 @@ function do_pass_recovery(){
         ));
         return die(0);
     }
-    
+
     die();
 }
 
@@ -655,7 +655,7 @@ function rand_sha1($length) {
 function decode_jwt($jwt, $key, $h = false){
     JWT::$leeway = 60;
     $decoded = '';
-    
+
     try{
         $decoded = JWT::decode($jwt, $key, array('HS256'));
     } catch(\Exception $e){
@@ -664,7 +664,7 @@ function decode_jwt($jwt, $key, $h = false){
         }
         return NULL;
     }
-    
+
     return $decoded;
 }
 
@@ -700,7 +700,7 @@ function addActivity($type_name, $user_id){
             "%s",
             "%d"
         )
-    ); 
+    );
 
     return $wpdb -> insert_id;
 }
@@ -713,7 +713,7 @@ function get_files(){
 
     if (is_dir($dir)){
         $files = array_diff(scandir($dir, 1), array('.', '..'));
-        
+
         wp_send_json(array(
             'message' => 'Success',
             'status' => true,
@@ -767,7 +767,7 @@ function generate_document(){
 
     $out_path = get_stylesheet_directory() . "/assets/generated_documents/";
     $out_file = uniqid('output-', true);
-    
+
     /* $gen_file_docx = $out_path . $out_file . '.docx';
      * $gen_file_odt = $out_path . $out_file . '.odt';*/
     $gen_file_html = $out_path . $out_file . '.html';
@@ -789,7 +789,7 @@ function generate_document(){
     $pdf->saveImage($gen_file_jpg);
 
     $table_doc = _DOC_TABLE_;
-    
+
     $act_id = addActivity(_CREATE_DOCUMENT_, $user -> user_id);
 
     $res = $wpdb -> insert($table_doc,
@@ -835,7 +835,7 @@ function get_pdf($html){
 function upload_doc(){
     global $USER_PAYLOAD;
     global $wpdb;
-    
+
     $files = $_FILES['file'];
     $name = $_POST['name'];
     $content = $_POST['content'];
@@ -844,7 +844,7 @@ function upload_doc(){
     $table_doc_files = _DOC_FILES_;
     $date = $date = date('Y-m-d H:i:s');
     $save_files = array();
-    
+
     // Authenticate request
     if (trim($_POST['client_key']) != CLIENT_KEY)
         return die(0);
@@ -888,13 +888,13 @@ function upload_doc(){
                                 "%d", "%s"
                             ));
         }
-        
+
         wp_send_json(array(
             'message' => 'Success',
             'status' => true,
         ));
     }
-    
+
     wp_send_json(array(
         'message' => 'Failed',
         'status' => false,
@@ -914,16 +914,16 @@ function _saveFile($files, $i, $crush = 0){
 
         $target_file = $target_dir . $imageName . '-' . $crush . '.' . $imageFileType;
     }
-    
+
     if (file_exists(SITE_ROOT . '/' . $target_file)) {
         return _saveFile($files, $i, ++$crush);
     }
 
     $res = move_uploaded_file($files["tmp_name"][$i], SITE_ROOT . '/' .  $target_file);
-    
+
     if ($res)
         return pathinfo($target_file, PATHINFO_BASENAME);
-    
+
     return false;
 }
 
@@ -1018,23 +1018,23 @@ function ask_attorney(){
                 'message' => 'Error adding request',
                 'status' => false));
         }
-        
+
     } else {
         wp_send_json(array(
             'message' => 'Error adding request',
             'status' => false));
     }
-    
+
     die();
 }
 
 function addRequestMessage($user_id, $req_id, $content){
     global $wpdb;
-    
+
     $date = date('Y-m-d H:i:s');
 
     $table_req_mess = _REQUEST_MESS_;
-    
+
     $res = $wpdb -> insert(
         $table_req_mess,
         array(
@@ -1076,7 +1076,7 @@ function req_mess(){
 
 function addReviewMessage($d, $table_name){
     global $wpdb;
-    
+
     $res = $wpdb -> insert(
         $table_name,
         $d,
@@ -1204,7 +1204,7 @@ function ask_business(){
             'message' => 'Failed',
             'status' => false));
     }
-    
+
     die();
 }
 
@@ -1215,13 +1215,13 @@ function getActivities($limit = 10){
     $user = $USER_PAYLOAD['data'];
     $table_activities = _ACTIVITY_TABLE_;
     $user_id = $user -> user_id;
-    
+
     $query = "SELECT id, date_created, type_name
              FROM $table_activities
              WHERE user_id = $user_id
              ORDER BY date_created DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1231,14 +1231,14 @@ function getRequests($limit = 10){
 
     $table_requests = _REQUEST_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
-    
+
     $query = "SELECT $table_requests.id, date_created, type_name, status
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
              ORDER BY date_created DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1271,13 +1271,13 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
 
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
 
         $DATA_COUNT = $wpdb -> get_var($query);
 
-        
+
         $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
              FROM $table_requests
              INNER JOIN $table_activities
@@ -1286,18 +1286,18 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s'
              ORDER BY date_created DESC
              LIMIT $limit";
-        
+
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
-        
+
         $results = $wpdb -> get_results($query, OBJECT);
-        
+
         return $results;
     }
-    
+
     $query = "SELECT COUNT($table_requests.id)
              FROM $table_requests
              INNER JOIN $table_activities
@@ -1305,7 +1305,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id;";
 
     $DATA_COUNT = $wpdb -> get_var($query);
-    
+
     $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
              FROM $table_requests
              INNER JOIN $table_activities
@@ -1313,7 +1313,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id
              ORDER BY date_created DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1333,7 +1333,7 @@ function getActivityTemplate($act){
                 </figure>
                 <div class="media-content">
                 <div class="content">
-                <p> 
+                <p>
                 &middot;
                 </p>
                 </div>
@@ -1374,6 +1374,9 @@ function getActivityTemplate($act){
         case _REGISTER_BUSINESS_:
             $content = 'You requested to <strong>register</strong> a business';
             break;
+    case _ACTIVATED_ACCOUNT_:
+            $content = 'You have successfully <strong>activated</strong> your account';
+            break;
         default:
             $date = "";
             $content = "";
@@ -1411,7 +1414,7 @@ function getAllRequestsTemplate($req){
     $last_updated = time_elapsed_string($req -> last_updated);
     $req_id = $req -> id;
     $status_color = get_color($status);
-    
+
     return (
         "
 
@@ -1422,13 +1425,13 @@ function getAllRequestsTemplate($req){
              </span>
           </p>
          </td>
-         
+
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
        <td  style=\"width: 10%; padding-top: 1.5rem\">
          <small class=\"has-text-centered\">$last_updated</small>
-       </td>  
+       </td>
         "
     );
 }
@@ -1443,7 +1446,7 @@ function get_color($status){
         case _COMPLETED_:
             return "has-text-success";
             break;
-            
+
     }
 }
 
@@ -1479,7 +1482,7 @@ function time_elapsed_string($datetime, $full = false) {
 function getActivityCount($act_name){
     global $wpdb;
     global $USER_PAYLOAD;
-    
+
     $user = $USER_PAYLOAD['data'];
     $table_activities = _ACTIVITY_TABLE_;
     $user_id = $user -> user_id;
@@ -1501,7 +1504,7 @@ function getRequestMessages($req_id){
     $table_requests = _REQUEST_TABLE_;
     $table_users = _USER_TABLE_;
     $table_mess = _REQUEST_MESS_;
-    
+
     $query = "SELECT content, $table_mess.date_created, full_name
              FROM $table_mess
              INNER JOIN $table_users
@@ -1517,7 +1520,7 @@ function getRequestMessagesTemplate($mess){
     $full_name = $mess -> full_name;
     $date = time_elapsed_string($mess -> date_created);
     $content = $mess -> content;
-    
+
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
@@ -1582,13 +1585,13 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
 
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
 
         $DATA_COUNT = $wpdb -> get_var($query);
 
-        
+
         $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
              FROM $table_doc_reviews
              INNER JOIN $table_activities
@@ -1597,18 +1600,18 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s'
              ORDER BY last_updated DESC
              LIMIT $limit";
-        
+
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
-        
+
         $results = $wpdb -> get_results($query, OBJECT);
-        
+
         return $results;
     }
-    
+
     $query = "SELECT COUNT($table_doc_reviews.id)
              FROM $table_doc_reviews
              INNER JOIN $table_activities
@@ -1616,7 +1619,7 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id;";
 
     $DATA_COUNT = $wpdb -> get_var($query);
-    
+
     $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
              FROM $table_doc_reviews
              INNER JOIN $table_activities
@@ -1624,7 +1627,7 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id
              ORDER BY last_updated DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1638,7 +1641,7 @@ function getAllDocReviewsTemplate($req){
     $last_updated = time_elapsed_string($req -> last_updated);
     $req_id = $req -> id;
     $status_color = get_color($status);
-    
+
     return (
         "
          <td style=\"width: 5%\">
@@ -1648,13 +1651,13 @@ function getAllDocReviewsTemplate($req){
              </span>
           </p>
          </td>
-         
+
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
        <td  style=\"width: 10%; padding-top: 1.5rem\">
          <small class=\"has-text-centered\">$last_updated</small>
-       </td>  
+       </td>
         "
     );
 }
@@ -1667,8 +1670,8 @@ function getDocRevDetails($req_id){
     $table_mess = _DOC_REVIEW_MESS_;
     $table_files = _DOC_FILES_;
     $table_activities = _ACTIVITY_TABLE_;
-    
-    $query = "SELECT $table_docs.id,  mess, $table_activities.date_created, full_name, doc_user_name, status 
+
+    $query = "SELECT $table_docs.id,  mess, $table_activities.date_created, full_name, doc_user_name, status
              FROM $table_docs
              INNER JOIN $table_activities
              ON $table_docs.act_id = $table_activities.id
@@ -1677,7 +1680,7 @@ function getDocRevDetails($req_id){
              WHERE $table_docs.id = $req_id
              LIMIT 1;";
 
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results[0];
 }
@@ -1697,7 +1700,7 @@ function getDocRevDetailsTemplate($req, $fn){
     if ($fn > 1)
         $files .= "s";
     $files .= " uploaded";
-    
+
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
@@ -1734,12 +1737,12 @@ function getFileCount($req_id){
     global $wpdb;
 
     $table_files = _DOC_FILES_;
-    
-    $query = "SELECT COUNT(id) 
+
+    $query = "SELECT COUNT(id)
              FROM $table_files
              WHERE $table_files.doc_id = $req_id;";
 
-    
+
     $results = $wpdb -> get_var($query);
     return $results;
 }
@@ -1749,13 +1752,13 @@ function getMessages($id, $type_id, $table_name){
 
     $table_users = _USER_TABLE_;
 
-    $query = "SELECT content, $table_name.date_created, full_name 
+    $query = "SELECT content, $table_name.date_created, full_name
              FROM $table_name
              INNER JOIN $table_users
              ON $table_name.user_id = $table_users.id
              WHERE $type_id = $id;";
 
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1769,7 +1772,7 @@ function getRevMessTemplate($rev){
     $full_name = $rev -> full_name;
     $date = time_elapsed_string($rev -> date_created);
     $content = $rev -> content;
-    
+
     return(
         "
           <article class=\"media\" style=\"max-width: 85%\">
@@ -1817,13 +1820,13 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
 
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
 
         $DATA_COUNT = $wpdb -> get_var($query);
 
-        
+
         $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
              FROM $table_regs
              INNER JOIN $table_activities
@@ -1832,18 +1835,18 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s'
              ORDER BY last_updated DESC
              LIMIT $limit";
-        
+
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
-        
+
         $results = $wpdb -> get_results($query, OBJECT);
-        
+
         return $results;
     }
-    
+
     $query = "SELECT COUNT($table_regs.id)
              FROM $table_regs
              INNER JOIN $table_activities
@@ -1851,7 +1854,7 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id;";
 
     $DATA_COUNT = $wpdb -> get_var($query);
-    
+
     $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
              FROM $table_regs
              INNER JOIN $table_activities
@@ -1859,7 +1862,7 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id
              ORDER BY last_updated DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -1871,7 +1874,7 @@ function getRegDetails($req_id){
     $table_users = _USER_TABLE_;
     $table_mess = _BUS_MESS_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
-    
+
     $query = "SELECT $table_regs.id, mess, $table_activities.date_created, full_name, status, bus_fname, bus_lname, bus_phone, bus_city, bus_state, bus_zipcode, bus_address, bus_type, com_name, com_desc
              FROM $table_regs
              INNER JOIN $table_activities
@@ -1881,7 +1884,7 @@ function getRegDetails($req_id){
              WHERE $table_regs.id = $req_id
              LIMIT 1;";
 
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results[0];
 }
@@ -1926,7 +1929,7 @@ function getRegDetailsTemp($reg) {
               <strong>FirstName: </strong> $firtname
            </div>
            <div class=\"column\">
-               <strong>LastName</strong> $lastname 
+               <strong>LastName</strong> $lastname
            </div>
         </div>
 
@@ -2002,13 +2005,13 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
 
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
 
         $DATA_COUNT = $wpdb -> get_var($query);
 
-        
+
         $query = "SELECT $table_doc.id, date_created, category, state
              FROM $table_doc
              INNER JOIN $table_activities
@@ -2017,18 +2020,18 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s'
              ORDER BY date_created DESC
              LIMIT $limit";
-        
+
         $query = $wpdb -> prepare(
             $query, array(
-                "%$q%" 
+                "%$q%"
             )
         );
-        
+
         $results = $wpdb -> get_results($query, OBJECT);
-        
+
         return $results;
     }
-    
+
     $query = "SELECT COUNT($table_doc.id)
              FROM $table_doc
              INNER JOIN $table_activities
@@ -2036,7 +2039,7 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id;";
 
     $DATA_COUNT = $wpdb -> get_var($query);
-    
+
     $query = "SELECT $table_doc.id, date_created, category, state
              FROM $table_doc
              INNER JOIN $table_activities
@@ -2044,7 +2047,7 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
              WHERE user_id = $user_id
              ORDER BY date_created DESC
              LIMIT $limit;";
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results;
 }
@@ -2067,13 +2070,13 @@ function getAllDocTemp($doc){
              </span>
           </p>
          </td>
-         
+
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
        <td  style=\"width: 10%; padding-top: 1.5rem\">
          <small class=\"has-text-centered\">$date</small>
-       </td>  
+       </td>
         "
     );
 }
@@ -2085,7 +2088,7 @@ function getDetailCreatDoc($doc_id){
     $table_doc = _DOC_TABLE_;
     $table_users = _USER_TABLE_;
     $table_activities = _ACTIVITY_TABLE_;
-    
+
     $query = "SELECT $table_doc.id, $table_activities.date_created, full_name, state, request_type, category, file_name
              FROM $table_doc
              INNER JOIN $table_activities
@@ -2095,7 +2098,7 @@ function getDetailCreatDoc($doc_id){
              WHERE $table_doc.id = $doc_id
              LIMIT 1;";
 
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results[0];
 }
@@ -2141,7 +2144,7 @@ function getCreDocDetailTemp($doc){
         <p class=\"box\">
            <img class=\"image is-128-128\" src=\"$file_image\">
         </p>
-        
+
         </div>
         </div>
         </article>
@@ -2156,13 +2159,13 @@ function getUserDetails(){
     $user = $USER_PAYLOAD['data'];
     $user_id = $user -> user_id;
     $table_users = _USER_TABLE_;
-    
+
     $query = "SELECT id, date_created, full_name, email, role_auth, activated
              FROM $table_users
              WHERE $table_users.id = $user_id
              LIMIT 1;";
 
-    
+
     $results = $wpdb -> get_results($query, OBJECT);
     return $results[0];
 }

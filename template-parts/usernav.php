@@ -91,7 +91,7 @@ remove_action( 'genesis_footer', 'genesis_footer_markup_close', 15 );
                     PRICING
                 </a>
             </div>
-            
+
             <div class="navbar-center is-hidden-touch">
                 <div id="brand">
                     <a href="/">
@@ -102,23 +102,9 @@ remove_action( 'genesis_footer', 'genesis_footer_markup_close', 15 );
 
             <div class="navbar-end">
                 <span class="nav-item">
-                    <a class="button is-dark menu-icon" href="/search">
+                    <a class="button is-dark menu-icon" href="/user/notifications">
                         <span class="icon is-small">
                             <i class="fa fa-bell"></i>
-                        </span>
-                    </a>
-                </span>
-                <span class="nav-item">
-                    <a class="button is-dark menu-icon" href="/search">
-                        <span class="icon is-small">
-                            <i class="fa fa-envelope"></i>
-                        </span>
-                    </a>
-                </span>
-                <span class="nav-item">
-                    <a class="button is-dark menu-icon" href="/search">
-                        <span class="icon is-small">
-                            <i class="fa fa-comment"></i>
                         </span>
                     </a>
                 </span>
