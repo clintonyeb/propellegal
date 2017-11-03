@@ -31,12 +31,12 @@ function createTables(){
   full_name tinytext NOT NULL,
   email nvarchar(200) NOT NULL,
   password nvarchar(60) NOT NULL,
-  role_auth tinyint NOT NULL,
+  role_id tinyint NOT NULL,
   activated int NOT NULL DEFAULT 0,
   avatar_name tinytext,
   PRIMARY KEY (id),
   CONSTRAINT UC_Email UNIQUE (email),
-  FOREIGN KEY (role_auth) REFERENCES $table_user_roles(authority)
+  FOREIGN KEY (role_id) REFERENCES $table_user_roles(authority)
 ) $charset_collate;";
 
     dbDelta($query);
@@ -199,6 +199,18 @@ function createTables(){
 ) $charset_collate;";
 
     dbDelta($query);
+
+    $table_lawyer_task = _LAWYER_TASK_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_lawyer_task (
+    act_name text NOT NULL,
+    lawyer_id mediumint(9) NOT NULL,
+    item_id mediumint(9) NOT NULL,
+    date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (lawyer_id) REFERENCES $table_users(id)
+) $charset_collate;";
+
+    dbDelta($query);
 }
 
 createTables();
@@ -250,5 +262,47 @@ function insertActivityTypes($name){
         )
     );
 }
+
+// create admin account
+
+function createAdmin(){
+    global $wpdb;
+
+    $email = 'propellegal@admin.com';
+    $full_name = 'Master Admin';
+    $password = 'propellegal_admin';
+    $role_id = 3;
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $table_users = _USER_TABLE_;
+
+    $result =  $wpdb->insert(
+        $table_users,
+        array(
+            'date_created' => current_time( 'mysql' ),
+            'email' => $email,
+            'full_name' => $full_name,
+            'password' => $hashed_password,
+            'role_id' => _ADMIN_ID_,
+            'avatar_name' => 'avatar.png',
+            'activated' => 1
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d"
+        )
+    );
+
+    if ($result){
+        error_log('Admin successfully created');
+    } else {
+        error_log('Error creating Admin account');
+    }
+}
+
+createAdmin();
 
 ?>

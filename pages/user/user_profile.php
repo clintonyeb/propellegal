@@ -11,9 +11,9 @@ $avatar_name = $avatar -> avatar_name;
         Profile
     </h2>
 
-    <div class="columns">
+    <div class="columns box">
         <div class="column is-4">
-            <div class="box has-top-yellow">
+            <div class="has-top-yellow">
                 <p class="has-text-centered">
                     <img alt="User Image" src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="200px" class="avatar" style="height: 200px" />
                 </p>
@@ -40,7 +40,7 @@ $avatar_name = $avatar -> avatar_name;
 
         </div>
         <div class="column">
-            <div class="box has-top-blue">
+            <div class="has-top-blue">
                 <h3 class="title is-5">User Information</h3>
 
                 <p class="has-margin-top">

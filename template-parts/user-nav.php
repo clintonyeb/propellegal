@@ -67,7 +67,7 @@ $requests = getAllRequests(20);
         </li>
 
         <li class="menu-item">
-            <a href="/document_reviews" data-href="document_reviews">
+            <a href="/user/document_reviews" data-href="document_reviews">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-file"></i>
                 </span>
@@ -82,7 +82,7 @@ $requests = getAllRequests(20);
         </li>
 
         <li class="menu-item">
-            <a href="/business_registrations" data-href="business_registrations">
+            <a href="/user/business_registrations" data-href="business_registrations">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-briefcase"></i>
                 </span>
@@ -122,7 +122,7 @@ $requests = getAllRequests(20);
             </a>
         </li>
         <li class="menu-item">
-            <a href="/user_activities" data-href="user_activities">
+            <a href="/user/user_activities" data-href="user_activities">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-paper-plane"></i>
                 </span>

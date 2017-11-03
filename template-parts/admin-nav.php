@@ -1,12 +1,14 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
+$avatar = getAvatar();
+$avatar_name = $avatar -> avatar_name;
 $requests = getAllRequests(20);
 ?>
 
 <aside class="menu is-primary is-hidden-touch">
     <p class="has-text-centered">
-        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg" alt="logo brand" class="user-avatar"><br>
+        <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" alt="User Avatar" class="user-avatar"><br>
         <b><?php echo ($user -> full_name) ?></b>
     </p>
     <hr class="is-marginless" />
@@ -15,15 +17,15 @@ $requests = getAllRequests(20);
     </p>
     <ul class="menu-list">
         <li class="menu-item">
-            <a href="/user" data-href="user">
+            <a href="/admin" data-href="admin">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-tachometer"></i>
                 </span>
                 &nbsp;&nbsp;General
             </a>
         </li>
-        
-        
+
+
     </ul>
 
     <p class="menu-label has-text-darker-blue">
@@ -32,7 +34,7 @@ $requests = getAllRequests(20);
     <ul class="menu-list">
 
         <li class="menu-item">
-            <a href="/user/documents_created" data-href="documents_created">
+            <a href="/admin/documents_created" data-href="documents_created">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-book"></i>
                 </span>
@@ -40,9 +42,9 @@ $requests = getAllRequests(20);
             </a>
         </li>
 
-        
+
         <li class="menu-item">
-            <a href="/user/attorney_requests" data-href="attorney_requests">
+            <a href="/admin/attorney_requests" data-href="attorney_requests">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-handshake-o"></i>
                 </span>
@@ -69,9 +71,9 @@ $requests = getAllRequests(20);
         </li>
 
         <li class="menu-item">
-            <a href="/business_registrations" data-href="business_registrations">
+            <a href="/admin/user_accounts" data-href="user_accounts">
                 <span class="icon is-small has-text-darker-yellow">
-                    <i class="fa fa-briefcase"></i>
+                    <i class="fa fa-user-o"></i>
                 </span>
                 &nbsp;&nbsp;Accounts
             </a>
@@ -82,19 +84,10 @@ $requests = getAllRequests(20);
         LAWYER
     </p>
     <ul class="menu-list">
-
         <li class="menu-item">
-            <a href="/user/documents_created" data-href="documents_created">
+            <a href="/admin/lawyer_accounts" data-href="lawyer_accounts">
                 <span class="icon is-small has-text-darker-yellow">
-                    <i class="fa fa-book"></i>
-                </span>
-                &nbsp;&nbsp;Activities
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="/user/attorney_requests" data-href="attorney_requests">
-                <span class="icon is-small has-text-darker-yellow">
-                    <i class="fa fa-handshake-o"></i>
+                    <i class="fa fa-user-o"></i>
                 </span>
                 &nbsp;&nbsp;Accounts
             </a>
@@ -106,15 +99,6 @@ $requests = getAllRequests(20);
     </p>
 
     <ul class="menu-list">
-
-        <li class="menu-item">
-            <a href="/user/user_profile" data-href="user_profile">
-                <span class="icon is-small has-text-darker-yellow">
-                    <i class="fa fa-user"></i>
-                </span>
-                &nbsp;&nbsp;ADMIN 
-            </a>
-        </li>
         <li class="menu-item">
             <a href="/logout">
                 <span class="icon is-small has-text-darker-yellow">
@@ -125,5 +109,5 @@ $requests = getAllRequests(20);
         </li>
     </ul>
 
-    
+
 </aside>

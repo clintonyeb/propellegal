@@ -17,7 +17,7 @@ $doc_reg = getDetailCreatDoc($req_id);
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
-                <a class="button is-warning" href="/user/documents_created">
+                <a class="button is-warning" href="/admin/documents_created">
                     <span class="icon">
                         <i class="fa fa-angle-left"></i>
                     </span>
@@ -27,9 +27,7 @@ $doc_reg = getDetailCreatDoc($req_id);
         </div>
         <hr>
         <?php
-        echo getCreDocDetailTemp($doc_reg);
+        echo getAdminCreDocDetailTemp($doc_reg);
         ?>
-
-    </div>
     </div>
 </section>

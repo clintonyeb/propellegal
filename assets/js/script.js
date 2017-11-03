@@ -160,6 +160,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
+        var url = $loginButton.getAttribute('data-url');
+
         showLoadingButton($loginButton, true);
         loading = true;
 
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
             type:"POST",
             url: $wp_data.ajaxUrl,
             data: {
-                action: "login_form",
+                action: url,
                 email: email.value.trim(),
                 password: password.value.trim(),
                 client_key: $wp_data.client_auth
@@ -176,8 +178,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status){
                     localStorage.setItem('token', data.token);
                     displayMessage('Login success', 'is-info');
-                    if(!sendUnsentUserPayload())
-                        window.location = '/user';
+
+                    switch(url){
+                    case 'user_login':
+                        if(!sendUnsentUserPayload()){
+                            window.location = '/user';
+                        }
+                        break;
+                    case 'lawyer_login':
+                        window.location = '/lawyer';
+                        break;
+                    case 'admin_login':
+                        window.location = '/admin';
+                        break;
+                    }
+
 
                 } else {
                     showLoadingButton($loginButton, false);
@@ -185,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 loading = false;
-
+                console.log(data);
             },
             error: function(errorThrown){
                 showLoadingButton($loginButton, false);
@@ -1519,6 +1534,226 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    var edited = false;
+    var commitBtn = document.getElementById('commit-btn');
+    var edits = [];
+    var action = document.getElementById('action');
+    // Drop downs
+
+    $('.ui.dropdown')
+        .dropdown({
+            onChange: function (value, text, $selectedItem) {
+                var id = $selectedItem.context.parentElement.getAttribute('data-id');
+                addToEdit(id, value);
+                ableToCommit();
+            }
+        })
+    ;
+
+    if (commitBtn){
+        commitBtn.addEventListener('click', function ($event) {
+            console.log('posting', edits);
+            if(edits.length && !loading){
+                showLoadingButton(commitBtn, true);
+                loading = true;
+                // post to server
+                postData({
+                    action: 'admin_requests',
+                    edits: edits,
+                    act: action.value
+                }, function (data) {
+                    if (data.status)
+                        location.reload();
+                    else {
+                        loading =  false;
+                        showLoadingButton(commitBtn, false);
+                    }
+                    console.log(data);
+                }, function (err) {
+                    loading = false;
+                    showLoadingButton(commitBtn, false);
+                    console.log(err);
+                });
+            }
+        });
+    }
+
+    function addToEdit(id, value){
+        edits.push({
+            id: id,
+            value: value
+        });
+    }
+
+    function ableToCommit(){
+        if (!edited && edits.length){
+            commitBtn.removeAttribute('disabled');
+            edited = true;
+        }
+    }
+    // ADMIN Requests functions
+
+    // register lawyer
+
+    var $regLawBtn = document.getElementById('lawyer-reg');
+
+    if ($regLawBtn){
+        var email = document.getElementById('email');
+        var full_name = document.getElementById('fullname');
+        var gender = document.getElementById('gender');
+        var state = document.getElementById('state');
+        var activated = document.getElementById('activated');
+
+        $regLawBtn.addEventListener('click', function ($event) {
+            removeErrorField(email);
+            removeErrorField(full_name);
+            removeErrorField(gender);
+            removeErrorField(state);
+            removeErrorField(activated);
+
+            removeError('is-danger');
+
+            // validate form
+
+            // validate email field
+            if(!rules.required(email.value, true)){
+                showError(email, 'Email', rules.required.reason);
+                return false;
+            }
+
+            if(!rules.email(email.value, true)){
+                showError(email, 'Email', rules.email.reason);
+                return false;
+            }
+
+            // validate name field
+            if(!rules.required(full_name.value, true)){
+                showError(full_name, 'Name', rules.required.reason);
+                return false;
+            }
+
+            if(!rules.required(gender.value, true)){
+                showError(gender, 'Gender', rules.required.reason);
+                return false;
+            }
+
+            if(!rules.required(state.value, true)){
+                showError(State, 'Location', rules.required.reason);
+                return false;
+            }
+
+            if(!rules.required(activated.value, true)){
+                showError(activated, 'Activated', rules.required.reason);
+                return false;
+            }
+
+            showLoadingButton($regLawBtn, true);
+            loading = true;
+
+            postData({
+                action: "register_lawyer",
+                email: email.value,
+                full_name: full_name.value,
+                gender: gender.value,
+                state: state.value,
+                activated: activated.value === 'Yes' ? true : false
+            }, function(data){
+                if (data.status){
+                    showLoadingButton($regLawBtn, false);
+                    displayMessage(data.message, 'is-info');
+                    clearField(email);
+                    clearField(full_name);
+                    clearField(gender);
+                    clearField(state);
+                    loading = false;
+                } else{
+                    showLoadingButton($regLawBtn, false);
+                    displayMessage(data.message, 'is-danger');
+                    loading = false;
+                }
+                console.log(data);
+            }, function(errorThrown){
+                showLoadingButton($regLawBtn, false);
+                displayMessage('Error submitting data', 'is-warning');
+                console.log(errorThrown);
+                loading = false;
+            });
+
+            return true;
+        });
+
+    }
+
+    // request details actions
+
+    var adminAction = document.getElementById('admin-action');
+
+    if (adminAction){
+        var actionBtns = document.querySelectorAll('a[data-action]');
+        var request_type = document.getElementById('action-type');
+        var req_id = document.getElementById('req_id');
+
+        for(var i = 0; i < actionBtns.length; i++) {
+            actionBtns[i].addEventListener('click', function ($event) {
+                var att = $event.currentTarget.getAttribute('data-action');
+                performAction(att);
+            });
+        }
+
+        function performAction(attr){
+            switch(attr){
+            case 'send_message':
+                var article = document.querySelector('article#reply-box');
+                if (article){
+                    article.classList.toggle('is-hidden');
+                }
+                break;
+            case 'mark_completed':
+                postAction('mark_completed');
+                break;
+            case 'remove_request':
+                postAction('remove_request');
+                break;
+            }
+        }
+
+        function postAction(action_type){
+            if (loading) return;
+
+            postData({
+                action: 'admin_actions',
+                request_type: request_type.value,
+                action_type: action_type,
+                req_id: req_id.value
+            }, function (data) {
+                if (data.status){
+                    goback(request_type.value);
+                } else {
+                    showSnackBar('Already completed...');
+                }
+                loading = false;
+            }, function (err) {
+                console.log(err);
+                loading = false;
+            });
+        }
+
+        function goback(type){
+            switch(type){
+            case "ASK_ATTORNEY":
+                location.href = "/admin/attorney_requests";
+                break;
+            case "REVIEW_DOCUMENT":
+                location.href = "/admin/document_reviews";
+                break;
+            case "REGISTER_BUSINESS":
+                location.href = "/admin/business_registrations";
+                break;
+            default:
+                console.log('wrong tpe');
+            }
+        }
+    }
     // Utility functions
 
     function clearField(field){
@@ -1581,10 +1816,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if ($navbarBurgers.length > 0) {
         for(var i = 0; i < $navbarBurgers.length; i++) {
-            var $el = $navbarBurgers[i];
             $navbarBurgers[i].addEventListener('click', function ($event) {
                 var $el = $event.currentTarget;
-
                 var target = $el.dataset.target;
                 var $target = document.getElementById(target);
                 $el.classList.toggle('is-active');
@@ -1592,6 +1825,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+
 
     function clearResults(el) {
         while (el.firstChild) {

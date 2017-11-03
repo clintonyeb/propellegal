@@ -9,6 +9,7 @@ $notifications = array();
 
 $user_full = getUserDetails();
 ?>
+
 <section class="section" id="user-dashboard">
     <div class="container-fluid">
         <h1 class="title is-3">Dashboard</h1>

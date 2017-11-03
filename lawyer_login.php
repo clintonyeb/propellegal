@@ -4,7 +4,7 @@
  *
  * This file serves as the container page for all templates
  *
- * Template Name: Login Page
+ * Template Name: Lawyer Login
  *
  * @package clinton-child
  * @author  Clinton
@@ -23,7 +23,7 @@ get_template_part('template-parts/nav');
      <span class="icon is-small is-left">
       <i class="fa fa-user"></i>
     </span>
-     Login To Account
+     Lawyer Login
     </h2>
 
     <div class="columns">
@@ -34,7 +34,6 @@ get_template_part('template-parts/nav');
             <div class="message-body">
             </div>
         </article>
-        <div class="label has-text-centered">Don&apos;t have an Account? <u><a href="/register">Sign Up</a></u></div>
         <form name="login-form">
          <div class="field">
            <label class="label is-medium">Email</label>
@@ -52,12 +51,11 @@ get_template_part('template-parts/nav');
          <div class="level">
              <div class="level-left">
                  <div class="level-item">
-                     <div class="label has-text-centered"> <u><a href="/recover-pass">I have forgotten my password</a></u></div>
                   </div>
              </div>
              <div class="level-right">
                  <div class="level-item">
-                     <button class="button is-primary is-large is-focused" id="login-submit" data-url="user_login">Log Me In</button>
+                     <button class="button is-primary is-large is-focused" id="login-submit" data-url="lawyer_login">Log Me In</button>
                  </div>
            </div>
          </div>

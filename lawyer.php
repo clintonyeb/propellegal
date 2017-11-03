@@ -13,9 +13,12 @@
 
 <?php
 global $USER_PAYLOAD;
-
 if (!$USER_PAYLOAD['status']){
-    redirect('/login');
+    return redirect('/lawyer_login');
+}
+
+if ($USER_PAYLOAD['data'] -> role_id != 2){
+    return redirect('/lawyer_login');
 }
 
 get_template_part('template-parts/usernav');

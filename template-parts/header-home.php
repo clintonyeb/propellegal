@@ -762,7 +762,7 @@ wp_head(); // We need this for plugins.
             </a>
         </p>
     </section>
-    
+
     <p id="floating-button" class="animated fadeIn">
         <span class="tooltiptext animated fadeIn">Send us a message us</span>
         <a class="button is-large is-primary has-text-white is-circular">
@@ -772,8 +772,8 @@ wp_head(); // We need this for plugins.
         </a>
     </p>p
 
-    
+
     <?php
-    get_template_part('template-parts/toast');
+
     get_template_part('template-parts/footer');
     ?>

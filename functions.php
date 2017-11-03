@@ -29,15 +29,21 @@ function my_theme_enqueue_styles() {
     global $client_key;
     global $USER_PAYLOAD;
     wp_enqueue_script('util', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/utils.js');
-    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'jquery'));
+    wp_enqueue_script('transition', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/transition.js', array('jquery'));
+    wp_enqueue_script('dropdown', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/dropdown.js', array('transition'));
+    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown'));
     wp_localize_script( 'script-js', '$wp_data',
                         array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 'client_auth' => CLIENT_KEY, 'home' => HOME, 'authenticated' => $USER_PAYLOAD['status']));
 }
 
 add_action('wp_ajax_nopriv_register_form', 'register_form');
 add_action('wp_ajax_register_form', 'register_form');
-add_action('wp_ajax_nopriv_login_form', 'login_form');
-add_action('wp_ajax_login_form', 'login_form');
+add_action('wp_ajax_nopriv_user_login', 'user_login');
+add_action('wp_ajax_user_login', 'user_login');
+add_action('wp_ajax_nopriv_admin_login', 'admin_login');
+add_action('wp_ajax_admin_login', 'admin_login');
+add_action('wp_ajax_nopriv_lawyer_login', 'lawyer_login');
+add_action('wp_ajax_lawyer_login', 'lawyer_login');
 add_action('wp_ajax_nopriv_get_doc', 'get_doc');
 add_action('wp_ajax_get_doc', 'get_doc');
 add_action('wp_ajax_nopriv_get_file', 'get_file');
@@ -69,6 +75,16 @@ add_action('wp_ajax_nopriv_reg_mess', 'reg_mess');
 add_action('wp_ajax_upload_avatar', 'upload_avatar');
 add_action('wp_ajax_nopriv_upload_avatar', 'upload_avatar');
 
+// admin actions
+add_action('wp_ajax_admin_requests', 'admin_requests');
+add_action('wp_ajax_nopriv_admin_requests', 'admin_requests');
+add_action('wp_ajax_register_lawyer', 'register_lawyer');
+add_action('wp_ajax_nopriv_register_lawyer', 'register_lawyer');
+add_action('wp_ajax_admin_actions', 'admin_actions');
+add_action('wp_ajax_nopriv_admin_actions', 'admin_actions');
+add_action('wp_ajax_user_mess', 'user_mess');
+add_action('wp_ajax_nopriv_user_mess', 'user_mess');
+
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
 
@@ -81,14 +97,14 @@ function wpdocs_set_html_mail_content_type() {
     return 'text/html';
 }
 
-// define the wp_mail_failed callback
-function action_wp_mail_failed($wp_error)
-{
-    return error_log(print_r($wp_error, true));
-}
+/* define the wp_mail_failed callback
+ * function action_wp_mail_failed($wp_error)
+ * {
+ *     return error_log(print_r($wp_error, true));
+ * }*/
 
 // add the action
-add_action('wp_mail_failed', 'action_wp_mail_failed', 10, 1);
+//add_action('wp_mail_failed', 'action_wp_mail_failed', 10, 1);
 
 function register_form(){
     global $wpdb;
@@ -195,7 +211,7 @@ function register_form(){
             'email' => $email,
             'full_name' => $full_name,
             'password' => $hashed_password,
-            'role_auth' => 1,
+            'role_id' => _USER_ID_,
             'avatar_name' => 'avatar.png'
         ),
         array(
@@ -203,7 +219,8 @@ function register_form(){
             "%s",
             "%s",
             "%s",
-            "%d"
+            "%d",
+            "%s"
         )
     );
 
@@ -213,23 +230,22 @@ function register_form(){
 
         // send email
 
-        //add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
-
         $otp = generateOTP($email);
         $admin = admin_url( 'admin-ajax.php' );
         $auth = "?action=activate&auth=$otp";
-        $to = $email;
+        $link = $admin . $auth;
         $subject = 'Propellegal Account Confirmation';
-        $body = '<html><head><title>Email Verification</title></head><body>';
-        $body .= '<h2>Hi ' . $full_name . ' !</h2>';
-        $body .= '<h4><a href="' . $admin . $auth . '">CLICK TO ACTICATE ACCOUNT</a></h4>';
-        $body .= '</body></html>';
+        $body = "<html>
+                   <head>
+                     <title>Email Verification</title>
+                   </head>
+                   <body>";
+        $body .= "<h2>Hi $full_name </h2>";
+        $body .= "<h4><a href=\"$link\">CLICK TO ACTICATE ACCOUNT</a></h4>";
+        $body .= " </body>
+                </html>";
 
-        $header = "MIME-Version: 1.0" . "\r\n";
-        $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
-        //$header .= "From: pdhutchinson@hutchinvestmentsllc.com" . "\r\n";
-
-        $mail_res = wp_mail( $to, $subject, $body, $header );
+        $mail_res = sendEmail($subject, $body, $email);
 
         if ($mail_res) {
             error_log('Mail sent');
@@ -253,6 +269,16 @@ function register_form(){
     }
 
     die();
+}
+
+function sendEmail($subject, $content, $to){
+    $to = $to;
+    $subject = 'Propellegal Account Confirmation';
+    $body = $content;
+    $header = "MIME-Version: 1.0" . "\r\n";
+    $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
+
+    return wp_mail( $to, $subject, $body, $header );
 }
 
 function activate(){
@@ -293,25 +319,21 @@ function activate(){
 
                 // send welcome message
 
-                $to = $email_exists -> email;
                 $subject = 'Congratulations';
-                $body = '<html><head><title>Welcome</title></head><body>';
-                $body .= '<h2>Hi ' . $email_exists -> full_name . ' !</h2>';
-                $body .= '<p>Welcome Onboard</p>';
-                $body .= '</body></html>';
+                $body = "<html>
+                           <head>
+                             <title>Welcome</title>
+                           </head>
+                           <body>";
+                $body .= "<h2>Hi ($email_exists -> full_name) </h2>";
+                $body .= "<p>Welcome Onboard</p>";
+                $body .= "</body></html>";
 
-                $header = "MIME-Version: 1.0" . "\r\n";
-                $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
 
-                $mail_res = wp_mail( $to, $subject, $body, $header );
+                $mail_res = sendEmail($subject, $body, $email_exists -> email);
 
-                if ($mail_res) {
-                    error_log('Mail sent');
+                if ($mail_res)
                     addActivity(_ACTIVATED_ACCOUNT_, $email_exists -> id);
-                } else {
-                    error_log('Mail failed');
-                }
-
             } else {
                 echo '<h2>Account already activated</h2>';
             }
@@ -324,7 +346,7 @@ function activate(){
     die();
 }
 
-function login_form(){
+function user_login(){
     global $wpdb;
 
     // check if request is from our client
@@ -358,7 +380,7 @@ function login_form(){
     $table_user = _USER_TABLE_;
 
     $results = $wpdb -> get_results("
-                      SELECT email, password, id, full_name, role_auth, activated, avatar_name
+                      SELECT email, password, id, full_name, role_id, activated, avatar_name
                       FROM $table_user
                       WHERE email = '$email'
                       LIMIT 1;
@@ -408,6 +430,14 @@ function login_form(){
     die();
 }
 
+function admin_login(){
+    return user_login();
+}
+
+function lawuer_login(){
+    return user_login();
+}
+
 function recover_pass(){
     global $wpdb;
     global $phpmailer;
@@ -442,7 +472,7 @@ function recover_pass(){
 
     $table_user = _USER_TABLE_;
 
-    $results = $wpdb -> get_results("SELECT email,id,full_name,role_auth,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
+    $results = $wpdb -> get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
 
     if (count($results) == 1){
 
@@ -532,7 +562,7 @@ function do_pass_recovery(){
 
     $table_user = _USER_TABLE_;
 
-    $results = $wpdb -> get_results("SELECT email,id,full_name,role_auth,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
+    $results = $wpdb -> get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
 
     if (count($results) == 1){
         $data = $results[0];
@@ -626,10 +656,9 @@ function encryptData($payload){
             'exp' => $expire,
             'data' => [
                 'user_id' => $payload -> id,
-                'user_name' => $payload -> email,
-                'role' => role_id_to_string($payload -> role_auth),
-                'full_name' => $payload -> full_name,
-                'avatar' => $payload -> avatar_name
+                'role_id' => $payload -> role_id,
+                'full_name' => $payload -> full_name
+                // TODO: Remove Fullname from token payload
             ]
         ];
 
@@ -1027,6 +1056,7 @@ function ask_attorney(){
         wp_send_json(array(
             'message' => 'Error adding request',
             'status' => false));
+
     }
 
     die();
@@ -1230,6 +1260,42 @@ function getActivities($limit = 10){
     return $results;
 }
 
+function getActivitiesForUser($user_id, $limit = 10){
+    global $wpdb;
+
+    $table_activities = _ACTIVITY_TABLE_;
+    $table_users = _USER_TABLE_;
+
+    $query = "SELECT $table_activities.id, $table_activities.date_created, type_name, full_name
+             FROM $table_activities
+             INNER JOIN $table_users
+             ON $table_users.id=$table_activities.user_id
+             WHERE user_id = $user_id
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getAllActivities($limit = 20){
+    global $wpdb;
+
+    $table_activities = _ACTIVITY_TABLE_;
+    $table_users = _USER_TABLE_;
+
+    $query = "SELECT $table_activities.id, $table_activities.date_created, type_name, full_name
+             FROM $table_activities
+             INNER JOIN $table_users
+             ON $table_users.id=$table_activities.user_id
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+
 function getRequests($limit = 10){
     global $wpdb;
 
@@ -1322,7 +1388,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
     return $results;
 }
 
-function getActivityTemplate($act){
+function getActivityTemplate($act, $full_name="You"){
 
     if (!$act){
         return (
@@ -1352,31 +1418,31 @@ function getActivityTemplate($act){
 
     switch($act -> type_name){
         case _CREATE_DOCUMENT_:
-            $content = 'You created a new <strong>document</strong>';
+            $content = "<i>$full_name</i> created a new <strong>document</strong>";
             break;
         case _LOGGED_IN_:
-            $content = 'You <strong>logged into</strong> your account';
+            $content = "<i>$full_name</i> <strong>logged into</strong> your account";
             break;
         case _UPLOAD_DOCUMENT_:
-            $content = 'You <strong>uploaded</strong> a new document';
+            $content = "<i>$full_name</i> <strong>uploaded</strong> a new document";
             break;
         case _REGISTERED_ACCOUNT_:
-            $content = 'You created a new <strong>account</strong>';
+            $content = "<i>$full_name</i> created a new <strong>account</strong>";
             break;
         case _ACTIVATED_ACCOUNT_:
-            $content = 'You <strong>activated</strong> your account';
+            $content = "<i>$full_name</i> <strong>activated</strong> your account";
             break;
         case _RECOVER_PASSWORD_:
-            $content = 'You recovered your account <strong>password</strong>';
+            $content = "<i>$full_name</i> recovered your account <strong>password</strong>";
             break;
         case _ASK_ATTORNEY_:
-            $content = 'You sent a request to an <strong>antorney</strong>';
+            $content = "<i>$full_name</i> sent a request to an <strong>antorney</strong>";
             break;
         case _REVIEW_DOCUMENT_:
-            $content = 'You sent a document for <strong>review</strong>';
+            $content = "<i>$full_name</i> sent a document for <strong>review</strong>";
             break;
         case _REGISTER_BUSINESS_:
-            $content = 'You requested to <strong>register</strong> a business';
+            $content = "<i>$full_name</i> requested to <strong>register</strong> a business";
             break;
         default:
             $date = "";
@@ -1418,7 +1484,6 @@ function getAllRequestsTemplate($req){
 
     return (
         "
-
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -1430,7 +1495,7 @@ function getAllRequestsTemplate($req){
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
-       <td  style=\"width: 10%; padding-top: 1.5rem\">
+       <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$last_updated</small>
        </td>
         "
@@ -1441,10 +1506,15 @@ function get_color($status){
     switch($status){
         case _RECEIVED_:
             return "has-text-warning";
+        case _REGISTERED_:
+            return "has-text-warning";
         case _PROCESSING_:
             return "has-text-info";
-            break;
+        case _ACTIVATED_:
+            return "has-text-info";
         case _COMPLETED_:
+            return "has-text-success";
+        case _SUBSCRIBED_:
             return "has-text-success";
             break;
 
@@ -1657,7 +1727,7 @@ function getAllDocReviewsTemplate($req){
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
-       <td  style=\"width: 10%; padding-top: 1.5rem\">
+       <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$last_updated</small>
        </td>
         "
@@ -2082,7 +2152,7 @@ function getAllDocTemp($doc){
         <td  style=\"width: 85%\">
            <p>$mess</p>
        </td>
-       <td  style=\"width: 10%; padding-top: 1.5rem\">
+       <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$date</small>
        </td>
         "
@@ -2162,15 +2232,67 @@ function getCreDocDetailTemp($doc){
     );
 }
 
-function getUserDetails(){
+function getAdminCreDocDetailTemp($doc){
+    $state = $doc -> state;
+    $request_type = $doc -> request_type;
+    $date = time_elapsed_string($doc -> date_created);
+    $doc_id = $doc -> id;
+    $category = $doc -> category;
+    $full_name = $doc -> full_name;
+    $file_name = $doc -> file_name;
+    $file_pdf = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . ".pdf";
+    $file_image =  '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
+    $mess = "Created a document under $category in $state state";
+    $avatar = $doc -> avatar_name;
+    $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
+
+    return(
+        "
+          <article class=\"media\" style=\"max-width: 85%\">
+  <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"$avatar_name\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$full_name</strong> &middot; <small>$date</small>
+        <br>
+           $mess
+        </p>
+        <div class=\"columns\">
+            <div class=\"column\">
+               <strong>Category: </strong> $category
+            </div>
+            <div class=\"column\">
+               <strong>State: </strong> $state
+            </div>
+        </div>
+         <hr>
+        <p class=\"has-text-centered\">
+           <a class=\" button is-primary\" download=\"propellegal-document\" href=\"$file_pdf\">Download PDF File</a>
+        </p>
+        </div>
+        </div>
+        </article>
+        "
+    );
+}
+
+
+function getUserDetails($user_id=""){
     global $wpdb;
     global $USER_PAYLOAD;
 
     $user = $USER_PAYLOAD['data'];
-    $user_id = $user -> user_id;
+    if (!$user_id){
+        $user_id = $user -> user_id;
+    }
+
     $table_users = _USER_TABLE_;
 
-    $query = "SELECT id, date_created, full_name, email, role_auth, activated
+    $query = "SELECT id, date_created, full_name, email, role_id, activated
              FROM $table_users
              WHERE $table_users.id = $user_id
              LIMIT 1;";
@@ -2266,12 +2388,14 @@ function _saveAvatar($files, $crush = 0){
     return false;
 }
 
-function getAvatar(){
+function getAvatar($user_id=""){
     global $wpdb;
     global $USER_PAYLOAD;
 
     $user = $USER_PAYLOAD['data'];
-    $user_id = $user -> user_id;
+    if (!$user_id){
+        $user_id = $user -> user_id;
+    }
     $table_users = _USER_TABLE_;
 
     $query = "SELECT id, avatar_name
@@ -2282,4 +2406,803 @@ function getAvatar(){
 
     $results = $wpdb -> get_results($query, OBJECT);
     return $results[0];
+}
+
+function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
+    global $wpdb;
+    global $PAGE;
+    global $USER_PAYLOAD;
+    global $DATA_COUNT;
+
+    $table_users = _USER_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_users.id)
+             FROM $table_users
+             WHERE full_name LIKE '%s'
+             OR email LIKE '%s'
+             AND role_id=$role_id;";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%", "%$q%"
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+        $query = "SELECT $table_users.id, date_created, full_name, email, activated
+             FROM $table_users
+             WHERE full_name LIKE '%s'
+             OR email LIKE '%s
+             AND role_id=$role_id
+             ORDER BY date_created DESC
+             LIMIT $limit";
+
+        $query = $wpdb -> prepare(
+            $query, array(
+
+                "%$q%", "%$q%"
+            )
+        );
+
+        $results = $wpdb -> get_results($query, OBJECT);
+
+        return $results;
+    }
+
+    $query = "SELECT COUNT($table_users.id)
+             FROM $table_users
+             WHERE role_id=$role_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+
+    $query = "SELECT $table_users.id, date_created, full_name, email, activated
+             FROM $table_users
+             WHERE role_id=$role_id
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getAllUserAccTemp($data){
+    $date = date_create($data -> date_created);
+    $date = date_format($date, 'd/m/Y');
+    $full_name = $data -> full_name;
+    $email = $data -> email;
+    $activated = $data -> activated;
+    $id = $data -> id;
+    if ($activated){
+        $status = _ACTIVATED_;
+    } else {
+        $status = _REGISTERED_;
+    }
+    $status_color = get_color($status);
+
+    return (
+        "
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+
+        <td  style=\"width: 33%\">
+           <p>$full_name</p>
+           <p class=\"\" style=\"\">
+               <a class=\"is-hoverable\" href=\"/admin/user_details/?req_id=$id\">View Account</a> |
+               <a class=\"is-hoverable\" href=\"/admin/user_history/?req_id=$id\">View History</a>
+          </p>
+
+       </td>
+       <td  style=\"width: 33%\">
+           <p>$email</p>
+       </td>
+       <td  style=\"width: 33%\">
+           <p>$status</p>
+       </td>
+       <td  style=\"width: 10%;\">
+         <small class=\"has-text-centered\">$date</small>
+       </td>
+        "
+    );
+}
+
+function getAllAdminAccTemp($data){
+    $date = date_create($data -> date_created);
+    $date = date_format($date, 'd/m/Y');
+    $full_name = $data -> full_name;
+    $email = $data -> email;
+    $activated = $data -> activated;
+    $id = $data -> id;
+    if ($activated){
+        $status = _ACTIVATED_;
+    } else {
+        $status = _REGISTERED_;
+    }
+    $status_color = get_color($status);
+
+    return (
+        "
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+
+        <td  style=\"width: 33%\">
+           <p>$full_name</p>
+           <p class=\"\" style=\"\">
+               <a class=\"is-hoverable\" href=\"/admin/lawyer_details/?req_id=$id\">View Account</a> |
+               <a class=\"is-hoverable\" href=\"/admin/lawyer_history/?req_id=$id\">View History</a>
+          </p>
+
+       </td>
+       <td  style=\"width: 33%\">
+           <p>$email</p>
+       </td>
+       <td  style=\"width: 33%\">
+           <p>$status</p>
+       </td>
+       <td  style=\"width: 10%;\">
+         <small class=\"has-text-centered\">$date</small>
+       </td>
+        "
+    );
+}
+
+function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $DATA_COUNT;
+
+    $table_doc = _DOC_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    $table_users = _USER_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_doc.id)
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             WHERE mess LIKE '%s'
+             OR full_name LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%","%$q%"
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+
+        $query = "SELECT $table_doc.id, full_name, $table_activities.date_created, category, state
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             WHERE mess LIKE '%s'
+             OR full_name LIKE '%s'
+             ORDER BY $table_activities.date_created DESC
+             LIMIT $limit";
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%","%$q%"
+            )
+        );
+
+        $results = $wpdb -> get_results($query, OBJECT);
+
+        return $results;
+    }
+
+    $query = "SELECT COUNT($table_doc.id)
+             FROM $table_doc;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+
+    $query = "SELECT $table_doc.id, full_name, $table_activities.date_created, category, state
+             FROM $table_doc
+             INNER JOIN $table_activities
+             ON $table_doc.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             ORDER BY $table_activities.date_created DESC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getAdminDocTemp($doc){
+    $status = _COMPLETED_;
+    $date = date_create($doc -> date_created);
+    $date = date_format($date, 'd/m/Y');
+    $doc_id = $doc -> id;
+    $status_color = get_color($status);
+    $category = $doc -> category;
+    $state = $doc -> state;
+    $full_name = $doc -> full_name;
+    $mess = "<strong>$full_name</strong> created a document under $category in $state state";
+    $id = $doc -> id;
+    return (
+        "
+         <td style=\"width: 5%\">
+           <p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+
+        <td  style=\"width: 85%\">
+           <p>$mess</p>
+           <p class=\"\" style=\"\">
+               <a class=\"is-hoverable\" href=\"/admin/created_details/?req_id=$id\">View Request</a>
+          </p>
+       </td>
+       <td  style=\"width: 10%;\">
+         <small class=\"has-text-centered\">$date</small>
+       </td>
+        "
+    );
+}
+
+function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $DATA_COUNT;
+
+    $table_users = _USER_TABLE_;
+    $table_activities = _ACTIVITY_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+
+    if ($q){
+
+        $query = "SELECT COUNT($table_name.id)
+             FROM $table_name
+             INNER JOIN $table_activities
+             ON $table_name.act_id = $table_activities.id
+             WHERE full_name LIKE '%s'
+             OR WHERE mess LIKE '%s';";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%"
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+
+        $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created
+             FROM $table_name
+             INNER JOIN $table_activities
+             ON $table_name.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             WHERE full_name LIKE '%s'
+             OR WHERE mess LIKE '%s'
+             ORDER BY date_created DESC
+             LIMIT $limit";
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%"
+            )
+        );
+
+        $results = $wpdb -> get_results($query, OBJECT);
+
+        return $results;
+    }
+
+    $query = "SELECT COUNT($table_name.id)
+             FROM $table_name
+             INNER JOIN $table_activities
+             ON $table_name.act_id = $table_activities.id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+
+    $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created
+             FROM $table_name
+             INNER JOIN $table_activities
+             ON $table_name.act_id = $table_activities.id
+             INNER JOIN $table_users
+             ON $table_activities.user_id = $table_users.id
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function getAdminRequests($limit = 20, $page = 1, $q = ""){
+    $table_requests = _REQUEST_TABLE_;
+    return getAdminTable($table_requests, $limit, $page, $q);
+}
+
+function getAdminTableTemp($req, $get_info){
+    $status = $req -> status;
+    $full_name = $req -> full_name;
+    $date = date_create($req -> date_created);
+    $date = date_format($date, 'd/m/Y');
+    $status_color = get_color($status);
+    $info = call_user_func($get_info, $full_name);
+    $mess = $info['mess'];
+    $url = $info['detail_url'];
+    $id = $req -> id;
+    $statusAction = determineStatusAction($req, $status);
+
+    return (
+        "
+         <td style=\"\">
+<p class=\"media-icon\">
+             <span class=\"icon $status_color\">
+               <i class=\"fa fa-circle\"></i>
+             </span>
+          </p>
+         </td>
+
+        <td  style=\"\">
+           <p>$mess</p>
+           <p class=\"\" style=\"\">
+               <a class=\"is-hoverable\" href=\"/admin/$url/?req_id=$id\">View Request</a>
+          </p>
+       </td>
+       <td  style=\"\">
+         <small class=\"has-text-centered\">$date</small>
+       </td>
+       <td  style=\"\">
+           $statusAction
+       </td>
+        "
+    );
+}
+
+function determineStatusAction($req, $status){
+    $id = $req -> id;
+
+    if($status === _RECEIVED_){
+        $lawyers = getLawyers();
+        $lawyerOptions = createLawyers($lawyers);
+
+
+        return ("
+           <div class=\"ui search selection dropdown\">
+             <input type=\"hidden\" name=\"country\" id=\"action-input\">
+             <i class=\"dropdown icon\"></i>
+             <div class=\"default text\">Assign Request</div>
+             <div class=\"menu\" data-id=\"$id\">
+                 $lawyerOptions
+            </div>
+           </div>
+           ");
+    } else if($status === _PROCESSING_){
+        return ("
+            <p>
+               <a class=\"button is-primary is-outlined\">PROCESSING</a>
+            </p>
+          ");
+    } else {
+        return ("
+            <p>
+               <a class=\"button is-primary is-outlined\">COMPLETED</a>
+            </p>
+         ");
+    }
+}
+
+function createLawyers($lawyers){
+    $options = array();
+    foreach($lawyers as $law){
+        $options[] = lawyerOptions($law);
+    }
+    return implode($options);
+}
+
+function lawyerOptions($lawyer){
+    $value = $lawyer -> id;
+    $name = $lawyer -> full_name;
+
+    return ("<div class=\"item\" data-value=\"$value\">$name</div>");
+}
+
+function get_req_info($full_name){
+    return array(
+        "mess" => "<strong>$full_name</strong> submitted a new request to an attorney",
+        "detail_url" => "request_messages"
+    );
+}
+
+function get_rev_info($full_name){
+    return array(
+        "mess" => "<strong>$full_name</strong> submitted a document for review",
+        "detail_url" => "document_details"
+    );
+}
+
+function getAdminReqTemp($req){
+    return getAdminTableTemp($req, 'get_req_info');
+}
+
+function getAdminReviews($limit = 20, $page = 1, $q = ""){
+    $table_reviews = _DOC_REVIEW_TABLE_;
+    return getAdminTable($table_reviews, $limit, $page, $q);
+}
+
+function getAdminRevTemp($req){
+    return getAdminTableTemp($req, 'get_rev_info');
+}
+
+function getAdminRegs($limit = 20, $page = 1, $q = ""){
+    $table_regs = _BUS_REG_TABLE_;
+    return getAdminTable($table_regs, $limit, $page, $q);
+}
+
+function get_reg_mess($full_name){
+    return array(
+        "mess" => "<strong>$full_name</strong> submitted a business for registration",
+        "detail_url" => "business_detail"
+    );
+}
+
+function getAdminRegTemp($req){
+    return getAdminTableTemp($req, 'get_reg_mess');
+}
+
+function admin_requests(){
+    global $wpdb;
+    error_log(print_r($_POST, true));
+    $edits = $_POST['edits'];
+    $action = $_POST['act'];
+    $table_request = getTableNameFromAction($action);
+    $table_tasks = _LAWYER_TASK_;
+
+    foreach($edits as $edit){
+        $item_id = $edit['id'];
+        $value = $edit['value'];
+
+        $res = $wpdb -> insert($table_tasks,
+                               array(
+                                   "act_name" => $action,
+                                   "lawyer_id" => $value,
+                                   "item_id" => $item_id
+                               ), array(
+                                   "%s", "%d", "%d"
+                               ));
+
+        if ($res){
+
+            // update request table
+            $up = $wpdb -> update(
+                $table_request,
+                array(
+                    'status' => _PROCESSING_
+                ),
+                array(
+                    'id' => $item_id
+                ),
+                array(
+                    '%s'
+                ),
+                array(
+                    '%d'
+                )
+            );
+            if ($up){
+                return wp_send_json(array(
+                    "status" => true,
+                    "message" => "Success"
+                ));
+            }
+        }
+    }
+
+    die();
+}
+
+function getTableNameFromAction($action){
+    switch($action){
+        case _ASK_ATTORNEY_:
+            return _REQUEST_TABLE_;
+        case _REVIEW_DOCUMENT_:
+            return _DOC_REVIEW_TABLE_;
+        case _REGISTER_BUSINESS_:
+            return _BUS_REG_TABLE_;
+        case 'deactivate_user':
+            return _USER_TABLE_;
+        case 'remove_user':
+            return _USER_TABLE_;
+    }
+}
+
+
+function register_lawyer(){
+    global $wpdb;
+
+    $email = trim($_POST['email']);
+    $full_name = trim($_POST['full_name']);
+    $gender = trim($_POST['gender']);
+    $state = trim($_POST['state']);
+    $activated = trim($_POST['activated']);
+
+    $table_user = _USER_TABLE_;
+
+    $email_exists = $wpdb->get_row("SELECT id, email FROM $table_user WHERE email = '$email'");
+
+    if ($email_exists !== null){
+        wp_send_json(array(
+            'message' => "Account with email already exists, please login instead",
+            'status' => false
+        ));
+        return die(0);
+    }
+
+    $password = randomPassword(8);
+
+    $p_options = [
+        'cost' => 12,
+    ];
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
+
+    if ($activated)
+        $active = 1;
+    else
+        $active = 0;
+
+    $result =  $wpdb->insert(
+        $table_user,
+        array(
+            'date_created' => current_time( 'mysql' ),
+            'email' => $email,
+            'full_name' => $full_name,
+            'password' => $hashed_password,
+            'role_id' => _LAWYER_ID_,
+            'avatar_name' => 'avatar.png',
+            'activated' => $active
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d",
+            "%s",
+            "%d"
+        )
+    );
+
+    if ($result){
+
+        // INSERT INTO lawyer profile
+
+        $user_id = $wpdb -> insert_id;
+
+        addActivity(_REGISTERED_ACCOUNT_, $user_id);
+
+        wp_send_json(array(
+            'message' => "Lawyer Account Registration success.",
+            'status' => true
+        ));
+    } else {
+        wp_send_json(array(
+            'message' => "Error during registration",
+            'status' => false
+        ));
+    }
+
+    die();
+}
+
+function randomPassword($len) {
+    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $pass = array();
+    $alphaLength = strlen($alphabet) - 1;
+    for ($i = 0; $i < $len; $i++) {
+        $n = rand(0, $alphaLength);
+        $pass[] = $alphabet[$n];
+    }
+    return implode($pass);
+}
+
+
+function getLawyers($limit = 20, $page = 1, $q = ""){
+    global $wpdb;
+    global $PAGE;
+    global $DATA_COUNT;
+
+    $table_users = _USER_TABLE_;
+    $offset = $limit * ($page - 1);
+    $PAGE = $page;
+    $lawyer_role_id = _LAWYER_ID_;
+    if ($q){
+
+        $query = "SELECT COUNT($table_users.id)
+             FROM $table_users
+             WHERE full_name LIKE '%s'
+             OR WHERE id LIKE '%s'
+             AND role_id=$lawyer_role_id;";
+
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%", "%$q%"
+            )
+        );
+
+        $DATA_COUNT = $wpdb -> get_var($query);
+
+
+        $query = "SELECT $table_users.id, full_name
+             FROM $table_users
+             WHERE full_name LIKE '%s'
+             OR WHERE mess LIKE '%s'
+             AND role_id=$lawyer_role_id
+             AND activated=1
+             ORDER BY full_name ASC
+             LIMIT $limit";
+
+        $query = $wpdb -> prepare(
+            $query, array(
+                "%$q%", "%$q%"
+            )
+        );
+
+        $results = $wpdb -> get_results($query, OBJECT);
+
+        return $results;
+    }
+
+    $query = "SELECT COUNT($table_users.id)
+             FROM $table_users
+             WHERE role_id=$lawyer_role_id;";
+
+    $DATA_COUNT = $wpdb -> get_var($query);
+
+    $query = "SELECT $table_users.id, full_name
+             FROM $table_users
+             WHERE role_id=$lawyer_role_id
+             AND activated=1
+             ORDER BY full_name ASC
+             LIMIT $limit;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    return $results;
+}
+
+function admin_actions(){
+    global $wpdb;
+
+    $request_type = trim($_POST['request_type']);
+    $action_type = trim($_POST['action_type']);
+    $req_id = trim($_POST['req_id']);
+
+    $table_name = getTableNameFromAction($request_type);
+
+    switch($action_type){
+        case 'mark_completed':
+            $up = $wpdb -> update(
+                $table_name,
+                array(
+                    'status' => _COMPLETED_
+                ),
+                array(
+                    'id' => $req_id
+                ),
+                array(
+                    '%s'
+                ),
+                array(
+                    '%d'
+                )
+            );
+
+            break;
+
+        case 'deactivate_user':
+            $up = $wpdb -> update(
+                $table_name,
+                array(
+                    'activate' => 0
+                ),
+                array(
+                    'id' => $req_id
+                ),
+                array(
+                    '%d'
+                ),
+                array(
+                    '%d'
+                )
+            );
+
+            break;
+
+        case 'remove_request':
+
+        case 'remove_request':
+            $up = $wpdb -> delete(
+                $table_name,
+                array(
+                    'id' => $req_id
+                ),
+                array(
+                    '%d'
+                )
+            );
+
+            break;
+    }
+
+    if (!$up === false){
+        wp_send_json(array(
+            'message' => "Success",
+            'status' => true
+        ));
+    } else {
+        wp_send_json(array(
+            'message' => "Error",
+            'status' => false
+        ));
+    }
+
+}
+
+function user_mess(){
+    $content = $_POST['content'];
+    $user_id =  $_POST['req_id'];
+    $date = date('Y-m-d H:i:s');
+
+    $query = "SELECT full_name, email
+             FROM $table_users
+             WHERE id=$user_id
+             LIMIT 1;";
+
+    $results = $wpdb -> get_results($query, OBJECT);
+    if ($results){
+        $user = $results[0];
+        $full_name = $user -> full_name;
+        $email = $user -> email;
+
+        $subject = 'Propellegal Admin';
+        $body = "<html>
+                           <head>
+                             <title>Customer Care</title>
+                           </head>
+                           <body>";
+        $body .= "<h2>Hi $full_name , </h2>";
+        $body .= "<p>$content</p>";
+        $body .= "</body></html>";
+
+
+        $mail_res = sendEmail($subject, $body, $email);
+
+        wp_send_json(array(
+            'message' => "Success",
+            'status' => true
+        ));
+    }
+
+    die();
 }

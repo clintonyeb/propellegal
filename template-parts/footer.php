@@ -1,4 +1,6 @@
-
+<?php
+get_template_part('template-parts/toast');
+?>
 <footer class="footer is-dark has-text-white" id="footer">
     <div class="container-fluid">
         <div class="columns">

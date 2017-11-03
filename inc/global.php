@@ -12,11 +12,15 @@ define("_DOC_REVIEW_MESS_", $wpdb -> prefix . "my_doc_rev_mess");
 define("_DOC_FILES_", $wpdb -> prefix . "my_doc_files");
 define("_BUS_REG_TABLE_", $wpdb -> prefix . "my_buss");
 define("_BUS_MESS_TABLE_", $wpdb -> prefix . "my_buss_mess");
+define("_LAWYER_TASK_", $wpdb -> prefix . "my_lawyer_tasks");
 
 // USER ROLES
 define("_USER_ROLE_", "USER");
 define("_LAWYER_ROLE_", "LAWYER");
 define("_ADMIN_ROLE_", "ADMIN");
+define("_USER_ID_", 3);
+define("_LAWYER_ID_", 2);
+define("_ADMIN_ID_", 1);
 
 // ACTIVITY TYPES
 define("_CREATE_DOCUMENT_", "CREATE_DOCUMENT");
@@ -40,4 +44,9 @@ define("OTP_KEY", "MGMxMjA2NzViYThmMTA3ZmUxMDQwYzI1");
 define("_RECEIVED_", "RECEIVED");
 define("_PROCESSING_", "PROCESSING");
 define("_COMPLETED_", "COMPLETED");
+
+// USER STATUS
+define("_REGISTERED_", "REGISTERED");
+define("_ACTIVATED_", "ACTIVATED");
+define("_SUBSCRIBED_", "SUBSCRIBED");
 ?>

@@ -4,13 +4,13 @@ require_once(SITE_ROOT . "/inc/global.php");
 function deleteTables(){
     global $wpdb;
 
-    
+
     $table_doc = _DOC_TABLE_;
     $wpdb->query("DROP TABLE IF EXISTS $table_doc");
-    
+
     $table_req_mess = _REQUEST_MESS_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_req_mess" );
-    
+
     $table_requests = _REQUEST_TABLE_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_requests" );
 
@@ -19,9 +19,12 @@ function deleteTables(){
 
     $table_regs = _BUS_REG_TABLE_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_regs" );
-    
+
     $table_doc_files = _DOC_FILES_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_doc_files" );
+
+    $table_lawyer_tasks = _LAWYER_TASK_;
+    $wpdb->query( "DROP TABLE IF EXISTS $table_lawyer_tasks" );
 
     $table_doc_mess = _DOC_REVIEW_MESS_;
     $wpdb->query( "DROP TABLE IF EXISTS $table_doc_mess" );
