@@ -29,12 +29,14 @@ nav
   position: relative
   z-index: 10
   .navbar-start
-    .nav-item
+    .navbar-item
       font-size: .8em
   .navbar-end
     .button
       &.menu-icon
         background-color: transparent
+        color: $white !important
+
   @media only screen and (max-width: 620px)
     right: 1.5rem
     background-color: #212121
@@ -117,7 +119,7 @@ nav
       box-shadow: none
 
       a
-        &.nav-item
+        &.navbar-item
           color: $white
 
   .withed
@@ -772,7 +774,8 @@ tr.clickable
     transition: background-color 1s ease-in-out
 
 .has-padding-top
-  padding-top: 1rem
+  padd
+    ing-top: 1rem
 
 .has-margin-top
   margin-top: 1rem
@@ -801,3 +804,20 @@ a
   &.is-hoverable
     &:hover
       text-decoration: underline
+.icon
+  &.badge
+    position: relative
+    &:after
+      content: attr(data-noti-count)
+      position: absolute
+      background: $darker-yellow
+      height: 1rem
+      width: 1rem
+      top: -.3rem
+      right: -.3rem
+      text-align: center
+      vertical-align: center
+      line-height: 1rem
+      font-size: .8rem
+      border-radius: 50%
+      color: #000

@@ -10,9 +10,14 @@ define("_REQUEST_MESS_", $wpdb -> prefix . "my_req_mess");
 define("_DOC_REVIEW_TABLE_", $wpdb -> prefix . "my_doc_reviews");
 define("_DOC_REVIEW_MESS_", $wpdb -> prefix . "my_doc_rev_mess");
 define("_DOC_FILES_", $wpdb -> prefix . "my_doc_files");
+define("_REQ_FILES_", $wpdb -> prefix . "my_req_files");
 define("_BUS_REG_TABLE_", $wpdb -> prefix . "my_buss");
 define("_BUS_MESS_TABLE_", $wpdb -> prefix . "my_buss_mess");
-define("_LAWYER_TASK_", $wpdb -> prefix . "my_lawyer_tasks");
+define("_LAWYER_REQ_", $wpdb -> prefix . "my_lawyer_req");
+define("_LAWYER_REV_", $wpdb -> prefix . "my_lawyer_rev");
+define("_LAWYER_BUS_", $wpdb -> prefix . "my_lawyer_bus");
+define("_NOTIF_TABLE_", $wpdb -> prefix . "my_notifs");
+define("_FEEDBACK_TABLE_", $wpdb -> prefix . "my_feedbacks");
 
 // USER ROLES
 define("_USER_ROLE_", "USER");
@@ -34,7 +39,7 @@ define("_REVIEW_DOCUMENT_", "REVIEW_DOCUMENT");
 define("_REGISTER_BUSINESS_", "REGISTER_BUSINESS");
 
 // SECRET KEYS - PROBABLY NOT MEANT FOR YOUR EYES.
-define("SECRET_KEY",  "940f4f3e0bbacef5eb6ac977547672e2ef9dd106c713ef25cfbfd4b5abea2");
+define("SECRET_KEY",  "940f4f3e0bbacef5eb6ac977547672e2ef9dd106c713ef25cfbfd4b5abea3");
 define("CLIENT_KEY", "OGZhZGQ0ZDI5NWRjOTUxZGIwOTdjNWFj");
 define("SALT_PASSWORD", "OTI4NjYwZjUyM2UyYmY5NGVhOGUwMDUxMmQ3MDAy");
 define("CAPTCHA_SECRET_KEY", "6LeW0TIUAAAAAORH8phjOTkBbZncYrXpBuTldKhC");

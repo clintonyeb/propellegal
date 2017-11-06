@@ -63,6 +63,10 @@ remove_action( 'genesis_footer', 'genesis_footer_markup_close', 15 );
 // Run the Genesis loop.
 //  genesis();
 
+// database requests => my stuff starts here
+
+$notif_count = getUserNotifCount();
+$user = $USER_PAYLOAD['data'];
 ?>
 <section class="" id="hero">
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
@@ -81,13 +85,13 @@ remove_action( 'genesis_footer', 'genesis_footer_markup_close', 15 );
         <div class="navbar-menu is-page-brand" id="main-menu">
 
             <div class="navbar-start">
-                <a class="nav-item has-text-white" data-scroll="general">
+                <a class="navbar-item has-text-white" data-scroll="general">
                     SERVICES
                 </a>
-                <a class="nav-item has-text-white" href="/how-it-works">
+                <a class="navbar-item has-text-white" href="/how-it-works">
                     HOW IT WORKS
                 </a>
-                <a class="nav-item has-text-white" href="/pricing">
+                <a class="navbar-item has-text-white" href="/pricing">
                     PRICING
                 </a>
             </div>
@@ -101,14 +105,14 @@ remove_action( 'genesis_footer', 'genesis_footer_markup_close', 15 );
             </div>
 
             <div class="navbar-end">
-                <span class="nav-item">
-                    <a class="button is-dark menu-icon" href="/user/notifications">
-                        <span class="icon is-small">
+                <div class="navbar-item" style="padding: .5rem;">
+                    <div class="button is-dark menu-icon">
+                        <a class="icon is-small has-text-white <?php echo ($notif_count > 0 ? 'badge' : '') ?>" data-noti-count="<?php echo $notif_count ?>" href="/<?php echo getRolePath(($user -> role_id)) ?>/notifications">
                             <i class="fa fa-bell"></i>
-                        </span>
-                    </a>
-                </span>
-                <span class="nav-item">
+                        </a>
+                    </div>
+                </div>
+                <span class="navbar-item">
                     <a class="button is-dark menu-icon" href="/user">
                         <span class="icon is-small">
                             <i class="fa fa-user"></i>

@@ -32,27 +32,13 @@ if ($limit * $PAGE < $DATA_COUNT){
 
     <div class="columns">
         <div class="column is-4">
-
-
             <div class="box has-top-yellow">
-                <p class="label">Search Documents</p>
-                <div class="field has-addons">
-                    <div class="control is-expanded">
-                        <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed">
-                    </div>
-                    <div class="control" id="req-search-btn" data-url="documents_created">
-                        <a class="button is-warning">
-                            Search
-                        </a>
-                    </div>
-                </div>
-                <hr />
                 <p class="label">What is this?</p>
                 This page displays a history of all your activities whiles using our services. You can view them anytime to know what you did and when you did it.
             </div>
 
             <p class="has-text-centered margined-top-down">
-	        <a class="button is-primary is-medium" href="/user/create_document">Review your Documents</a>
+	        <a class="button is-primary is-medium" href="/user/create_document">Create a Document</a>
             </p>
         </div>
         <div class="column">

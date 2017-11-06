@@ -6,5 +6,5 @@ setcookie("token", "", 1, '/');
 
 <script type='text/javascript'>
   localStorage.removeItem('token');
-  location.href = '/user_login';
+  location.href = '/login';
 </script>

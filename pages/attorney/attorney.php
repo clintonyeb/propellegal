@@ -50,35 +50,9 @@ $user_full = getUserDetails();
 
         <div class="columns">
             <div class="column">
-                <div class="box is-darker-blue">
-                    <p class="has-text-white has-text-centered">
-                        DOCUMENTS CREATED
-                    </p>
-                    <h3 class="title is-3 has-text-white has-text-centered">
-                        <?php echo $doc_created_count ?>
-                    </h3>
-                    <p class="has-text-centered">
-                        <a class="button is-white" href="/user/create_document">Create a Document</a>
-                    </p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box is-light-gray">
-                    <p class="has-text-warning has-text-centered">
-                        DOCUMENTS REVIEWED
-                    </p>
-                    <h3 class="title is-3 has-text-warning has-text-centered">
-                        <?php echo $doc_review_count ?>
-                    </h3>
-                    <p class="has-text-centered">
-                        <a class="button is-warning" href="/user/document_reviews">Review a Document</a>
-                    </p>
-                </div>
-            </div>
-            <div class="column">
                 <div class="box is-darker-yellow">
                     <p class="has-text-centered">
-                        ATTORNEY REQUESTS
+                        NEW ATTORNEY REQUESTS
                     </p>
                     <h3 class="title is-3 has-text-centered">
                         <?php echo $attorney_count ?>
@@ -89,9 +63,22 @@ $user_full = getUserDetails();
                 </div>
             </div>
             <div class="column">
+                <div class="box is-light-gray">
+                    <p class="has-text-warning has-text-centered">
+                        NEW DOCUMENTS REVIEWS
+                    </p>
+                    <h3 class="title is-3 has-text-warning has-text-centered">
+                        <?php echo $doc_review_count ?>
+                    </h3>
+                    <p class="has-text-centered">
+                        <a class="button is-warning" href="/user/document_reviews">Review a Document</a>
+                    </p>
+                </div>
+            </div>
+            <div class="column">
                 <div class="box is-darker-gray">
                     <p class="has-text-white has-text-centered">
-                        BUSINESS REGISTRATIONS
+                        NEW BUSINESS REGISTRATIONS
                     </p>
                     <h3 class="title is-3 has-text-white has-text-centered">
                         <?php echo $register_count ?>
@@ -120,7 +107,7 @@ $user_full = getUserDetails();
             </div>
             <div class="column">
                 <div class="box has-top-light">
-                    <h3 class="title is-5">Subscription Summary</h3>
+                    <h3 class="title is-5">Ratings</h3>
                     <p>
                         <strong>Status: </strong> Not Active
                     </p>

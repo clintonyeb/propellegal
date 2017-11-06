@@ -91,7 +91,7 @@ if ($limit * $PAGE < $DATA_COUNT){
             </div>
 
             <p class="has-text-centered margined-top-down">
-	        <a class="button is-primary is-medium" href="/user/ask_attorney">View Reviewed Documents</a>
+	        <a class="button is-primary is-medium" href="/user/business_registrations">View Reviewed Documents</a>
             </p>
         </div>
         <div class="column" id="register-business">

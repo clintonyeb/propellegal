@@ -97,8 +97,20 @@ $avatar_name = $avatar -> avatar_name;
                         <nav class="level">
                             <div class="level-left">
                                 <div class="level-item">
-                                    <a class="button is-primary is-medium" id="req-submit">Send Message</a>
+                                    <a class="button is-primary" id="req-submit">Send Message</a>
                                 </div>
+                                <div class="level-item">
+              <div class="file">
+                <label class="file-label">
+                  <input class="file-input" type="file" id="req-file" multiple>
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fa fa-paperclip has-text-primary"></i>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </div>
                             </div>
                             <div class="level-right">
                                 <div class="level-item">
@@ -108,6 +120,14 @@ $avatar_name = $avatar -> avatar_name;
                                 </div>
                             </div>
                         </nav>
+                        <div class="files is-hidden" id="display-files">
+          <h2 class="subtitle is-6">
+            Files count: <span id="doc-count" class="has-text-darker-yellow">0</span>
+          </h2>
+
+          <div id="docs" class="tags"></div>
+
+        </div>
                     </div>
                 </article>
             </div>

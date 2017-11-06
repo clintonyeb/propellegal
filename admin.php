@@ -15,11 +15,11 @@
 global $USER_PAYLOAD;
 
 if (!$USER_PAYLOAD['status']){
-    return redirect('/admin_login');
+    return redirect('/login');
 }
 
 if ($USER_PAYLOAD['data'] -> role_id != 1){
-    return redirect('/admin_login');
+    return redirect('/login');
 }
 
 get_template_part('template-parts/usernav');

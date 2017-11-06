@@ -130,7 +130,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="" id="file-box">
                         <div class="" ondrop="dropEvent(event)" ondragover="dragOverEvent(event)" ondragleave="dragLeave(event)">
                             <input class="file-input" type="file" name="document" id="file-upload" multiple>
-
                             <div class="content">
                                 <h2 class="title is-3 has-text-centered">
                                     <span class="is-hidden-desktop">Tap </span>

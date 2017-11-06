@@ -160,8 +160,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
 
-        var url = $loginButton.getAttribute('data-url');
-
         showLoadingButton($loginButton, true);
         loading = true;
 
@@ -169,31 +167,21 @@ document.addEventListener('DOMContentLoaded', function () {
             type:"POST",
             url: $wp_data.ajaxUrl,
             data: {
-                action: url,
+                action: 'login',
                 email: email.value.trim(),
                 password: password.value.trim(),
                 client_key: $wp_data.client_auth
             },
             success:function(data){
+                console.log('hrere');
                 if (data.status){
                     localStorage.setItem('token', data.token);
                     displayMessage('Login success', 'is-info');
 
-                    switch(url){
-                    case 'user_login':
-                        if(!sendUnsentUserPayload()){
-                            window.location = '/user';
-                        }
-                        break;
-                    case 'lawyer_login':
-                        window.location = '/lawyer';
-                        break;
-                    case 'admin_login':
-                        window.location = '/admin';
-                        break;
+                    if(!sendUnsentUserPayload()){
+                        console.log('here');
+                        window.location = data.url;
                     }
-
-
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
@@ -942,7 +930,8 @@ document.addEventListener('DOMContentLoaded', function () {
         buttons = document.querySelectorAll('[data-step]'),
         progressBar = document.querySelector('.progress'),
         name, content,
-        fileBox = document.getElementById('file-box');
+        fileBox = document.getElementById('file-box'),
+        fileCont = document.getElementById('display-files');
 
     if(uploadDoc){
         fileEl.addEventListener('change', function($event){
@@ -1091,10 +1080,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateFiles(files) {
         clearResults(tags);
 
-        for(var i = 0; i < files.length; i++) {
-            var f = files[i];
-            createChip(f.name, i);
+        if (files.length){
+            for(var i = 0; i < files.length; i++) {
+                var f = files[i];
+                createChip(f.name, i);
+            }
+            fileCont.classList.remove('is-hidden');
+        } else {
+            fileCont.classList.add('is-hidden');
         }
+
     }
 
     function createChip(text, index) {
@@ -1303,14 +1298,15 @@ document.addEventListener('DOMContentLoaded', function () {
         var btn = document.getElementById('req-search-btn');
         var path = btn.getAttribute('data-url');
         btn.addEventListener('click', function ($event) {
-            var query = requestSearch.value;
+            var query = requestSearch.value.trim();
 
             if(!rules.required(query, true)){
                 requestSearch.focus();
                 return false;
             }
 
-            location.href= "/" + path  + "/?page=0&query=" + query;
+            console.log(path + "/?page=0&query=" + query);
+            location.href = path  + "/?page=0&query=" + query;
 
             return true;
         });
@@ -1318,13 +1314,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Request Messages
 
-    var replyTextbox = document.getElementById('request-textbox');
-    var enterToSend;
-    var requestBtn;
-    var replyFocus;
+    var replyTextbox = document.getElementById('request-textbox')
+    , enterToSend
+    , requestBtn
+    , replyFocus
+    , uploadFile;
 
     if(replyTextbox){
         enterToSend = document.getElementById('enter-send');
+        uploadFile = document.getElementById('req-file');
 
         enterToSend.addEventListener('change', function ($event) {
             if(enterToSend.checked) makeEnterToSend(replyTextbox);
@@ -1340,6 +1338,18 @@ document.addEventListener('DOMContentLoaded', function () {
             replyFocus.addEventListener('click', function ($event) {
                 replyTextbox.focus();
             });
+
+        if(uploadFile){
+            uploadFile.addEventListener('change', function ($event) {
+                var f = uploadFile.files;
+                for(var i = 0; i < f.length; i++){
+                    filesToUpload.push(f[i]);
+                }
+
+                updateFileText(filesToUpload.length, file_num);
+                updateFiles(filesToUpload);
+            });
+        }
     }
 
     function sendRequestMessage(){
@@ -1357,6 +1367,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loading = true;
 
         var data;
+        var path = "";
 
         var is_new = replyTextbox.getAttribute('data-new');
         if(is_new){
@@ -1365,6 +1376,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 content: v,
                 client_key: $wp_data.client_auth
             };
+            path = 'ask_attorney';
         } else {
             var req_id = document.getElementById('req_id').value;
 
@@ -1374,25 +1386,67 @@ document.addEventListener('DOMContentLoaded', function () {
                 req_id: req_id,
                 client_key: $wp_data.client_auth
             };
+            path = 'req_mess';
         }
 
-        postData(data, function (data) {
-            if(data.status){
-                showSnackBar("Request submitted...");
-                if(is_new)
-                    location.href = "/user/attorney_request";
-                else
-                    location.reload();
-            } else {
+        if (filesToUpload.length){
+            var fd = new FormData();
+            var files  = filesToUpload;
+
+            for(var i = 0; i < files.length; i++) {
+                fd.append('file[' + i + ']', files[i]);
+            }
+
+            for(var key in data) {
+                if(data.hasOwnProperty(key)) {
+                    var value = data[key];
+                    fd.append(key, value);
+                }
+            }
+
+            fd.append('action', path);
+
+            jQuery.ajax({
+                type:"POST",
+                url: $wp_data.ajaxUrl,
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(d){
+                },
+                success:function(data){
+                    showSnackBar("Request submitted...");
+                    if(is_new)
+                        location.href = "/user/attorney_requests";
+                    else
+                        location.reload();
+                },
+                error: function(errorThrown){
+                    showLoadingButton(requestBtn, false);
+                    loading  = false;
+                    showSnackBar(data.message);
+                }
+            });
+
+        } else {
+            postData(data, function (data) {
+                if(data.status){
+                    showSnackBar("Request submitted...");
+                    if(is_new)
+                        location.href = "/user/attorney_requests";
+                    else
+                        location.reload();
+                } else {
+                    showLoadingButton(requestBtn, false);
+                    loading  = false;
+                    showSnackBar(data.message);
+                }
+            }, function (err) {
                 showLoadingButton(requestBtn, false);
                 loading  = false;
                 showSnackBar(data.message);
-            }
-        }, function (err) {
-            showLoadingButton(requestBtn, false);
-            loading  = false;
-            showSnackBar(data.message);
-        });
+            });
+        }
 
         return true;
     }
@@ -1416,6 +1470,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if(reviewTextbox){
         enterToSend = document.getElementById('enter-send');
+        uploadFile = document.getElementById('req-file');
 
         enterToSend.addEventListener('change', function ($event) {
             if(enterToSend.checked) rmakeEnterToSend(reviewTextbox);
@@ -1431,6 +1486,18 @@ document.addEventListener('DOMContentLoaded', function () {
             replyFocus.addEventListener('click', function ($event) {
                 reviewTextbox.focus();
             });
+
+        if(uploadFile){
+            uploadFile.addEventListener('change', function ($event) {
+                var f = uploadFile.files;
+                for(var i = 0; i < f.length; i++){
+                    filesToUpload.push(f[i]);
+                }
+
+                updateFileText(filesToUpload.length, file_num);
+                updateFiles(filesToUpload);
+            });
+        }
     }
 
     function sendReviewMessage(){
@@ -1459,23 +1526,60 @@ document.addEventListener('DOMContentLoaded', function () {
             client_key: $wp_data.client_auth
         };
 
-        postData(data, function (data) {
-            if(data.status){
-                showSnackBar("Request submitted...");
-                location.reload();
-            } else {
+        if (filesToUpload.length){
+            var fd = new FormData();
+            var files  = filesToUpload;
+
+            for(var i = 0; i < files.length; i++) {
+                fd.append('file[' + i + ']', files[i]);
+            }
+
+            for(var key in data) {
+                if(data.hasOwnProperty(key)) {
+                    var value = data[key];
+                    fd.append(key, value);
+                }
+            }
+
+            fd.append('action', url);
+
+            jQuery.ajax({
+                type:"POST",
+                url: $wp_data.ajaxUrl,
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(d){
+                },
+                success:function(data){
+                    showSnackBar("Request submitted...");
+                    location.reload();
+                },
+                error: function(errorThrown){
+                    showLoadingButton(requestBtn, false);
+                    loading  = false;
+                    showSnackBar(data.message);
+                }
+            });
+
+        } else {
+            postData(data, function (data) {
+                if(data.status){
+                    showSnackBar("Request submitted...");
+                    location.reload();
+                } else {
+                    showLoadingButton(requestBtn, false);
+                    loading  = false;
+                    showSnackBar(data.message);
+                }
+
+            }, function (err) {
                 showLoadingButton(requestBtn, false);
                 loading  = false;
                 showSnackBar(data.message);
-            }
-
-        }, function (err) {
-            showLoadingButton(requestBtn, false);
-            loading  = false;
-            showSnackBar(data.message);
-            console.log(err);
-        });
-
+                console.log(err);
+            });
+        }
         return true;
     }
 
@@ -1546,7 +1650,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var id = $selectedItem.context.parentElement.getAttribute('data-id');
                 addToEdit(id, value);
                 ableToCommit();
-            }
+            }, saveRemoteData: false
         })
     ;
 
@@ -1579,10 +1683,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function addToEdit(id, value){
-        edits.push({
-            id: id,
-            value: value
-        });
+        var ex = false;
+        for(var i = 0; i < edits.length; i++) {
+            var o = edits[i];
+            if(o.id === id) {
+                ex = true;
+                o.value = value;
+                break;
+            }
+        }
+
+        if(!ex){
+            edits.push({
+                id: id,
+                value: value
+            });
+        }
     }
 
     function ableToCommit(){
@@ -1696,11 +1812,12 @@ document.addEventListener('DOMContentLoaded', function () {
         for(var i = 0; i < actionBtns.length; i++) {
             actionBtns[i].addEventListener('click', function ($event) {
                 var att = $event.currentTarget.getAttribute('data-action');
-                performAction(att);
+                var role = request_type.getAttribute('data-role');
+                performAction(att, role);
             });
         }
 
-        function performAction(attr){
+        function performAction(attr, role){
             switch(attr){
             case 'send_message':
                 var article = document.querySelector('article#reply-box');
@@ -1709,15 +1826,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
             case 'mark_completed':
-                postAction('mark_completed');
+                postAction('mark_completed', role);
                 break;
             case 'remove_request':
-                postAction('remove_request');
+                postAction('remove_request', role);
                 break;
             }
         }
 
-        function postAction(action_type){
+        function postAction(action_type, role){
             if (loading) return;
 
             postData({
@@ -1727,9 +1844,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 req_id: req_id.value
             }, function (data) {
                 if (data.status){
-                    goback(request_type.value);
+                    goback(request_type.value, role);
                 } else {
                     showSnackBar('Already completed...');
+                    goback(request_type.value, role);
                 }
                 loading = false;
             }, function (err) {
@@ -1738,21 +1856,32 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        function goback(type){
+        function goback(type, role){
             switch(type){
             case "ASK_ATTORNEY":
-                location.href = "/admin/attorney_requests";
+                console.log("/" + role + "/attorney_requests");
+                location.href = "/" + role + "/attorney_requests";
                 break;
             case "REVIEW_DOCUMENT":
-                location.href = "/admin/document_reviews";
+                location.href = "/" + role + "/document_reviews";
                 break;
             case "REGISTER_BUSINESS":
-                location.href = "/admin/business_registrations";
+                location.href = "/" + role + "/business_registrations";
                 break;
             default:
-                console.log('wrong tpe');
+                console.log('wrong type given');
             }
         }
+    }
+
+    // Menu dropdown
+
+    var drops =  document.querySelectorAll('.navbar-item.has-dropdown');
+
+    for(var i = 0; i < drops.length; i++) {
+        drops[i].addEventListener('click', function ($event) {
+            $event.currentTarget.classList.toggle('is-active');
+        });
     }
     // Utility functions
 

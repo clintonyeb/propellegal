@@ -32,8 +32,6 @@ if ($limit * $PAGE < $DATA_COUNT){
 
     <div class="columns">
         <div class="column is-4">
-
-
             <div class="box has-top-yellow">
                 <p class="label">Search Documents</p>
                 <div class="field has-addons">

@@ -1,29 +1,31 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
+$avatar_name = $user -> avatar;
 $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
 parse_str($_SERVER['QUERY_STRING']);
 
-$bus_reg = getRegDetails($req_id);
-$messages = getRegMessages($req_id);
+$doc_rev = getDocRevDetails($req_id);
+$file_count = getFileCount($req_id);
+$messages = getReviewMessages($req_id);
 ?>
 
-<span data-href="business_registrations"></span>
+<span data-href="document_reviews"></span>
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Registration Details
+        Review Details
     </h2>
 
     <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
-                <a class="button is-warning" href="/user/business_registrations">
+                <a class="button is-warning" href="/attorney/document_reviews">
                     <span class="icon">
                         <i class="fa fa-angle-left"></i>
                     </span>
-                    <span> Go To Registrations</span>
+                    <span> Go To Reviews</span>
                 </a>
             </div>
             <div class="level-right">
@@ -37,37 +39,14 @@ $messages = getRegMessages($req_id);
         </div>
         <hr>
         <?php
-        echo getRegDetailsTemp($bus_reg);
+        echo getDocrevdetailstemplate($doc_rev, $file_count);
         foreach($messages as $mess){
-          $files = get_req_files($mess -> id, _REGISTER_BUSINESS_);
-            echo (getRevMesstemplate($mess, $files));
+          $files = get_req_files($mess -> id, _REVIEW_DOCUMENT_);
+            echo (getRevMessTemplate($mess, $files));
         }
         ?>
 
-        <hr >
-        <h4 class="title is-6 has-text-centered" id="admin-action">Actions you can perfrom on request</h4>
-        <div class="columns is-multiline">
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="send_message">Send Message</a>
-            </p>
-            </div>
-
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="mark_completed">Mark Completed</a>
-            </p>
-            </div>
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="remove_request">Remove Request</a>
-            </p>
-            </div>
-        </div>
-
-        <input type=hidden value="REGISTER_BUSINESS" id="action-type">
-
-        <article class="media is-hidden" id="reply-box">
+        <article class="media">
             <figure class="media-left">
                 <p class="image is-64x64">
                     <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="55" width="55">
@@ -76,13 +55,13 @@ $messages = getRegMessages($req_id);
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea id="review-textbox" class="textarea" placeholder="Send a reply to the user..."></textarea>
+                        <textarea id="review-textbox" class="textarea" placeholder="Send a reply to the lawyer..."></textarea>
                     </p>
                 </div>
                 <nav class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <a class="button is-primary" id="req-submit" data-url="reg_mess">Send Message</a>
+                            <a class="button is-primary" id="req-submit" data-url="rev_mess">Send Message</a>
                         </div>
                         <div class="level-item">
               <div class="file">
@@ -105,7 +84,7 @@ $messages = getRegMessages($req_id);
                         </div>
                     </div>
                 </nav>
-                <div class="files is-hidden" id="display-files">
+                  <div class="files is-hidden" id="display-files">
           <h2 class="subtitle is-6">
             Files count: <span id="doc-count" class="has-text-darker-yellow">0</span>
           </h2>
@@ -116,5 +95,7 @@ $messages = getRegMessages($req_id);
                 <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
         </article>
+
+    </div>
     </div>
 </section>

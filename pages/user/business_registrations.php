@@ -32,15 +32,15 @@ if ($limit * $PAGE < $DATA_COUNT){
 
     <div class="columns">
         <div class="column is-4">
-            
-            
+
+
             <div class="box has-top-yellow">
                 <p class="label">Search Registrations</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
                         <input class="input" type="text" id="request-search" placeholder="Search here for requests made">
                     </div>
-                    <div class="control" id="req-search-btn" data-url="business_registrations">
+                    <div class="control" id="req-search-btn" data-url="/user/business_registrations">
                         <a class="button is-warning">
                             Search
                         </a>
@@ -62,7 +62,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         <h3 class="title is-5">Registrations</h3>
                     </div>
                     <div class="level-right">
-                        
+
                         <p class="reload">
                             <span class="icon is-medium has-text-darker-yellow">
                                 <i class="fa fa-refresh"></i>
@@ -138,6 +138,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                 </table>
             </div>
         </div>
-        
+
     </div></div>
 </section>

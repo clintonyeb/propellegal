@@ -14,11 +14,11 @@
 <?php
 global $USER_PAYLOAD;
 if (!$USER_PAYLOAD['status']){
-    return redirect('/lawyer_login');
+    return redirect('/login');
 }
 
 if ($USER_PAYLOAD['data'] -> role_id != 2){
-    return redirect('/lawyer_login');
+    return redirect('/login');
 }
 
 get_template_part('template-parts/usernav');
@@ -28,15 +28,15 @@ get_template_part('template-parts/usernav');
 <section>
     <div class="columns">
         <div class="column is-narrow box is-padded">
-            <?php get_template_part('template-parts/lawyer', 'nav'); ?>
+            <?php get_template_part('template-parts/attorney', 'nav'); ?>
         </div>
         <div class="column">
             <?php
             $pagename = explode('-', get_query_var('pagename'));
             if (count($pagename) == 1){
-                get_template_part( 'pages/lawyer/' . $pagename[0]);
+                get_template_part( 'pages/attorney/' . $pagename[0]);
             } else {
-                get_template_part( 'pages/lawyer/' . $pagename[0], $pagename[1]);
+                get_template_part( 'pages/attorney/' . $pagename[0], $pagename[1]);
             }
             ?>
         </div>

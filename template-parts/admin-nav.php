@@ -8,8 +8,10 @@ $requests = getAllRequests(20);
 
 <aside class="menu is-primary is-hidden-touch">
     <p class="has-text-centered">
+        <a>
         <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" alt="User Avatar" class="user-avatar"><br>
         <b><?php echo ($user -> full_name) ?></b>
+        </a>
     </p>
     <hr class="is-marginless" />
     <p class="menu-label has-text-darker-blue">
@@ -24,12 +26,10 @@ $requests = getAllRequests(20);
                 &nbsp;&nbsp;General
             </a>
         </li>
-
-
     </ul>
 
     <p class="menu-label has-text-darker-blue">
-        USER ACTIVITIES
+        USER
     </p>
     <ul class="menu-list">
 

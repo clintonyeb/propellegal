@@ -38,7 +38,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                     <div class="control is-expanded">
                         <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed">
                     </div>
-                    <div class="control" id="req-search-btn" data-url="documents_created">
+                    <div class="control" id="req-search-btn" data-url="/admin/business_registrations">
                         <a class="button is-warning">
                             Search
                         </a>

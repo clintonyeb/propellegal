@@ -27,20 +27,20 @@ if ($limit * $PAGE < $DATA_COUNT){
 
 <section class="section" id="user_activities">
     <h2 class="title is-3">
-        Requests to an Attorney
+o        Requests to an Attorney
     </h2>
 
     <div class="columns">
         <div class="column is-4">
-            
-            
+
+
             <div class="box has-top-yellow">
                 <p class="label">Search Requests</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
                         <input class="input" type="text" id="request-search" placeholder="Search here for requests made">
                     </div>
-                    <div class="control" id="req-search-btn" data-url="attorney_requests">
+                    <div class="control" id="req-search-btn" data-url="/user/attorney_requests">
                         <a class="button is-warning">
                             Search
                         </a>
@@ -137,6 +137,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                 </table>
             </div>
         </div>
-        
+
     </div></div>
 </section>

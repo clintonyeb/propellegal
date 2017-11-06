@@ -57,7 +57,7 @@ get_template_part('template-parts/nav');
              </div>
              <div class="level-right">
                  <div class="level-item">
-                     <button class="button is-primary is-large is-focused" id="login-submit" data-url="user_login">Log Me In</button>
+                     <button class="button is-primary is-large is-focused" id="login-submit">Log Me In</button>
                  </div>
            </div>
          </div>

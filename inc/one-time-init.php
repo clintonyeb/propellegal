@@ -1,6 +1,159 @@
 <?php
-
 require_once(SITE_ROOT . "/inc/global.php");
+
+createTables();
+
+insertRoleTypes(1, _USER_ROLE_);
+insertRoleTypes(2, _LAWYER_ROLE_);
+insertRoleTypes(3, _ADMIN_ROLE_);
+
+insertActivityTypes(_CREATE_DOCUMENT_);
+insertActivityTypes(_LOGGED_IN_);
+insertActivityTypes(_UPLOAD_DOCUMENT_);
+insertActivityTypes(_REGISTERED_ACCOUNT_);
+insertActivityTypes(_ACTIVATED_ACCOUNT_);
+insertActivityTypes(_RECOVER_PASSWORD_);
+insertActivityTypes(_ASK_ATTORNEY_);
+insertActivityTypes(_REVIEW_DOCUMENT_);
+insertActivityTypes(_REGISTER_BUSINESS_);
+
+createAdmin();
+createUser();
+createLawyer();
+
+
+function insertRoleTypes($auth, $name){
+    global $wpdb;
+
+    $table_user_roles = _ROLE_TABLE_;
+
+    $wpdb -> insert(
+        $table_user_roles,
+        array(
+            'name' => $name,
+            'authority' => $auth
+        ),
+        array(
+            "%s",
+            "%d"
+        )
+    );
+}
+
+
+function insertActivityTypes($name){
+    global $wpdb;
+
+    $table_activity_type = _ACT_TYPE_TABLE_;
+
+    $wpdb -> insert(
+        $table_activity_type,
+        array(
+            'name' => $name
+        ),
+        array(
+            "%s"
+        )
+    );
+}
+
+// create admin account
+
+function createAdmin(){
+    global $wpdb;
+
+    $email = 'admin@propellegal.com';
+    $full_name = 'Master Admin';
+    $password = 'propellegal_admin';
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $table_users = _USER_TABLE_;
+
+    $result =  $wpdb->insert(
+        $table_users,
+        array(
+            'date_created' => current_time( 'mysql' ),
+            'email' => $email,
+            'full_name' => $full_name,
+            'password' => $hashed_password,
+            'role_id' => _ADMIN_ID_,
+            'avatar_name' => 'avatar.png',
+            'activated' => 1
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d"
+        )
+    );
+}
+
+
+// create test users
+
+function createUser(){
+    global $wpdb;
+
+    $email = 'foo@tom.com';
+    $full_name = 'Foo Tom';
+    $password = 'footom';
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $table_users = _USER_TABLE_;
+
+    $result =  $wpdb->insert(
+        $table_users,
+        array(
+            'date_created' => current_time( 'mysql' ),
+            'email' => $email,
+            'full_name' => $full_name,
+            'password' => $hashed_password,
+            'role_id' => _USER_ID_,
+            'avatar_name' => 'avatar.png',
+            'activated' => 1
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d"
+        )
+    );
+}
+
+function createLawyer(){
+    global $wpdb;
+
+    $email = 'foo@law.com';
+    $full_name = 'Law Tom';
+    $password = 'footom';
+
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $table_users = _USER_TABLE_;
+
+    $result =  $wpdb->insert(
+        $table_users,
+        array(
+            'date_created' => current_time( 'mysql' ),
+            'email' => $email,
+            'full_name' => $full_name,
+            'password' => $hashed_password,
+            'role_id' => _LAWYER_ID_,
+            'avatar_name' => 'avatar.png',
+            'activated' => 1
+        ),
+        array(
+            "%s",
+            "%s",
+            "%s",
+            "%s",
+            "%d"
+        )
+    );
+}
 
 function createTables(){
     global $wpdb;
@@ -144,7 +297,18 @@ function createTables(){
     PRIMARY KEY(id)
 ) $charset_collate;";
 
-    dbDelta($query);
+  dbDelta($query);
+
+  $table_req_files = _REQ_FILES_;
+    $query = "CREATE TABLE IF NOT EXISTS $table_req_files (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    item_id mediumint(9) NOT NULL,
+    req_type text NOT NULL,
+    path nvarchar(500) NOT NULL,
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+  dbDelta($query);
 
     $table_registrations = _BUS_REG_TABLE_;
     $query = "CREATE TABLE IF NOT EXISTS $table_registrations (
@@ -200,109 +364,70 @@ function createTables(){
 
     dbDelta($query);
 
-    $table_lawyer_task = _LAWYER_TASK_;
+    $table_lawyer_req = _LAWYER_REQ_;
 
-    $query = "CREATE TABLE IF NOT EXISTS $table_lawyer_task (
-    act_name text NOT NULL,
+    $query = "CREATE TABLE IF NOT EXISTS $table_lawyer_req (
     lawyer_id mediumint(9) NOT NULL,
     item_id mediumint(9) NOT NULL,
     date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-    FOREIGN KEY (lawyer_id) REFERENCES $table_users(id)
+    FOREIGN KEY (lawyer_id) REFERENCES $table_users(id),
+    FOREIGN KEY (item_id) REFERENCES $table_requests(id)
 ) $charset_collate;";
 
     dbDelta($query);
+
+    $table_lawyer_rev = _LAWYER_REV_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_lawyer_rev (
+    lawyer_id mediumint(9) NOT NULL,
+    item_id mediumint(9) NOT NULL,
+    date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (lawyer_id) REFERENCES $table_users(id),
+    FOREIGN KEY (item_id) REFERENCES $table_reviews(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+    $table_lawyer_bus = _LAWYER_BUS_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_lawyer_bus (
+    lawyer_id mediumint(9) NOT NULL,
+    item_id mediumint(9) NOT NULL,
+    date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (lawyer_id) REFERENCES $table_users(id),
+    FOREIGN KEY (item_id) REFERENCES $table_registrations(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+    $table_notifs = _NOTIF_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_notifs (
+    target_user_id mediumint(9) NOT NULL,
+    act_type tinytext NOT NULL,
+    item_id mediumint(9) NOT NULL,
+    date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    viewed bit DEFAULT 0,
+    FOREIGN KEY (target_user_id) REFERENCES $table_users(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
+
+    $table_feedback = _FEEDBACK_TABLE_;
+
+    $query = "CREATE TAB
+    id mediumint(9) NOT NULL,
+    user_id mediumint(9) NOT NULL,
+    act_type tinytext NOT NULL,
+    content nvarchar(1000),
+    rating int NOT NULL,
+    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES $table_users(id)
+) $charset_collate;";
+
+    dbDelta($query);
+
 }
-
-createTables();
-
-insertRoleTypes(1, _USER_ROLE_);
-insertRoleTypes(2, _LAWYER_ROLE_);
-insertRoleTypes(3, _ADMIN_ROLE_);
-
-function insertRoleTypes($auth, $name){
-    global $wpdb;
-
-    $table_user_roles = _ROLE_TABLE_;
-
-    $wpdb -> insert(
-        $table_user_roles,
-        array(
-            'name' => $name,
-            'authority' => $auth
-        ),
-        array(
-            "%s",
-            "%d"
-        )
-    );
-}
-
-insertActivityTypes(_CREATE_DOCUMENT_);
-insertActivityTypes(_LOGGED_IN_);
-insertActivityTypes(_UPLOAD_DOCUMENT_);
-insertActivityTypes(_REGISTERED_ACCOUNT_);
-insertActivityTypes(_ACTIVATED_ACCOUNT_);
-insertActivityTypes(_RECOVER_PASSWORD_);
-insertActivityTypes(_ASK_ATTORNEY_);
-insertActivityTypes(_REVIEW_DOCUMENT_);
-insertActivityTypes(_REGISTER_BUSINESS_);
-
-function insertActivityTypes($name){
-    global $wpdb;
-
-    $table_activity_type = _ACT_TYPE_TABLE_;
-
-    $wpdb -> insert(
-        $table_activity_type,
-        array(
-            'name' => $name
-        ),
-        array(
-            "%s"
-        )
-    );
-}
-
-// create admin account
-
-function createAdmin(){
-    global $wpdb;
-
-    $email = 'propellegal@admin.com';
-    $full_name = 'Master Admin';
-    $password = 'propellegal_admin';
-    $role_id = 3;
-
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-    $table_users = _USER_TABLE_;
-
-    $result =  $wpdb->insert(
-        $table_users,
-        array(
-            'date_created' => current_time( 'mysql' ),
-            'email' => $email,
-            'full_name' => $full_name,
-            'password' => $hashed_password,
-            'role_id' => _ADMIN_ID_,
-            'avatar_name' => 'avatar.png',
-            'activated' => 1
-        ),
-        array(
-            "%s",
-            "%s",
-            "%s",
-            "%s",
-            "%d"
-        )
-    );
-
-    if ($result){
-        error_log('Admin successfully created');
-    } else {
-        error_log('Error creating Admin account');
-    }
-}
-
-createAdmin();
 
 ?>

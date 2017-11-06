@@ -32,15 +32,15 @@ if ($limit * $PAGE < $DATA_COUNT){
 
     <div class="columns">
         <div class="column is-4">
-            
-            
+
+
             <div class="box has-top-yellow">
                 <p class="label">Search Documents</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
                         <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed">
                     </div>
-                    <div class="control" id="req-search-btn" data-url="document_reviews">
+                    <div class="control" id="req-search-btn" data-url="/user/document_reviews">
                         <a class="button is-warning">
                             Search
                         </a>
@@ -137,6 +137,6 @@ if ($limit * $PAGE < $DATA_COUNT){
                 </table>
             </div>
         </div>
-        
+
     </div></div>
 </section>
