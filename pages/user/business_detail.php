@@ -12,7 +12,7 @@ $messages = getRegMessages($req_id);
 <span data-href="business_registrations"></span>
 
 <section class="section" id="user_activities">
-    <h2 class="title is-3">
+    <h2 class="title is-4">
         Registration Details
     </h2>
 

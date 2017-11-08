@@ -7,7 +7,7 @@ $user = $USER_PAYLOAD['data'];
 <span data-href="attorney_requests"></span>
 
 <section class="section" id="create_document">
-    <h2 class="title is-3">
+    <h2 class="title is-4">
         Create Document
     </h2>
 
@@ -25,7 +25,7 @@ $user = $USER_PAYLOAD['data'];
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                Choose document category                                    
+                                Choose document category
                             </p>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ $user = $USER_PAYLOAD['data'];
 	        <a class="button is-primary is-medium" href="/user/attorney_requests">See all documents</a>
             </p>
         </div>
-        
+
         <div class="column">
             <div class="box has-top-blue">
                 <h3 class="title is-5">Create a Legal Document</h3>
@@ -143,108 +143,108 @@ $user = $USER_PAYLOAD['data'];
                     <h2 class="title is-6 has-margin-top">Pick a category:</h2>
 
                     <div class="div columns is-mobile is-gapless is-multiline">
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-1">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/box.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 1</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-2">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/cart.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 2</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-3">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/check.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 3</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-4">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/coin.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 4</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-5">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/diagram.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 5</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-6">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/graph.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 6</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-7">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/justice.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 8</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-8">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/justice-scale.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 8</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-9">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/open.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 9</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-10">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/pie-chart.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 10</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-11">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/rewind-time.svg">
                                 </figure>
                                 <br>
                                 <p class="has-text-centered">Category 11</p>
                             </div>
                         </div>
-                        <div class="column is-3">
+                        <div class="column is-2">
                             <div class="box is-scalable" data-value="category-12">
-                                <figure class="image is-4by3">
+                                <figure class="image is-64by64">
                                     <img src="<?php echo get_bloginfo( 'stylesheet_directory' ) ?>/assets/images/icons/store.svg">
                                 </figure>
                                 <br>

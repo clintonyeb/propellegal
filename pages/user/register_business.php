@@ -26,8 +26,8 @@ if ($limit * $PAGE < $DATA_COUNT){
 ?>
 
 <section class="section">
-    <h2 class="title is-3">
-        Upload a Document
+    <h2 class="title is-4">
+        Register a Business
     </h2>
 
     <div class="columns">

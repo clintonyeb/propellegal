@@ -11,7 +11,7 @@ $messages = getRequestMessages($req_id);
 <span data-href="attorney_requests"></span>
 
 <section class="section" id="user_activities">
-  <h2 class="title is-3">
+  <h2 class="title is-4">
     Requests to an Attorney
   </h2>
 

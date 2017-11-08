@@ -371,13 +371,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (state == '' || categoryName == '') return;
                 loading = true;
-                showLoadingButton($submitBtn, true);
 
-                postData({
+                var data = {
                     action: "get_files",
                     state: state,
                     category: cat
-                }, function(data){
+                };
+
+                showLoadingButton($submitBtn, true);
+
+                if (!makeSureUserAuthenticated(data, '/user/list-documents'))
+                    return false;
+
+                postData(data, function(data){
                     if (data.status){
                         localStorage.setItem('files', data.data);
                         localStorage.setItem('state', JSON.stringify(state));
@@ -755,7 +761,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if(askAttorneyBtn){
             askAttorneyBtn.addEventListener('click', function ($ev) {
                 if (askLoad) return false;
-                var contentEl = document.querySelector('.box.box-cont textarea');
+                var contentEl = document.querySelector('#attorney-text-el');
 
                 removeErrorField(contentEl);
 
@@ -774,7 +780,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     client_key: $wp_data.client_auth
                 };
 
-                if (!makeSureUserAuthenticated(data, '/user/request_messages'))
+                if (!makeSureUserAuthenticated(data, '/user/attorney_requests'))
                     return false;
 
                 postData(data, function(data){
@@ -817,28 +823,40 @@ document.addEventListener('DOMContentLoaded', function () {
                     return false;
                 }
 
-                showLoadingButton(businessAskBtn, true);
-                businessLoad = true;
-
-                postData({
+                var data = {
                     action: 'ask_business',
                     state: state.value,
                     business: type.value,
                     client_key: $wp_data.client_auth
-                }, function(data){
-                    if(data.status){
-                        showSnackBar('Request submitted...');
-                    }
-                    else {
-                        showSnackBar('An error occurred sending request...');
-                    }
-                    businessLoad = false;
-                    showLoadingButton(businessAskBtn, false);
-                }, function(err){
-                    showSnackBar('An error occurred sending request...');
-                    businessLoad = false;
-                    showLoadingButton(businessAskBtn, false);
-                });
+                };
+
+                if (!makeSureUserAuthenticated(data, '/user/register_business'))
+                    return false;
+
+                showLoadingButton(businessAskBtn, true);
+                businessLoad = true;
+
+                // postData({
+
+                //     }, function(data){
+                //         if(data.status){
+                //             showSnackBar('Request submitted...');
+                //         }
+                //         else {
+                //             showSnackBar('An error occurred sending request...');
+                //         }
+                //         businessLoad = false;
+                //         showLoadingButton(businessAskBtn, false);
+                //     }, function(err){
+                //         showSnackBar('An error occurred sending request...');
+                //         businessLoad = false;
+                //         showLoadingButton(businessAskBtn, false);
+                //     });
+
+                localStorage.setItem('data', JSON.stringify(data));
+                location.href = "/user/register_business";
+
+                return true;
             });
         }
 
@@ -923,15 +941,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var uploadDoc = document.getElementById('upload-doc'),
         fileEl = document.getElementById('file-upload'),
         file_num = document.querySelector('span#doc-count'),
-        filesToUpload = [],
+    filesToUpload = [],
         tags = document.getElementById('docs'),
-        step = 0,
+    step = 0,
         hiddens = document.querySelectorAll('.upload-box-cont'),
-        buttons = document.querySelectorAll('[data-step]'),
+    buttons = document.querySelectorAll('[data-step]'),
         progressBar = document.querySelector('.progress'),
         name, content,
         fileBox = document.getElementById('file-box'),
-        fileCont = document.getElementById('display-files');
+    fileCont = document.getElementById('display-files');
 
     if(uploadDoc){
         fileEl.addEventListener('change', function($event){
@@ -963,19 +981,40 @@ document.addEventListener('DOMContentLoaded', function () {
                         showBox(step);
                         updateProgress(10);
                         break;
-                    case 1:
+                    case 2:
+                        if (loading) return;
+
                         if(filesToUpload.length > 0){
-                            hideBoxes();
-                            step = 1;
-                            showBox(step);
-                            updateProgress(40);
+
+                            var data = {
+                                name: name,
+                                content: content
+                            };
+
+                            var url = 'upload_doc';
+                            loading = true;
+                            showLoadingButton(b, true);
+
+                            uploadFilesToServer(filesToUpload, data, url, function (err, res) {
+                                if (err){
+                                    displayMessage('There was an error uploading your files', 'is-danger');
+                                } else {
+                                    if(res.status){
+                                        hideBoxes();
+                                        updateProgress(98);
+                                        location.href =  "/user/document_reviews";
+                                    } else{
+                                        displayMessage('There was an error uploading your files', 'is-danger');
+                                    }
+                                }
+                                showLoadingButton(b, false);
+                                loading = false;
+                            });
                         }else {
                             displayMessage('Please upload at least one file', 'is-danger');
                         }
                         break;
-                    case 2:
-                        if (loading) return;
-
+                    case 1:
                         var detailsForm = document.getElementById('details');
 
                         var n = detailsForm['user_name'];
@@ -995,28 +1034,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         name = n.value;
                         content = c.value;
-                        loading = true;
-                        showLoadingButton(b, true);
 
-                        uploadFilesToServer(filesToUpload, {
+                        var data = {
+                            action: '',
                             name: name,
                             content: content
-                        }, 'upload_doc', function (err, res) {
-                            if (err){
-                                displayMessage('There was an error uploading your files', 'is-danger');
-                            } else {
-                                if(res.status){
-                                    hideBoxes();
-                                    step = 2;
-                                    showBox(step);
-                                    updateProgress(98);
-                                } else{
-                                    displayMessage('There was an error uploading your files', 'is-danger');
-                                }
-                            }
-                            showLoadingButton(b, false);
-                            loading = false;
-                        });
+                        };
+
+                        if (!makeSureUserAuthenticated(data, '/user/review_document'))
+                            return false;
+
+                        hideBoxes();
+                        step = 1;
+                        showBox(step);
+                        updateProgress(40);
 
                         break;
                     case 3:
@@ -1164,16 +1195,16 @@ document.addEventListener('DOMContentLoaded', function () {
         buttons = document.querySelectorAll('[data-step]');
         progressBar = document.querySelector('.progress');
         var firstname = document.getElementById('firstname'),
-            lastname =  document.getElementById('lastname'),
-            phone =  document.getElementById('phone'),
-            address =  document.getElementById('address'),
-            city =  document.getElementById('city'),
-            state =  document.getElementById('state'),
-            zip =  document.getElementById('zip'),
-            busType =  document.getElementById('bus-type'),
-            comName =  document.getElementById('com-name'),
-            comDesc =  document.getElementById('com-desc'),
-            mess = document.getElementById('mess');
+        lastname =  document.getElementById('lastname'),
+        phone =  document.getElementById('phone'),
+        address =  document.getElementById('address'),
+        city =  document.getElementById('city'),
+        state =  document.getElementById('state'),
+        zip =  document.getElementById('zip'),
+        busType =  document.getElementById('bus-type'),
+        comName =  document.getElementById('com-name'),
+        comDesc =  document.getElementById('com-desc'),
+        mess = document.getElementById('mess');
 
         for(var i = 0; i < buttons.length; i++) {
             buttons[i].addEventListener('click', function ($ev) {
@@ -1253,11 +1284,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             mess: mess.value
                         };
 
+                        if (!makeSureUserAuthenticated(data, '/user/business_registrations'))
+                            return false;
+
                         postData(data, function (data) {
                             if (data.status){
                                 location.href= "/user/business_registrations";
                             } else {
-                                showSnackBar(data.message);
+                                showSnackBar('Error submitting request');
                                 showLoadingButton(b, false);
                             }
                             loading  = false;
@@ -2087,6 +2121,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    function makeSureUserAuthenticatedWithFiles(files, data, dataUrl, url) {
+        if(authenticated){
+            return true;
+        } else {
+            localStorage.setItem('redirect', JSON.stringify(url));
+            localStorage.setItem('redirect-data', JSON.stringify(data));
+            location.href = "/login";
+        }
+        return false;
+    }
+
     function sendUnsentUserPayload(){
         var has = localStorage.getItem('redirect');
         if (has){
@@ -2094,10 +2139,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if(has){
                 var data = JSON.parse(localStorage.getItem('redirect-data'));
                 showSnackBar('Sending request');
+
                 postData(data,
-                         function (data) {
-                             if(data.status){
+                         function (res) {
+                             if(res.status){
                                  showSnackBar("Request sent successfully");
+                                 if (has == "/user/list-documents"){
+                                     localStorage.setItem('files', res.data);
+                                     localStorage.setItem('state', JSON.stringify(data.state));
+                                     localStorage.setItem('category', JSON.stringify(data.category));
+                                     location.href = '/user/list-documents';
+                                 }
                              }
                              else {
                                  showSnackBar("There was an error sending request");
@@ -2107,8 +2159,9 @@ document.addEventListener('DOMContentLoaded', function () {
                              showSnackBar("There was an error sending request");
                          });
             }
+
             clearStorageData();
-            location.href = has;
+            location.href = has + '/?redirected=true';
             return true;
         }
         return false;

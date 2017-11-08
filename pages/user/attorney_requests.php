@@ -26,7 +26,7 @@ if ($limit * $PAGE < $DATA_COUNT){
 ?>
 
 <section class="section" id="user_activities">
-    <h2 class="title is-3">
+    <h2 class="title is-4">
 o        Requests to an Attorney
     </h2>
 

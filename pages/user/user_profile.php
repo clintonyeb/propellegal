@@ -7,7 +7,7 @@ $avatar_name = $avatar -> avatar_name;
 ?>
 
 <section class="section" id="user_profile">
-    <h2 class="title is-3">
+    <h2 class="title is-4">
         Profile
     </h2>
 

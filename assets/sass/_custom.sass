@@ -16,7 +16,7 @@ nav
 
 #brand-mob
   &:hover
-  background-color: transparent !important
+    background-color: transparent !important
   img
     transform: scale(3.5)
     position: relative
@@ -29,8 +29,10 @@ nav
   position: relative
   z-index: 10
   .navbar-start
-    .navbar-item
-      font-size: .8em
+    a
+      &.navbar-item
+        font-size: .8em
+        color: $white
   .navbar-end
     .button
       &.menu-icon
@@ -268,11 +270,15 @@ aside
 
 #general
   background-color: #f2f2f2
-
+  h2
+    overflow: hidden
+    white-space: nowrap
+    with: 100%
+    text-overflow: ellipsis
   .columns
     align-items: baseline
     .box
-      min-height: 30rem
+      min-height: 20rem
       //height: 100%
 
   .image
@@ -281,6 +287,7 @@ aside
   .box
     transition: 200ms
     transition-timing-function: ease-in-out
+    box-shadow: .5px .5px 20px rgba(0,0,0,0.30), -.51px -.51px 20px rgba(0,0,0,0.30)
     p
       &.content
         color: #212121
@@ -599,16 +606,12 @@ p
     font-weight: bolder
     margin-bottom: 1em
 
-  form
-    width: 100%
-    max-width: 800px
-    margin: 1em auto
   .butts
     display: inline-block
 
   .upload
     .box-cont
-    transition: all 200ms ease-in-out
+      transition: all 200ms ease-in-out
 
   .progress
     height: .5em

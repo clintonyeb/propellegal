@@ -28,7 +28,7 @@ if ($limit * $PAGE < $DATA_COUNT){
 <span data-href="create_document"></span>
 
 <section class="section" id="document-form">
-    <h2 class="title is-3">
+    <h2 class="title is-4">
         Upload a Document
     </h2>
 
@@ -45,7 +45,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                             General Info
                         </h2>
                     </div>
-                    
+
                     <div class="column">
                         <p class="step">
                             2.
@@ -63,7 +63,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </h2>
                     </div>
                 </div>
-                
+
                 <progress class="progress is-warning" value="2" max="100">2%</progress>
 
                 <div class="upload-box-cont">
@@ -85,7 +85,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="field is-horizontal">
                             <div class="field-label is-normal">
                                 <label class="label">Address</label>
@@ -128,7 +128,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                                                 <option value="state-4">State 4</option>
                                             </select>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -158,13 +158,13 @@ if ($limit * $PAGE < $DATA_COUNT){
                         </div>
 
                         <h2 class="subtitle is-5 bordered">Document Preview:</h2>
-                        
+
                         <div id="doc_prev" class="box">
                             <img class="image">
                         </div>
                     </form>
                 </div>
-                
+
                 <article class="message is-hidden is-small has-margin-top" style="max-width:500px; margin: 1rem auto">
                     <div class="message-body">
                     </div>

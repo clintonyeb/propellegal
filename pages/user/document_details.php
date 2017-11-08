@@ -13,7 +13,7 @@ $messages = getReviewMessages($req_id);
 <span data-href="document_reviews"></span>
 
 <section class="section" id="user_activities">
-  <h2 class="title is-3">
+  <h2 class="title is-4">
     Review Details
   </h2>
 
