@@ -4,9 +4,7 @@ $doc_created_count = getActivityCount(_CREATE_DOCUMENT_);
 $doc_review_count = getActivityCount(_REVIEW_DOCUMENT_);
 $attorney_count = getActivityCount(_ASK_ATTORNEY_);
 $register_count = getActivityCount(_REGISTER_BUSINESS_);
-
-$notifications = array();
-
+$notifs = getUserNotifs(30);
 $user_full = getUserDetails();
 ?>
 
@@ -18,13 +16,13 @@ $user_full = getUserDetails();
                 <div class="box has-top-blue">
                     <h3 class="title is-5">Recent Notifications</h3>
                     <?php
-                    foreach($notifications as $not){
-                        echo getActivitytemplate($not);
+                    foreach($notifs as $not){
+                        echo getNotifsTemplate($not);
                     }
-                    $c = count($notifications);
+                    $c = count($notifs);
 
                     while($c < 7){
-                        echo getActivitytemplate(NULL);
+                        echo getNotifsTemplate(NULL);
                         $c++;
                     }
                     ?>

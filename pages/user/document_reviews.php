@@ -126,10 +126,15 @@ if ($limit * $PAGE < $DATA_COUNT){
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No documents found...</p>");
                         } else {
-                            foreach($requests as $req){
-                                echo('<tr data-href=/user/document_details/?req_id=' . $req -> id . ' class=clickable>');
-                                echo (getAllDocReviewstemplate($req));
-                                echo("</tr>");
+                          foreach($requests as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr data-href=/user/document_details/?req_id=$req_id&req_status=$req_status&req_feedback=$req_feedback class=clickable>";
+                            echo($str);
+                            echo (getAllDocReviewstemplate($req));
+                            echo("</tr>");
                             }
                         }
                         ?>

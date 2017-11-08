@@ -120,8 +120,13 @@ if ($limit * $PAGE < $DATA_COUNT){
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No registrations found...</p>");
                         } else {
-                            foreach($requests as $req){
-                                echo('<tr data-href=/attorney/business_detail/?req_id=' . $req -> id . ' class=clickable>');
+                          foreach($requests as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr data-href=/attorney/business_detail/?req_id=$req_id&req_status=$req_status&req_feedback=$req_feedback class=clickable>";
+                                echo($str);
                                 echo (getAllRequestsTemplate($req));
                                 echo("</tr>");
                             }

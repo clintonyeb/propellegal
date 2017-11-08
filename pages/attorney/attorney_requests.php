@@ -38,7 +38,7 @@ if ($limit * $PAGE < $DATA_COUNT){
                 <p class="label">Search Documents</p>
                 <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed">
+                        <input class="input" type="text" id="request-search" placeholder="Search here for documents reviewed" value="<?php echo $query ?>">
                     </div>
                     <div class="control" id="req-search-btn" data-url="/attorney/attorney_requests">
                         <a class="button is-warning">
@@ -106,8 +106,13 @@ if ($limit * $PAGE < $DATA_COUNT){
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No documents found...</p>");
                         } else {
-                            foreach($results as $req){
-                                echo('<tr data-href=/attorney/request_messages/?req_id=' . $req -> id . ' class=clickable>');
+                          foreach($results as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr data-href=/attorney/request_messages/?req_id=$req_id&req_status=$req_status&req_feedback=$req_feedback class=clickable>";
+                                echo($str);
                                 echo (getAllRequestsTemplate($req));
                                 echo("</tr>");
                             }

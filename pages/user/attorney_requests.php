@@ -126,8 +126,13 @@ o        Requests to an Attorney
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No requests found...</p>");
                         } else {
-                            foreach($requests as $req){
-                                echo('<tr data-href=/user/request_messages/?req_id=' . $req -> id . ' class=clickable>');
+                          foreach($requests as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr data-href=/user/request_messages/?req_id=$req_id&req_status=$req_status&req_feedback=$req_feedback class=clickable>";
+                            echo($str);
                                 echo (getAllRequestsTemplate($req));
                                 echo("</tr>");
                             }

@@ -70,6 +70,8 @@ add_action('wp_ajax_reg_mess', 'reg_mess');
 add_action('wp_ajax_nopriv_reg_mess', 'reg_mess');
 add_action('wp_ajax_upload_avatar', 'upload_avatar');
 add_action('wp_ajax_nopriv_upload_avatar', 'upload_avatar');
+add_action('wp_ajax_req_feedback', 'req_feedback');
+add_action('wp_ajax_nopriv_req_feedback', 'req_feedback');
 
 // admin actions
 add_action('wp_ajax_admin_requests', 'admin_requests');
@@ -1618,7 +1620,7 @@ function getRequests($limit = 10){
   $table_requests = _REQUEST_TABLE_;
   $table_activities = _ACTIVITY_TABLE_;
 
-  $query = "SELECT $table_requests.id, date_created, type_name, status
+  $query = "SELECT $table_requests.id, date_created, type_name, status, feedback
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
@@ -1663,7 +1665,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
 
     $DATA_COUNT = $wpdb -> get_var($query);
 
-    $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
+    $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
@@ -1691,7 +1693,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
 
   $DATA_COUNT = $wpdb -> get_var($query);
 
-  $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status
+  $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_requests
              INNER JOIN $table_activities
              ON $table_requests.act_id = $table_activities.id
@@ -2025,7 +2027,7 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
     $DATA_COUNT = $wpdb -> get_var($query);
 
 
-    $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
+    $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_doc_reviews
              INNER JOIN $table_activities
              ON $table_doc_reviews.act_id = $table_activities.id
@@ -2053,7 +2055,7 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
 
   $DATA_COUNT = $wpdb -> get_var($query);
 
-  $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status
+  $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_doc_reviews
              INNER JOIN $table_activities
              ON $table_doc_reviews.act_id = $table_activities.id
@@ -2329,7 +2331,7 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
     $DATA_COUNT = $wpdb -> get_var($query);
 
 
-    $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
+    $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_regs
              INNER JOIN $table_activities
              ON $table_regs.act_id = $table_activities.id
@@ -2357,7 +2359,7 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
 
   $DATA_COUNT = $wpdb -> get_var($query);
 
-  $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status
+  $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_regs
              INNER JOIN $table_activities
              ON $table_regs.act_id = $table_activities.id
@@ -2519,7 +2521,7 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
 
 function getAllDocTemp($doc){
   $status = _COMPLETED_;
-  $date = time_elapsed_string($req -> date_created);
+  $date = time_elapsed_string($doc -> date_created);
   $doc_id = $doc -> id;
   $status_color = get_color($status);
   $category = $doc -> category;
@@ -3078,7 +3080,7 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
     $DATA_COUNT = $wpdb -> get_var($query);
 
 
-    $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created
+    $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created, feedback
              FROM $table_name
              INNER JOIN $table_activities
              ON $table_name.act_id = $table_activities.id
@@ -3107,7 +3109,7 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
 
   $DATA_COUNT = $wpdb -> get_var($query);
 
-  $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created
+  $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created, feedback
              FROM $table_name
              INNER JOIN $table_activities
              ON $table_name.act_id = $table_activities.id
@@ -3146,38 +3148,46 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
   $user_id = $user -> user_id;
 
   if ($q){
-
+    error_log($q);
     $query = "SELECT COUNT(*)
-             FROM $table_tasks
+             From $table_tasks
+             INNER JOIN $table_name
+             ON $table_name.id=$table_tasks.item_id
              INNER JOIN $table_activities
-             ON $table_name.act_id = $table_activities.id
-             WHERE full_name LIKE '%s'
-             OR WHERE mess LIKE '%s';";
+             ON $table_activities.id=$table_name.act_id
+             INNER JOIN $table_users
+             ON $table_users.id=$table_activities.user_id
+             WHERE (lawyer_id=$user_id)
+             AND (full_name LIKE '%s'
+             OR mess LIKE '%s');";
 
 
     $query = $wpdb -> prepare(
       $query, array(
-        "%$q%"
+        "%$q%", "%$q%"
       )
     );
 
     $DATA_COUNT = $wpdb -> get_var($query);
 
 
-    $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created
-             FROM $table_name
-             INNER JOIN $table_tasks
-             ON $table_name.act_id = $table_activities.id
+    $query = "SELECT $table_name.id, mess, viewed, full_name, status, last_updated, feedback
+             From $table_tasks
+             INNER JOIN $table_name
+             ON $table_name.id=$table_tasks.item_id
+             INNER JOIN $table_activities
+             ON $table_activities.id=$table_name.act_id
              INNER JOIN $table_users
-             ON $table_activities.user_id = $table_users.id
-             WHERE full_name LIKE '%s'
-             OR WHERE mess LIKE '%s'
-             ORDER BY date_created DESC
+             ON $table_users.id=$table_activities.user_id
+             WHERE (lawyer_id=$user_id)
+             AND (full_name LIKE '%s'
+             OR mess LIKE '%s')
+             ORDER BY date_assigned DESC
              LIMIT $limit";
 
     $query = $wpdb -> prepare(
       $query, array(
-        "%$q%"
+        "%$q%", "%$q%"
       )
     );
 
@@ -3193,7 +3203,7 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
 
   $DATA_COUNT = $wpdb -> get_var($query);
 
-  $query = "SELECT $table_name.id, mess, viewed, full_name, status, last_updated
+  $query = "SELECT $table_name.id, mess, viewed, full_name, status, last_updated, feedback
              FROM $table_tasks
              INNER JOIN $table_name
              ON $table_name.id=$table_tasks.item_id
@@ -3220,6 +3230,7 @@ function getAdminTableTemp($req, $get_info){
   $mess = $info['mess'];
   $url = $info['detail_url'];
   $id = $req -> id;
+  $feedback = $req -> feedback;
   $statusAction = determineStatusAction($req, $status);
 
   return (
@@ -3235,7 +3246,7 @@ function getAdminTableTemp($req, $get_info){
         <td  style=\"\">
            <p>$mess</p>
            <p class=\"\" style=\"\">
-               <a class=\"is-hoverable\" href=\"/admin/$url/?req_id=$id\">View Request</a>
+               <a class=\"is-hoverable\" href=\"/admin/$url/?req_id=$id&req_status=$status&req_feedback=$feedback\">View Request</a>
           </p>
        </td>
        <td  style=\"\">
@@ -3273,11 +3284,7 @@ function determineStatusAction($req, $status){
             </p>
           ");
   } else {
-    return ("
-            <p>
-               <a class=\"button is-primary is-outlined\">FEEDBACK</a>
-            </p>
-         ");
+    return ("");
   }
 }
 
@@ -3748,4 +3755,86 @@ function formatBytes($bytes, $precision = 2) {
   $bytes /= (1 << (10 * $pow));
 
   return round($bytes, $precision) . ' ' . $units[$pow];
+}
+
+
+function req_feedback(){
+  global $USER_PAYLOAD;
+  global $wpdb;
+
+  $req_id = $_POST['req_id'];
+  $action_type = $_POST['action_type'];
+  $comment = $_POST['comment'];
+  $rating = $_POST['rating'];
+
+  $table_feedback = _FEEDBACK_TABLE_;
+  $user = $USER_PAYLOAD['data'];
+  $user_id = $user -> user_id;
+  $result =  $wpdb->insert(
+    $table_feedback,
+    array(
+      'date_created' => current_time( 'mysql' ),
+      'item_id' => $req_id,
+      'act_type' => $action_type,
+      'content' => $comment,
+      'rating' => $rating
+    ),
+    array(
+      "%s",
+      "%d",
+      "%s",
+      "%s",
+      "%d",
+    )
+  );
+
+  if ($result){
+      $feedback_id = $wpdb -> insert_id;
+
+      $table_name = getUserTableNameFromAction($action_type);
+
+      $up = $wpdb -> update(
+          $table_name,
+          array(
+              'feedback' => 1
+          ),
+          array(
+              'id' => $req_id
+          ),
+          array(
+              '%d'
+          ),
+          array(
+              '%d'
+          )
+      );
+
+      if ($up !== false){
+          wp_send_json(array(
+              'status' => true,
+              'message' => "Success"
+          ));
+      }
+  }
+
+  wp_send_json(array(
+      'status' => false,
+      'message' => "Error adding feedback"
+  ));
+
+  die();
+}
+
+function getRequestFeedback($req_id, $req_type){
+    global $wpdb;
+    $table_feedback = _FEEDBACK_TABLE_;
+
+    $query = "SELECT rating, content
+             FROM $table_feedback
+             WHERE item_id=$req_id
+             AND act_type='$req_type'
+             ORDER BY date_created DESC
+             LIMIT 1;";
+
+    return (($wpdb -> get_results($query, OBJECT))[0]);
 }

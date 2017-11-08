@@ -1989,6 +1989,119 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Feedback
+
+    var feedbackBtn = document.querySelector('a[data-feedback]');
+    if (feedbackBtn){
+        var modal = document.getElementById('feedback-modal');
+        var ratingFig = document.querySelector('#feedback-modal #rat-fig');
+        var ratingMess =  document.querySelector('#feedback-modal #rat-mess');
+        var ratSubmit =  document.querySelector('#feedback-modal #rat-submit');
+        var ratComment =  document.querySelector('#feedback-modal #rat-comment');
+        var req_id = document.getElementById('req_id');
+        var req_type = document.getElementById('action-type');
+
+        var rating = 0;
+
+        feedbackBtn.addEventListener('click', function ($event) {
+            modal.classList.add('is-active');
+        });
+
+        var close = document.querySelector('#feedback-modal .delete');
+        close.addEventListener('click', function ($event) {
+            modal.classList.remove('is-active');
+        });
+
+        var cancel = document.querySelector('#feedback-modal .button.is-danger');
+        cancel.addEventListener('click', function ($event) {
+            modal.classList.remove('is-active');
+        });
+
+        var stars = document.querySelectorAll('#feedback-modal .feed-icon');
+        for(var i = 0; i < stars.length; i++) {
+            stars[i].addEventListener('click', function ($event) {
+                var t = $event.currentTarget;
+                var index = t.getAttribute('data-index');
+                updateRating(index);
+            });
+        }
+
+        ratSubmit.addEventListener('click', function ($event) {
+            if (loading) return false;
+            var r = rating;
+            var comment = ratComment.value ? ratComment.value : false;
+
+            if(!r){
+                return false;
+            }
+
+            loading = true;
+            showLoadingButton(ratSubmit, true);
+            var data =  {
+                'action': 'req_feedback',
+                'req_id': req_id.value,
+                'action_type': req_type.value,
+                'comment': comment,
+                'rating': r
+            };
+
+            postData(data, function (data) {
+                loading = false;
+                showLoadingButton(ratSubmit, false);
+                if (data.status){
+                    modal.classList.remove('is-active');
+                    showSnackBar('Feedback sent...');
+                } else {
+                    showSnackBar('Error sending feedback...');
+                }
+                console.log(data);
+            }, function (err) {
+                showSnackBar('Error sending feedback...');
+                console.log(err);
+            });
+
+            return true;
+        });
+
+        function updateRating(index) {
+            rating = index;
+            ratingFig.innerHTML = rating;
+            ratingMess.innerHTML = getRatingMess(Number(index));
+            for(var i = 0; i < stars.length; i++) {
+                var s = stars[i];
+                if (i < index){
+                    s.classList.remove('fa-star-o');
+                    s.classList.add('fa-star');
+                } else {
+                    s.classList.remove('fa-star');
+                    s.classList.add('fa-star-o');
+                }
+            }
+        }
+
+        function getRatingMess(index) {
+            switch(index){
+            case 0:
+                return '';
+            case 1:
+                return 'Very Bad!';
+            case 2:
+                return 'Bad';
+            case 3:
+                return 'Good';
+            case 4:
+                return 'Very Good';
+            case 5:
+                return 'Excellent!';
+            }
+        }
+
+
+
+    }
+
+    // End of Feedback
+
 
     function clearResults(el) {
         while (el.firstChild) {

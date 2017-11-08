@@ -1,24 +1,39 @@
 <?php
 global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
-$avatar_name = $user -> avatar;
 $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
+$req_status = false;
+$req_feedback = 0;
 parse_str($_SERVER['QUERY_STRING']);
 
 $doc_rev = getDocRevDetails($req_id);
 $file_count = getFileCount($req_id);
 $messages = getReviewMessages($req_id);
+if($req_feedback){
+  $feedback  = getRequestFeedback($req_id, _REVIEW_DOCUMENT_);
+  $rating = $feedback -> rating;
+  $feed_comment = $feedback -> content;
+}
 ?>
 
 <span data-href="document_reviews"></span>
 
 <section class="section" id="user_activities">
-    <h2 class="title is-3">
+  <div class="level">
+    <div class="level-left">
+      <h2 class="title is-4">
         Review Details
-    </h2>
+      </h2>
+    </div>
+    <div class="level-right">
+      <p class="" id="admin-action">
+        <a class="button is-primary is-outlined"><?php echo $req_status ?> </a>
+      </p>
+    </div>
+  </div>
 
-    <div class="box has-blue-top">
+  <div class="box has-blue-top">
         <div class="level">
             <div class="level-left">
                 <a class="button is-warning" href="/user/document_reviews">
@@ -28,6 +43,7 @@ $messages = getReviewMessages($req_id);
                     <span> Go To Reviews</span>
                 </a>
             </div>
+            <?php if ($req_status == _PROCESSING_): ?>
             <div class="level-right">
                 <a class="button is-primary" id="reply-focus">
                     <span> Reply To Messages</span>
@@ -36,6 +52,7 @@ $messages = getReviewMessages($req_id);
                     </span>
                 </a>
             </div>
+            <?php endif ?>
         </div>
         <hr>
         <?php
@@ -47,29 +64,9 @@ $messages = getReviewMessages($req_id);
         ?>
 
         <hr>
-        <h4 class="title is-6 has-text-centered" id="admin-action">Actions you can perfrom on request</h4>
-        <div class="columns is-multiline">
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="send_message">Send Message</a>
-            </p>
-            </div>
 
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="mark_completed">Mark Completed</a>
-            </p>
-            </div>
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="remove_request">Remove Request</a>
-            </p>
-            </div>
-        </div>
-
-        <input type=hidden value="REVIEW_DOCUMENT" id="action-type">
-
-        <article class="media is-hidden" id="reply-box">
+        <?php if ($req_status == _PROCESSING_): ?>
+        <article class="media" id="reply-box">
             <figure class="media-left">
                 <p class="image is-64x64">
                     <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" height="55" width="55">
@@ -118,5 +115,33 @@ $messages = getReviewMessages($req_id);
                 <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
         </article>
-    </div>
+        <?php endif ?>
+
+        <?php if($req_feedback) : ?>
+      <div class="control has-text-centered">
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 1 ? 'fa-star' : 'fa-star-o') ?>" data-index=1></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 2 ? 'fa-star' : 'fa-star-o') ?>" data-index=2></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 3 ? 'fa-star' : 'fa-star-o') ?>" data-index=3></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 4 ? 'fa-star' : 'fa-star-o') ?>" data-index=4></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 5 ? 'fa-star' : 'fa-star-o') ?>" data-index=5></i>
+            </a>
+      </div>
+      <p class="has-text-centered">
+        <?php echo ($feed_comment != 'false' ? $feed_comment : '');  ?>
+      </p>
+    <?php endif ?>
+
+
+  </div>
+  <input type=hidden value="REVIEW_DOCUMENT" id="action-type">
+  <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
 </section>

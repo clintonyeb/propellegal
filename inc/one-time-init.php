@@ -174,6 +174,19 @@ function createTables(){
 
     dbDelta($query);
 
+  $table_feedback = _FEEDBACK_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_feedback (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    item_id mediumint(9) NOT NULL,
+    act_type tinytext NOT NULL,
+    content nvarchar(1000),
+    rating int NOT NULL,
+    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    PRIMARY KEY (id)
+) $charset_collate;";
+
+    dbDelta($query);
 
     // create user table
 
@@ -234,6 +247,7 @@ function createTables(){
     status nvarchar(100) NOT NULL,
     last_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     viewed bit DEFAULT 0,
+    feedback bit DEFAULT 0,
     FOREIGN KEY (act_id) REFERENCES $table_activities(id),
     PRIMARY KEY(id)
 ) $charset_collate;";
@@ -265,6 +279,7 @@ function createTables(){
     last_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     viewed bit DEFAULT 0,
     doc_user_name nvarchar(255) NOT NULL,
+    feedback bit DEFAULT 0,
     FOREIGN KEY (act_id) REFERENCES $table_activities(id),
     PRIMARY KEY(id)
 ) $charset_collate;";
@@ -328,6 +343,7 @@ function createTables(){
     bus_type  nvarchar(50),
     com_name  nvarchar(255),
     com_desc nvarchar(1000),
+    feedback bit DEFAULT 0,
     FOREIGN KEY (act_id) REFERENCES $table_activities(id),
     PRIMARY KEY(id)
 ) $charset_collate;";
@@ -412,22 +428,6 @@ function createTables(){
 ) $charset_collate;";
 
     dbDelta($query);
-
-
-    $table_feedback = _FEEDBACK_TABLE_;
-
-    $query = "CREATE TAB
-    id mediumint(9) NOT NULL,
-    user_id mediumint(9) NOT NULL,
-    act_type tinytext NOT NULL,
-    content nvarchar(1000),
-    rating int NOT NULL,
-    date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES $table_users(id)
-) $charset_collate;";
-
-    dbDelta($query);
-
 }
 
 ?>

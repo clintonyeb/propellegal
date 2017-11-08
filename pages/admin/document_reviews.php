@@ -108,8 +108,13 @@ if ($limit * $PAGE < $DATA_COUNT){
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No documents found...</p>");
                         } else {
-                            foreach($results as $req){
-                                echo('<tr data-href=/user/created_details/?req_id=' . $req -> id . '>');
+                          foreach($results as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr>";
+                                echo($str);
                                 echo (getAdminRevTemp($req));
                                 echo("</tr>");
                             }

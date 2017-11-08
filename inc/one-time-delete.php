@@ -10,9 +10,6 @@ $wpdb->query("DROP TABLE IF EXISTS $table_notifs");
 $table_req_files = _REQ_FILES_;
 $wpdb->query("DROP TABLE IF EXISTS $table_req_files");
 
-$table_feedback = _FEEDBACK_TABLE_;
-$wpdb->query("DROP TABLE IF EXISTS $table_feedback");
-
 $table_lawyer_rev = _LAWYER_REV_;
 $wpdb->query("DROP TABLE IF EXISTS $table_lawyer_rev");
 
@@ -54,4 +51,8 @@ $wpdb->query( "DROP TABLE IF EXISTS $table_users" );
 
 $table_user_roles = _ROLE_TABLE_;
 $wpdb->query( "DROP TABLE IF EXISTS $table_user_roles" );
+
+$table_feedback = _FEEDBACK_TABLE_;
+$wpdb->query("DROP TABLE IF EXISTS $table_feedback");
+
 ?>

@@ -3,19 +3,37 @@ global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
 $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
+$req_status = false;
+$req_feedback = 0;
 parse_str($_SERVER['QUERY_STRING']);
 
 $doc_rev = getDocRevDetails($req_id);
 $file_count = getFileCount($req_id);
 $messages = getReviewMessages($req_id);
+
+if($req_feedback){
+  $feedback  = getRequestFeedback($req_id, _REVIEW_DOCUMENT_);
+  $rating = $feedback -> rating;
+  $feed_comment = $feedback -> content;
+}
+
 ?>
 
 <span data-href="document_reviews"></span>
 
 <section class="section" id="user_activities">
-  <h2 class="title is-4">
-    Review Details
-  </h2>
+  <div class="level">
+    <div class="level-left">
+      <h2 class="title is-4">
+        Review Details
+      </h2>
+    </div>
+    <div class="level-right">
+      <p class="" id="admin-action">
+        <a class="button is-primary is-outlined" <?php echo ($req_feedback ? "disabled" : ""); ?>  <?php echo ($req_status == _COMPLETED_ ? "data-feedback" : ""); ?>><?php echo ($req_status == _COMPLETED_ ? "Provide Feedback" : $req_status); ?> </a>
+      </p>
+    </div>
+  </div>
 
   <div class="box has-blue-top">
     <div class="level">
@@ -27,14 +45,16 @@ $messages = getReviewMessages($req_id);
           <span> Go To Reviews</span>
         </a>
       </div>
-      <div class="level-right">
-        <a class="button is-primary" id="reply-focus">
-          <span> Reply To Messages</span>
-          <span class="icon">
-            <i class="fa fa-reply"></i>
-          </span>
-        </a>
-      </div>
+      <?php if ($req_status == _PROCESSING_): ?>
+        <div class="level-right">
+          <a class="button is-primary" id="reply-focus">
+            <span> Reply To Messages</span>
+            <span class="icon">
+              <i class="fa fa-reply"></i>
+            </span>
+          </a>
+        </div>
+      <?php endif ?>
     </div>
     <hr>
     <?php
@@ -44,6 +64,9 @@ $messages = getReviewMessages($req_id);
       echo (getRevMessTemplate($mess, $files));
     }
     ?>
+    <hr>
+
+    <?php if ($req_status == _PROCESSING_): ?>
 
     <article class="media">
       <figure class="media-left">
@@ -91,10 +114,43 @@ $messages = getReviewMessages($req_id);
           <div id="docs" class="tags"></div>
 
         </div>
-        <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
       </div>
     </article>
 
+    <?php endif ?>
+
+    <?php if($req_status == _COMPLETED_): ?>
+
+      <h4 class="subtitle is-5 has-text-centered has-text-darker-blue is-bold">
+        Request Completed
+      </h4>
+
+    <?php endif ?>
+
+    <?php if($req_feedback) : ?>
+      <div class="control has-text-centered">
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 1 ? 'fa-star' : 'fa-star-o') ?>" data-index=1></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 2 ? 'fa-star' : 'fa-star-o') ?>" data-index=2></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 3 ? 'fa-star' : 'fa-star-o') ?>" data-index=3></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 4 ? 'fa-star' : 'fa-star-o') ?>" data-index=4></i>
+            </a>
+            <a class="icon has-text-primary is-large">
+              <i class="fa fa-3x feed-icon <?php echo ( $rating >= 5 ? 'fa-star' : 'fa-star-o') ?>" data-index=5></i>
+            </a>
+          </div>
+    <?php endif ?>
+
+    <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
+    <input type=hidden value="REVIEW_DOCUMENT" id="action-type" data-role="user"/>
+
   </div>
   </div>
+  <?php get_template_part('template-parts/feedback'); ?>
 </section>

@@ -26,7 +26,8 @@ if ($limit * $PAGE < $DATA_COUNT){
 ?>
 
 <section class="section" id="user_activities">
-    <h2 class="title is-4">
+    <h2 class="title is-4
+">
         Business Registrations
     </h2>
 
@@ -52,7 +53,7 @@ if ($limit * $PAGE < $DATA_COUNT){
             </div>
 
             <p class="has-text-centered margined-top-down">
-	        <a class="button is-primary is-medium" href="/user/ask_attorney">Submit a registration</a>
+	        <a class="button is-primary is-medium" href="/user/register_business">Submit a registration</a>
             </p>
         </div>
         <div class="column">
@@ -127,10 +128,15 @@ if ($limit * $PAGE < $DATA_COUNT){
                         if ($c < 1){
                             echo ("<p class=\"has-text-centered has-text-darker-blue\">No registrations found...</p>");
                         } else {
-                            foreach($requests as $req){
-                                echo('<tr data-href=/user/business_detail/?req_id=' . $req -> id . ' class=clickable>');
-                                echo (getAllRequestsTemplate($req));
-                                echo("</tr>");
+                          foreach($requests as $req){
+                            $req_id = $req -> id;
+                            $req_status = $req -> status;
+                            $req_feedback = $req -> feedback;
+
+                            $str = "<tr data-href=/user/business_detail/?req_id=$req_id&req_status=$req_status&req_feedback=$req_feedback class=clickable>";
+                            echo($str);
+                            echo (getAllRequestsTemplate($req));
+                            echo("</tr>");
                             }
                         }
                         ?>
