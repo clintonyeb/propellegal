@@ -3836,5 +3836,7 @@ function getRequestFeedback($req_id, $req_type){
              ORDER BY date_created DESC
              LIMIT 1;";
 
-    return (($wpdb -> get_results($query, OBJECT))[0]);
+  $results = ($wpdb -> get_results($query, OBJECT));
+
+    return results[0];
 }
