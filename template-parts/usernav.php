@@ -10,8 +10,8 @@ do_action('get_header');
 wp_head(); // We need this for plugins.
 ?>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-                             <meta name="google-site-verification" content="6rEdp4MOY1B5_eG_iUqBwLkFJSquIH59sRWpkNJOfj4" />
-                                                                          </head>
+<meta name="google-site-verification" content="6rEdp4MOY1B5_eG_iUqBwLkFJSquIH59sRWpkNJOfj4" />
+</head>
 <?php
 genesis_markup( array(
     'open'   => '<body %s>',
@@ -69,23 +69,22 @@ $notif_count = getUserNotifCount();
 $user = $USER_PAYLOAD['data'];
 ?>
 <section class="" id="hero">
-    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand is-hidden-desktop" id="brand-mob" >
-	    <a class="navbar-item" href="/">
-          <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/logo-text.svg" alt="logo brand" class="is-page-brand">
-	    </a>
-
-	    <span class="navbar-burger burger" data-target="main-menu">
-	        <span></span>
-	        <span></span>
-	        <span></span>
-	    </span>
-        </div>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand" id="brand-mob">
+                    <a  class="navbar-item is-hidden-desktop" href="/">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/logo-text.svg" alt="Logo" height="400px">
+                    </a>
+                    <span class="navbar-burger burger" data-target="main-menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </div>
 
         <div class="navbar-menu is-page-brand" id="main-menu">
 
             <div class="navbar-start">
-                <a class="navbar-item has-text-white" data-scroll="general">
+                <a class="navbar-item has-text-white" herf="/services">
                     SERVICES
                 </a>
                 <a class="navbar-item has-text-white" href="/how-it-works">

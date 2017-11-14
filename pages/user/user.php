@@ -47,10 +47,10 @@ $user_full = getUserDetails();
             </div>
         </div>
 
-        <div class="columns">
+        <div class="columns is-mobile is-multiline">
             <div class="column">
                 <div class="box is-darker-blue">
-                    <p class="has-text-white has-text-centered">
+                    <p class="has-text-white has-text-centered is-one-line">
                         DOCUMENTS CREATED
                     </p>
                     <h3 class="title is-3 has-text-white has-text-centered">
@@ -63,7 +63,7 @@ $user_full = getUserDetails();
             </div>
             <div class="column">
                 <div class="box is-light-gray">
-                    <p class="has-text-warning has-text-centered">
+                    <p class="has-text-warning has-text-centered is-one-line">
                         DOCUMENTS REVIEWED
                     </p>
                     <h3 class="title is-3 has-text-warning has-text-centered">
@@ -76,7 +76,7 @@ $user_full = getUserDetails();
             </div>
             <div class="column">
                 <div class="box is-darker-yellow">
-                    <p class="has-text-centered">
+                    <p class="has-text-centered is-one-line">
                         ATTORNEY REQUESTS
                     </p>
                     <h3 class="title is-3 has-text-centered">
@@ -89,7 +89,7 @@ $user_full = getUserDetails();
             </div>
             <div class="column">
                 <div class="box is-darker-gray">
-                    <p class="has-text-white has-text-centered">
+                    <p class="has-text-white has-text-centered is-one-line">
                         BUSINESS REGISTRATIONS
                     </p>
                     <h3 class="title is-3 has-text-white has-text-centered">

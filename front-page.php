@@ -26,7 +26,7 @@ get_template_part('template-parts/header', 'home');
                         <span></span>
                     </span>
                 </div>
-                <div id="main-menu" class="navbar-menu anime fadeIn">
+                <div id="main-menu" class="navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="/services">
                             SERVICES
@@ -76,7 +76,7 @@ get_template_part('template-parts/header', 'home');
                 </h2>
 
 
-                <div class="columns hero-butts is-hidden-touch">
+                <div class="columns hero-butts is-hidden-touch is-mobile is-multiline">
 		    <div class="column">
                         <p class="has-text-centered" data-scroll="example">
                             <a class="button is-white is-outlined is-large">Create a Document</a>
@@ -103,7 +103,7 @@ get_template_part('template-parts/header', 'home');
     </section>
     <section class="section" id="general">
         <div class="container">
-            <div class="columns">
+            <div class="columns is-mobile is-multiline">
                 <div class="column">
                     <div class="box">
 			<a href="/create-document">
@@ -571,7 +571,7 @@ get_template_part('template-parts/header', 'home');
                     <div class="box box-cont">
 
                         <textarea class="textarea is-medium" placeholder="e.g. What is the likely outcome in my case?" rows="7" id="attorney-text-el"></textarea>
-                        <p class="has-text-cebntered">
+                        <p class="has-text-centered">
                             <a class="button is-darker-yellow  is-medium" id="ask-attorney-btn">Ask an Attorney</a>
                         </p>
                     </div>
@@ -704,7 +704,7 @@ get_template_part('template-parts/header', 'home');
                 <i class="fa fa-comment"></i>
             </span>
         </a>
-    </p>p
+    </p>
 
 
     <?php

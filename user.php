@@ -12,8 +12,6 @@
 ?>
 
 <?php
-global $USER_PAYLOAD;
-
 get_template_part('template-parts/nav');
 ?>
 

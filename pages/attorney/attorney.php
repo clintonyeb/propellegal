@@ -46,7 +46,7 @@ $user_full = getUserDetails();
             </div>
         </div>
 
-        <div class="columns">
+        <div class="columns is-mobile is-multiline">
             <div class="column">
                 <div class="box is-darker-yellow">
                     <p class="has-text-centered">

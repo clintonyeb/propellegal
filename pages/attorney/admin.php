@@ -29,7 +29,7 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
                 </div>
             </div>
             <div class="column">
-                <div class="columns is-multiline">
+                <div class="columns is-mobile is-multiline">
                     <div class="column">
                         <div class="box is-darker-blue">
                             <a href="/admin/documents_created">
