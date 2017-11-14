@@ -22,12 +22,10 @@ nav
     position: relative
     padding-left: .5rem
 
-    &.is-page-brand
-      padding-left: 1.5rem !important
-
 #main-menu
   position: relative
-  z-index: 10
+  text-align: center
+
   .navbar-start
     a
       &.navbar-item
@@ -40,10 +38,26 @@ nav
         color: $white !important
 
   @media only screen and (max-width: 620px)
-    right: 1.5rem
-    background-color: #212121
-    &.is-page-brand
-      right: auto
+    background-color: transparent
+    .navbar-start
+      a
+        &.navbar-item
+          color: #FFF
+    .navbar-end
+      .button
+        &.menu-icon
+          color: #FFF !important
+
+  &.made-fixed
+    background-color: $primary-color
+    .navbar-start
+      a
+        &.navbar-item
+          color: #FFF
+    .navbar-end
+      .button
+        &.menu-icon
+          color: #FFF !important
 
 .main-hero
   position: relative
@@ -107,23 +121,21 @@ nav
     max-width: 100%
 
   .hero-head
-    padding-left: 3rem
+    //padding-left: 3rem
     z-index: 10
     width: 100%
-    transition: all 1sec ease
-
-    &.mode-static
-      background-color: $primary-color
-      position: fixed !important
 
     .navbar
       background-color: transparent
       box-shadow: none
-
+      height: 0
       a
         &.navbar-item
           color: $white
-
+      &.is-fixed-top
+        background-color: $primary-color
+      .navbar-brand
+        padding-left: 3rem
   .withed
     max-width: 400px
 
@@ -437,6 +449,8 @@ p
   letter-spacing: .05rem
 
 #floating-button
+  @media only screen and (max-width: 500px)
+    display: none
   position: fixed
   bottom: 5rem
   right: 5rem
@@ -538,6 +552,10 @@ p
   animation-duration: 1s
   animation-fill-mode: both
 
+.anime
+  animation-duration: .5s
+  animation-fill-mode: both
+
 @keyframes fadeIn
   from
     opacity: 0
@@ -559,6 +577,26 @@ p
 
 .fadeOut
   animation-name: fadeOut
+
+@keyframes slideInDown
+  from
+    transform: translate3d(0, -100%, 0)
+    visibility: visible
+  to
+    transform: translate3d(0, 0, 0)
+
+.slideInDown
+  animation-name: slideInDown
+
+@keyframes slideOutUp
+  from
+    transform: translate3d(0, 0, 0)
+  to
+    visibility: hidden
+    transform: translate3d(0, -100%, 0)
+
+.slideOutUp
+  animation-name: slideOutUp
 
 
 
@@ -824,3 +862,6 @@ a
       font-size: .8rem
       border-radius: 50%
       color: #000
+
+.navbar-burger
+  margin-right: .5rem

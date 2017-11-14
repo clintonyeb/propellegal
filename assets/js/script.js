@@ -863,16 +863,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var mainbottom = $('#hero').offset().top + $('#hero').height();
 
+
         if(heroHead){
             window.addEventListener('scroll', showStickyMenu);
         }
 
         function showStickyMenu(){
             var stop = Math.round($(window).scrollTop());
+            var navbar = $('.hero-head .navbar');
+            var mainMenu = $('#main-menu');
+
             if (stop > mainbottom) {
-                $('.hero-head').addClass('mode-static');
+                navbar.addClass('is-fixed-top');
+                $('html').addClass('has-navbar-fixed-top');
+                mainMenu.addClass('made-fixed');
             } else {
-                $('.hero-head').removeClass('mode-static');
+                navbar.removeClass('is-fixed-top');
+                $('html').removeClass('has-navbar-fixed-top');
+                mainMenu.removeClass('made-fixed');
             }
 
 

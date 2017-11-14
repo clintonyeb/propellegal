@@ -1242,32 +1242,32 @@ function ask_attorney(){
     $id = addRequestMessage($user-> user_id, $req_id, $content);
 
     if ($files){
-    $total = count($files['name']);
+      $total = count($files['name']);
 
-    for($i = 0; $i < $total; $i++){
-      $target_file = _saveFile($files, $i);
+      for($i = 0; $i < $total; $i++){
+        $target_file = _saveFile($files, $i);
 
-      if ($target_file){
-        array_push($saved_files, $target_file);
-      } else {
-        sendError("Error uploading files");
+        if ($target_file){
+          array_push($saved_files, $target_file);
+        } else {
+          sendError("Error uploading files");
+        }
+      }
+
+      foreach ($saved_files as $f){
+        $wpdb -> insert($table_req_files,
+                        array(
+                          "item_id" => $id,
+                          "path" => $f,
+                          "req_type" => _ASK_ATTORNEY_
+                        ), array(
+                          "%d", "%s", "%s"
+                        ));
       }
     }
-
-    foreach ($saved_files as $f){
-      $wpdb -> insert($table_req_files,
-                      array(
-                        "item_id" => $id,
-                        "path" => $f,
-                        "req_type" => _ASK_ATTORNEY_
-                      ), array(
-                        "%d", "%s", "%s"
-                      ));
-    }
-  }
-      wp_send_json(array(
-        'message' => 'Success',
-        'status' => true));
+    wp_send_json(array(
+      'message' => 'Success',
+      'status' => true));
   } else {
     wp_send_json(array(
       'message' => 'Error adding request',
@@ -1319,28 +1319,28 @@ function req_mess(){
   if ($id = addRequestMessage($user -> user_id, $req_id, $content)) {
 
     if ($files){
-    $total = count($files['name']);
+      $total = count($files['name']);
 
-    for($i = 0; $i < $total; $i++){
-      $target_file = _saveFile($files, $i);
+      for($i = 0; $i < $total; $i++){
+        $target_file = _saveFile($files, $i);
 
-      if ($target_file){
-        array_push($saved_files, $target_file);
-      } else {
-        sendError("Error uploading files");
+        if ($target_file){
+          array_push($saved_files, $target_file);
+        } else {
+          sendError("Error uploading files");
+        }
       }
-    }
 
-    foreach ($saved_files as $f){
-      $wpdb -> insert($table_req_files,
-                      array(
-                        "item_id" => $id,
-                        "path" => $f,
-                        "req_type" => _ASK_ATTORNEY_
-                      ), array(
-                        "%d", "%s", "%s"
-                      ));
-    }
+      foreach ($saved_files as $f){
+        $wpdb -> insert($table_req_files,
+                        array(
+                          "item_id" => $id,
+                          "path" => $f,
+                          "req_type" => _ASK_ATTORNEY_
+                        ), array(
+                          "%d", "%s", "%s"
+                        ));
+      }
 
     }
 
@@ -1400,30 +1400,30 @@ function rev_mess(){
   if ($id = addReviewMessage($d, $table_rev_mess)) {
 
     if ($files){
-    $total = count($files['name']);
+      $total = count($files['name']);
 
-    for($i = 0; $i < $total; $i++){
-      $target_file = _saveFile($files, $i);
+      for($i = 0; $i < $total; $i++){
+        $target_file = _saveFile($files, $i);
 
-      if ($target_file){
-        array_push($saved_files, $target_file);
-      } else {
-        sendError("Error uploading files");
+        if ($target_file){
+          array_push($saved_files, $target_file);
+        } else {
+          sendError("Error uploading files");
+        }
       }
-    }
 
-    foreach ($saved_files as $f){
-      $wpdb -> insert($table_req_files,
-                      array(
-                        "item_id" => $id,
-                        "path" => $f,
-                        "req_type" => _REVIEW_DOCUMENT_
-                      ), array(
-                        "%d", "%s", "%s"
-                      ));
-    }
+      foreach ($saved_files as $f){
+        $wpdb -> insert($table_req_files,
+                        array(
+                          "item_id" => $id,
+                          "path" => $f,
+                          "req_type" => _REVIEW_DOCUMENT_
+                        ), array(
+                          "%d", "%s", "%s"
+                        ));
+      }
 
-  }
+    }
 
     wp_send_json(array(
       'message' => 'Success',
@@ -1465,31 +1465,31 @@ function reg_mess(){
   if ($id = addReviewMessage($d, $table_reg_mess)) {
 
     if ($files){
-    $total = count($files['name']);
+      $total = count($files['name']);
 
-    for($i = 0; $i < $total; $i++){
-      $target_file = _saveFile($files, $i);
+      for($i = 0; $i < $total; $i++){
+        $target_file = _saveFile($files, $i);
 
-      if ($target_file){
-        array_push($saved_files, $target_file);
-      } else {
-        sendError("Error uploading files");
+        if ($target_file){
+          array_push($saved_files, $target_file);
+        } else {
+          sendError("Error uploading files");
+        }
       }
+
+      foreach ($saved_files as $f){
+        $wpdb -> insert($table_req_files,
+                        array(
+                          "item_id" => $id,
+                          "path" => $f,
+                          "req_type" => _REGISTER_BUSINESS_
+                        ), array(
+                          "%d", "%s", "%s"
+
+                        ));
+      }
+
     }
-
-    foreach ($saved_files as $f){
-      $wpdb -> insert($table_req_files,
-                      array(
-                        "item_id" => $id,
-                        "path" => $f,
-                        "req_type" => _REGISTER_BUSINESS_
-                      ), array(
-                         "%d", "%s", "%s"
-
-                      ));
-    }
-
-  }
 
     wp_send_json(array(
       'message' => 'Success',
@@ -3379,7 +3379,7 @@ function admin_requests(){
                              "item_id" => $item_id,
                              "date_assigned" => current_time('sql')
                            ), array(
-                               "%d", "%d", "%s"
+                             "%d", "%d", "%s"
                            ));
 
     if ($res){
@@ -3789,47 +3789,47 @@ function req_feedback(){
   );
 
   if ($result){
-      $feedback_id = $wpdb -> insert_id;
+    $feedback_id = $wpdb -> insert_id;
 
-      $table_name = getUserTableNameFromAction($action_type);
+    $table_name = getUserTableNameFromAction($action_type);
 
-      $up = $wpdb -> update(
-          $table_name,
-          array(
-              'feedback' => 1
-          ),
-          array(
-              'id' => $req_id
-          ),
-          array(
-              '%d'
-          ),
-          array(
-              '%d'
-          )
-      );
+    $up = $wpdb -> update(
+      $table_name,
+      array(
+        'feedback' => 1
+      ),
+      array(
+        'id' => $req_id
+      ),
+      array(
+        '%d'
+      ),
+      array(
+        '%d'
+      )
+    );
 
-      if ($up !== false){
-          wp_send_json(array(
-              'status' => true,
-              'message' => "Success"
-          ));
-      }
+    if ($up !== false){
+      wp_send_json(array(
+        'status' => true,
+        'message' => "Success"
+      ));
+    }
   }
 
   wp_send_json(array(
-      'status' => false,
-      'message' => "Error adding feedback"
+    'status' => false,
+    'message' => "Error adding feedback"
   ));
 
   die();
 }
 
 function getRequestFeedback($req_id, $req_type){
-    global $wpdb;
-    $table_feedback = _FEEDBACK_TABLE_;
+  global $wpdb;
+  $table_feedback = _FEEDBACK_TABLE_;
 
-    $query = "SELECT rating, content
+  $query = "SELECT rating, content
              FROM $table_feedback
              WHERE item_id=$req_id
              AND act_type='$req_type'
@@ -3838,5 +3838,5 @@ function getRequestFeedback($req_id, $req_type){
 
   $results = ($wpdb -> get_results($query, OBJECT));
 
-    return results[0];
+  return results[0];
 }

@@ -26,7 +26,7 @@ get_template_part('template-parts/header', 'home');
                         <span></span>
                     </span>
                 </div>
-                <div id="main-menu" class="navbar-menu">
+                <div id="main-menu" class="navbar-menu anime fadeIn">
                     <div class="navbar-start">
                         <a class="navbar-item" href="/services">
                             SERVICES
