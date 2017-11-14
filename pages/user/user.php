@@ -9,6 +9,8 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
 $user_full = getUserDetails();
 ?>
 
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
+
 <section class="section" id="user-dashboard">
     <div class="container-fluid">
         <h1 class="title is-4">Dashboard</h1>

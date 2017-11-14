@@ -8,6 +8,8 @@ $notifs = getUserNotifs(30);
 $user_full = getUserDetails();
 ?>
 
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
+
 <section class="section" id="user-dashboard">
     <div class="container-fluid">
         <h1 class="title is-3">Dashboard</h1>

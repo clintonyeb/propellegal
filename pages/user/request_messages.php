@@ -16,6 +16,7 @@ if($req_feedback){
 ?>
 
 <span data-href="attorney_requests"></span>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 
 <section class="section" id="user_activities">
   <div class="level">

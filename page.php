@@ -15,11 +15,11 @@
 global $USER_PAYLOAD;
 
 if (!$USER_PAYLOAD['status']){
-    redirect('/login');
+  redirect('/login');
 }
 
 if ($USER_PAYLOAD['data'] -> role_id != 3){
-    return redirect('/login');
+  return redirect('/login');
 }
 
 get_template_part('template-parts/usernav');
@@ -27,21 +27,27 @@ get_template_part('template-parts/usernav');
 </section>
 
 <section>
-    <div class="columns">
-        <div class="column is-narrow box is-padded">
-            <?php get_template_part('template-parts/user', 'nav'); ?>
-        </div>
-        <div class="column">
-            <?php
-            $pagename = explode('-', get_query_var('pagename'));
-            if (count($pagename) == 1){
-                get_template_part( 'pages/user/' . $pagename[0]);
-            } else {
-                get_template_part( 'pages/user/' . $pagename[0], $pagename[1]);
-            }
-            ?>
-        </div>
+  <div class="columns">
+    <div class="column is-narrow box is-padded is-hidden-touch">
+      <?php get_template_part('template-parts/user', 'nav'); ?>
     </div>
+    <div class="column is-narrow is-padded is-hidden-desktop">
+      <div id="side-nav" class="sidenav">
+        <a class="closebtn" id="close-btn">&times;</a>
+        <?php get_template_part('template-parts/user', 'nav'); ?>
+      </div>
+    </div>
+    <div class="column">
+      <?php
+      $pagename = explode('-', get_query_var('pagename'));
+      if (count($pagename) == 1){
+        get_template_part( 'pages/user/' . $pagename[0]);
+      } else {
+        get_template_part( 'pages/user/' . $pagename[0], $pagename[1]);
+      }
+      ?>
+    </div>
+  </div>
 </section>
 
 <?php

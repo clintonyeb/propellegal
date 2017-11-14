@@ -5,6 +5,7 @@ $user = $USER_PAYLOAD['data'];
 ?>
 
 <span data-href="attorney_requests"></span>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 
 <section class="section" id="create_document">
   <h2 class="title is-4"

@@ -26,10 +26,16 @@ get_template_part('template-parts/usernav');
 </section>
 
 <section>
-    <div class="columns">
-        <div class="column is-narrow box is-padded">
-            <?php get_template_part('template-parts/attorney', 'nav'); ?>
-        </div>
+  <div class="columns">
+    <div class="column is-narrow box is-padded is-hidden-touch">
+      <?php get_template_part('template-parts/attorney', 'nav'); ?>
+    </div>
+    <div class="column is-narrow is-padded is-hidden-desktop">
+      <div id="side-nav" class="sidenav">
+        <a class="closebtn" id="close-btn">&times;</a>
+        <?php get_template_part('template-parts/attorney', 'nav'); ?>
+      </div>
+    </div>
         <div class="column">
             <?php
             $pagename = explode('-', get_query_var('pagename'));

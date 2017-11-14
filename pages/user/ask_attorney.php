@@ -6,7 +6,7 @@ $avatar_name = $avatar -> avatar_name;
 ?>
 
 <span data-href="attorney_requests"></span>
-
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 <section class="section">
   <h2 class="title is-4">
     Ask an Attorney

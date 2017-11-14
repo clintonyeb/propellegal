@@ -6,7 +6,7 @@ $avatar_name = $avatar -> avatar_name;
 $requests = getAllRequests(20);
 ?>
 
-<aside class="menu is-primary is-hidden-touch">
+<aside class="menu is-primary">
     <p class="has-text-centered">
         <a href="/attorney/attorney_profile">
         <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" alt="User Avatar" class="user-avatar"><br>

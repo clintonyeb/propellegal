@@ -24,6 +24,7 @@ if ($limit * $PAGE < $DATA_COUNT){
     $forward .= "page=$page\"";
 }
 ?>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 
 <section class="section" id="user_activities">
     <h2 class="title is-4">

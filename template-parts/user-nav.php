@@ -6,7 +6,7 @@ $avatar_name = $avatar -> avatar_name;
 $requests = getAllRequests(20);
 ?>
 
-<aside class="menu is-primary is-hidden-touch">
+<aside class="menu is-primary">
     <p class="has-text-centered">
         <a href="/user/user_profile">
         <img src="<?php echo get_stylesheet_directory_uri() . '/assets/avatar/' . $avatar_name; ?>" alt="User Avatar" class="user-avatar"><br>
@@ -26,8 +26,6 @@ $requests = getAllRequests(20);
                 &nbsp;&nbsp;My Dashboard
             </a>
         </li>
-
-
     </ul>
 
     <p class="menu-label has-text-darker-blue">

@@ -10,6 +10,8 @@ $avatar_name = $avatar -> avatar_name;
 ?>
 
 <span data-href="user_accounts"></span>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
+
 <section class="section" id="user_profile">
     <h2 class="title is-4">
         User Profile

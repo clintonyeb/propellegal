@@ -7,6 +7,8 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
 //error_log(print_r(phpinfo(), true));
 ?>
 
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
+
 <section class="section" id="user-dashboard">
     <div class="container-fluid">
         <h1 class="title is-4">Dashboard</h1>
@@ -29,11 +31,11 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
                 </div>
             </div>
             <div class="column">
-                <div class="columns is-multiline">
+                <div class="columns is-multiline is-mobile">
                     <div class="column">
                         <div class="box is-darker-blue">
                             <a href="/admin/documents_created">
-                            <p class="has-text-white has-text-centered">
+                            <p class="has-text-white has-text-centered is-one-line">
                                 DOCUMENTS CREATED
                             </p>
                             <h3 class="title is-3 has-text-white has-text-centered">
@@ -45,7 +47,7 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
                     <div class="column">
                         <div class="box is-light-gray">
                             <a href="/admin/document_reviews">
-                            <p class="has-text-warning has-text-centered">
+                            <p class="has-text-warning has-text-centered is-one-line">
                                 DOCUMENTS REVIEWED
                             </p>
                             <h3 class="title is-3 has-text-warning has-text-centered">
@@ -57,7 +59,7 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
                     <div class="column">
                         <div class="box is-darker-yellow ">
                             <a href="/admin/attorney_requests">
-                            <p class="has-text-centered">
+                            <p class="has-text-centered is-one-line">
                                 ATTORNEY REQUESTS
                             </p>
                             <h3 class="title is-3 has-text-centered">
@@ -69,7 +71,7 @@ $register_count = getAllActivityCount(_REGISTER_BUSINESS_);
                     <div class="column">
                         <div class="box is-darker-gray ">
                             <a href="/admin/business_registrations">
-                            <p class="has-text-white has-text-centered">
+                            <p class="has-text-white has-text-centered is-one-line">
                                 BUSINESS REGS
                             </p>
                             <h3 class="title is-3 has-text-white has-text-centered">

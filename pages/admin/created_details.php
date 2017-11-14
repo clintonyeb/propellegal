@@ -8,6 +8,7 @@ $doc_reg = getDetailCreatDoc($req_id);
 ?>
 
 <span data-href="documents_created"></span>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 
 <section class="section">
     <h2 class="title is-4">
