@@ -17013,3 +17013,101 @@ a.is-hoverable:hover {
 #open-nav {
   margin-left: 1.5rem;
 }
+
+/* Define how SqPaymentForm iframes should look */
+/* line 904, assets/sass/_custom.sass */
+.sq-input {
+  border: 1px solid #dfdfdf;
+  outline-offset: -2px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+/* /* Define how SqPaymentForm iframes should look when they have focus */
+/* line 912, assets/sass/_custom.sass */
+.sq-input--focus {
+  outline: 5px auto #3b99fc;
+}
+
+/* Define how SqPaymentForm iframes should look when they contain invalid values */
+/* line 917, assets/sass/_custom.sass */
+.sq-input--error {
+  outline: 5px auto #ff6161;
+}
+
+/* /* Customize the "Pay with Credit Card" button */
+/* .button-credit-card */
+/*   min-width: 200px */
+/*   min-height: 20px */
+/*   padding: 0 */
+/*   margin: 5px */
+/*   line-height: 20px */
+/*   box-shadow: 2px 2px 1px rgb(200, 200, 200) */
+/*   background: rgb(255, 255, 255) */
+/*   border-radius: 5px */
+/*   border: 1px solid rgb(200, 200, 200) */
+/*   font-weight: bold */
+/*   cursor: pointer */
+/* /* Customize the "{{Wallet}} not enabled" message */
+/* line 937, assets/sass/_custom.sass */
+.wallet-not-enabled {
+  min-width: 200px;
+  min-height: 40px;
+  max-height: 64px;
+  padding: 0;
+  margin: 10px;
+  line-height: 40px;
+  background: #eee;
+  border-radius: 5px;
+  font-weight: lighter;
+  font-style: italic;
+  font-family: inherit;
+  display: block;
+}
+
+/* Customize the Apple Pay on the Web button */
+/* line 953, assets/sass/_custom.sass */
+.button-apple-pay {
+  min-width: 200px;
+  min-height: 40px;
+  max-height: 64px;
+  padding: 0;
+  margin: 10px;
+  background-image: -webkit-named-image(apple-pay-logo-white);
+  background-color: black;
+  background-size: 100% 60%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none;
+}
+
+/* Customize the Masterpass button */
+/* line 970, assets/sass/_custom.sass */
+.button-masterpass {
+  min-width: 200px;
+  min-height: 40px;
+  max-height: 40px;
+  padding: 0;
+  margin: 10px;
+  background-image: url(https://static.masterpass.com/dyn/img/btn/global/mp_chk_btn_147x034px.svg);
+  background-color: black;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border-radius: 5px;
+  border-color: white;
+  cursor: pointer;
+  display: none;
+}
+
+/* line 986, assets/sass/_custom.sass */
+#sq-walletbox, #sq-ccbox {
+  float: left;
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  vertical-align: top;
+  font-weight: bold;
+}

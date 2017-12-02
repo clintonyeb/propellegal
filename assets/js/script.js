@@ -576,8 +576,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
-
-
         }
 
         function setUpDownload() {
@@ -949,15 +947,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var uploadDoc = document.getElementById('upload-doc'),
         fileEl = document.getElementById('file-upload'),
         file_num = document.querySelector('span#doc-count'),
-    filesToUpload = [],
+        filesToUpload = [],
         tags = document.getElementById('docs'),
-    step = 0,
+        step = 0,
         hiddens = document.querySelectorAll('.upload-box-cont'),
-    buttons = document.querySelectorAll('[data-step]'),
+        buttons = document.querySelectorAll('[data-step]'),
         progressBar = document.querySelector('.progress'),
         name, content,
         fileBox = document.getElementById('file-box'),
-    fileCont = document.getElementById('display-files');
+        fileCont = document.getElementById('display-files');
 
     if(uploadDoc){
         fileEl.addEventListener('change', function($event){
@@ -2345,6 +2343,202 @@ document.addEventListener('DOMContentLoaded', function () {
             location.reload();
         });
     }
+
     // End of Utility Functions
+
+    // Payments
+
+    var paySubmit = document.getElementById('sq-creditcard');
+
+    if (paySubmit) {
+        paySubmit.addEventListener('click', requestCardNonce);
+
+        // Square Payment Information
+
+        // Set the application ID
+        var applicationId = "sandbox-sq0idp-tiHbqn2aBXTqcMv_YE3geQ";
+
+        // Set the location ID
+        var locationId = "CBASENQDniEAGk0Lox0zdTT1rY0gAQ";
+
+        var payMess = document.querySelector('#pay-mess');
+        var payMessCont = document.querySelector('#pay-mess .message-body ul');
+
+        /*
+         * function: requestCardNonce
+         *
+         * requestCardNonce is triggered when the "Pay with credit card" button is
+         * clicked
+         *
+         * Modifying this function is not required, but can be customized if you
+         * wish to take additional action when the form button is clicked.
+         */
+
+        function requestCardNonce(event) {
+
+            // Don't submit the form until SqPaymentForm returns with a nonce
+            event.preventDefault();
+
+            payMess.classList.add('is-hidden');
+            clearResults(payMessCont);
+            // Request a nonce from the SqPaymentForm object
+            showLoadingButton(paySubmit, true);
+            paymentForm.requestCardNonce();
+        }
+
+        // Create and initialize a payment form object
+
+        var paymentForm = new SqPaymentForm({
+
+            // Initialize the payment form elements
+            applicationId: applicationId,
+            locationId: locationId,
+            inputClass: 'input',
+
+            // Customize the CSS for SqPaymentForm iframe elements
+            inputStyles: [{
+                fontSize: '.9em'
+            }],
+
+            // Initialize Masterpass placeholder ID
+            masterpass: {
+                elementId: 'sq-masterpass'
+            },
+
+            // Initialize the credit card placeholders
+            cardNumber: {
+                elementId: 'sq-card-number',
+                placeholder: '•••• •••• •••• ••••'
+            },
+            cvv: {
+                elementId: 'sq-cvv',
+                placeholder: 'CVV'
+            },
+            expirationDate: {
+                elementId: 'sq-expiration-date',
+                placeholder: 'MM/YY'
+            },
+            postalCode: {
+                elementId: 'sq-postal-code'
+            },
+
+            callbacks: {
+                methodsSupported: function (methods) {
+
+                    var masterpassBtn = document.getElementById('sq-masterpass');
+                    var masterpassLabel = document.getElementById('sq-masterpass-label');
+
+                    if (methods.masterpass === true) {
+                        masterpassBtn.style.display = 'inline-block';
+                        masterpassLabel.style.display = 'none';
+                    }
+                },
+
+                createPaymentRequest: function () {
+                    return {
+                        requestShippingAddress: true,
+                        currencyCode: "USD",
+                        countryCode: "US",
+                        total: {
+                            label: "{{ MERCHANT NAME }}",
+                            amount: "100.00",
+                            pending: false
+                        },
+                        lineItems: [
+                            {
+                                label: "Subtotal",
+                                amount: "80.00",
+                                pending: false
+                            },
+                            {
+                                label: "Shipping",
+                                amount: "0.00",
+                                pending: true
+                            },
+                            {
+                                label: "Tax",
+                                amount: "10.00",
+                                pending: false
+                            }
+                        ]
+                    };
+                },
+
+                cardNonceResponseReceived: function(errors, nonce, cardData) {
+                    showLoadingButton(paySubmit, false);
+                    if (errors) {
+                        payMess.classList.remove('is-hidden');
+                        // Log errors from nonce generation to the Javascript console
+
+                        errors.forEach(function(error) {
+                            var li = document.createElement('li');
+                            li.textContent = error.message;
+                            payMessCont.appendChild(li);
+                            console.log('  ' + error.message);
+                        });
+
+                        return;
+                    }
+
+                    // Assign the nonce value to the hidden form field
+                    document.getElementById('card-nonce').value = nonce;
+
+                    // POST the nonce form to the payment processing page
+                    document.getElementById('nonce-form').submit();
+
+                },
+
+                /*
+                 * callback function: unsupportedBrowserDetected
+                 * Triggered when: the page loads and an unsupported browser is detected
+                 */
+                unsupportedBrowserDetected: function() {
+                    payMess.classList.remove('is-hidden');
+                    var li = document.createElement('li');
+                    li.textContent = 'Your browser is not supported, please update your browser';
+                    payMessCont.appendChild(li);
+                },
+
+                /*
+                 * callback function: inputEventReceived
+                 * Triggered when: visitors interact with SqPaymentForm iframe elements.
+                 */
+                inputEventReceived: function(inputEvent) {
+                    switch (inputEvent.eventType) {
+                    case 'focusClassAdded':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    case 'focusClassRemoved':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    case 'errorClassAdded':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    case 'errorClassRemoved':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    case 'cardBrandChanged':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    case 'postalCodeChanged':
+                        /* HANDLE AS DESIRED */
+                        break;
+                    }
+                },
+
+                /*
+                 * callback function: paymentFormLoaded
+                 * Triggered when: SqPaymentForm is fully loaded
+                 */
+                paymentFormLoaded: function() {
+                    /* HANDLE AS DESIRED */
+                }
+            }
+        });
+
+
+        paymentForm.build();
+    }
+
 
 }.bind(this));

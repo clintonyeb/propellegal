@@ -10,8 +10,8 @@ do_action('get_header');
 wp_head(); // We need this for plugins.
 ?>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-                             <meta name="google-site-verification" content="6rEdp4MOY1B5_eG_iUqBwLkFJSquIH59sRWpkNJOfj4" />
-                                                                          </head>
+<meta name="google-site-verification" content="6rEdp4MOY1B5_eG_iUqBwLkFJSquIH59sRWpkNJOfj4" />
+</head>
 <?php
 genesis_markup( array(
     'open'   => '<body %s>',

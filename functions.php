@@ -31,7 +31,13 @@ function my_theme_enqueue_styles() {
   wp_enqueue_script('util', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/utils.js');
   wp_enqueue_script('transition', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/transition.js', array('jquery'));
   wp_enqueue_script('dropdown', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/dropdown.js', array('transition'));
-  wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown'));
+  if (is_page('Subscribe') ) {
+    wp_enqueue_script( 'square-pay', 'https://js.squareup.com/v2/paymentform', array('jquery'));
+    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown', 'square-pay'));
+  } else {
+    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown'));
+  }
+
   wp_localize_script( 'script-js', '$wp_data',
                       array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 'client_auth' => CLIENT_KEY, 'home' => HOME, 'authenticated' => $USER_PAYLOAD['status']));
 }
@@ -222,9 +228,23 @@ function register_form(){
     )
   );
 
+
+
   if ($result){
 
     $user_id = $wpdb -> insert_id;
+
+    $table_subscriptions = _SUBSCRIPTION_TABLE_;
+
+    $resultPay =  $wpdb->insert(
+      $table_subscriptions,
+      array(
+        'user_id' => $user_id,
+      ),
+      array(
+        "%d"
+      )
+    );
 
     // send email
 
@@ -1205,7 +1225,7 @@ function ask_attorney(){
   if (trim($_POST['client_key']) != CLIENT_KEY)
     return die(0);
 
-  error_log(print_r($USER_PAYLOAD, true));
+  //error_log(print_r($USER_PAYLOAD, true));
   // validate cookie
   if(!$USER_PAYLOAD["status"]) return redirect("/login");
   $user = $USER_PAYLOAD["data"];
@@ -3657,7 +3677,8 @@ function admin_actions(){
       break;
 
     case 'deactivate_user':
-      $up = $wpdb -> update(
+      $up = $wpdb ->
+      update(
         $table_name,
         array(
           'activate' => 0
@@ -3839,4 +3860,35 @@ function getRequestFeedback($req_id, $req_type){
   $results = ($wpdb -> get_results($query, OBJECT));
 
   return results[0];
+}
+
+
+function getSubscriptionDetails(){
+  global $USER_PAYLOAD;
+  global $wpdb;
+
+  $user = $USER_PAYLOAD['data'];
+  $user_id = $user -> user_id;
+  $table_subscriptions = _SUBSCRIPTION_TABLE_;
+
+  $query = "SELECT date_renewed, date_expire, amount
+             FROM $table_subscriptions
+             WHERE user_id='$user_id'
+             LIMIT 1;";
+
+  $results = ($wpdb -> get_results($query, OBJECT));
+
+  return $results[0];
+}
+
+function checkSubscription(){
+  $data = getSubscriptionDetails();
+
+  $renewed = $data -> date_renewed;
+  $expire = $data -> date_expire;
+  $amount = $data -> amount;
+  $date_expire = new DateTime($expire);
+  $date_today = new DateTime("now");
+  $acc_status = $date_expire > $date_today;
+  return $acc_status;
 }

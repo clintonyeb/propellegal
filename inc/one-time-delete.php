@@ -1,6 +1,9 @@
 <?php
 require_once(SITE_ROOT . "/inc/global.php");
 
+$table_subscriptions = _SUBSCRIPTION_TABLE_;
+$wpdb->query("DROP TABLE IF EXISTS $table_subscriptions");
+
 $table_lawyer_req = _LAWYER_REQ_;
 $wpdb->query("DROP TABLE IF EXISTS $table_lawyer_req");
 

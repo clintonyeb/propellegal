@@ -15,6 +15,7 @@ class ComposerStaticInitb7fd2709ecdf788d2559484fa700e787
         ),
         'S' => 
         array (
+            'SquareConnect\\' => 14,
             'Spatie\\PdfToImage\\' => 18,
         ),
         'P' => 
@@ -45,6 +46,10 @@ class ComposerStaticInitb7fd2709ecdf788d2559484fa700e787
         'Zend\\Escaper\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-escaper/src',
+        ),
+        'SquareConnect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/square/connect/lib',
         ),
         'Spatie\\PdfToImage\\' => 
         array (

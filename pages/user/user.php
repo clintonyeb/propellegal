@@ -7,6 +7,14 @@ $attorney_count = getActivityCount(_ASK_ATTORNEY_);
 $register_count = getActivityCount(_REGISTER_BUSINESS_);
 
 $user_full = getUserDetails();
+
+$details = getSubscriptiondetails();
+$renewed = $details -> date_renewed;
+$expire = $details -> date_expire;
+$amount = $details -> amount;
+$date_expire = new DateTime($expire);
+$date_today = new DateTime("now");
+$acc_status = $date_expire > $date_today;
 ?>
 
 <a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
@@ -123,13 +131,19 @@ $user_full = getUserDetails();
                 <div class="box has-top-light">
                     <h3 class="title is-5">Subscription Summary</h3>
                     <p>
-                        <strong>Status: </strong> Not Active
+                      <strong>Status: </strong> <?php echo ($acc_status ? 'Active' : 'Not Active'); ?>
+                      <?php
+                      if (!$acc_status) {
+                        echo '<a class="button is-primary is-small" href="/user/subscribe">Renew Subscription</a>';
+                      }
+
+                      ?>
                     </p>
                     <p>
-                        <strong>Date of Renewal: </strong> Never
+                        <strong>Date of Renewal: </strong> <?php echo ($renewed ? $renewed : 'Never'); ?>
                     </p>
                     <p>
-                        <strong>Date of Expiry: </strong> Never
+                      <strong>Date of Expiry: </strong> <?php echo ($expire ? $expire : 'Never'); ?>
                     </p>
                 </div>
             </div>

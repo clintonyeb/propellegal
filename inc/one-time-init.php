@@ -122,6 +122,20 @@ function createUser(){
             "%d"
         )
     );
+
+  $user_id = $wpdb -> insert_id;
+
+  $table_subscriptions = _SUBSCRIPTION_TABLE_;
+
+    $resultPay =  $wpdb->insert(
+      $table_subscriptions,
+      array(
+        'user_id' => $user_id,
+      ),
+      array(
+        "%d"
+      )
+    );
 }
 
 function createLawyer(){
@@ -425,6 +439,21 @@ function createTables(){
     date_assigned datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     viewed bit DEFAULT 0,
     FOREIGN KEY (target_user_id) REFERENCES $table_users(id)
+) $charset_collate;";
+
+  dbDelta($query);
+
+  $table_subscriptions = _SUBSCRIPTION_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_subscriptions (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    user_id mediumint NOT NULL,
+    date_renewed datetime,
+    date_expire datetime,
+    amount decimal,
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES $table_users(id),
+    CONSTRAINT UC_User UNIQUE (user_id)
 ) $charset_collate;";
 
     dbDelta($query);

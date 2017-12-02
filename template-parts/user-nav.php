@@ -3,6 +3,7 @@ global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
 $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
+
 $requests = getAllRequests(20);
 ?>
 
@@ -112,7 +113,7 @@ $requests = getAllRequests(20);
         </li>
 
         <li class="menu-item">
-            <a>
+            <a href="/user/user_subscription" data-href="user_subscription">
                 <span class="icon is-small has-text-darker-yellow">
                     <i class="fa fa-calendar"></i>
                 </span>
@@ -144,6 +145,4 @@ $requests = getAllRequests(20);
             </a>
         </li>
     </ul>
-
-
 </aside>
