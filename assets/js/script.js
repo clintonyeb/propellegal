@@ -340,13 +340,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     loading = false;
                 }
             });
-
         });
     }
 
     // Create Document functions
     var $submitBtn = document.getElementById('next_btn');
     var $backBtn = document.getElementById('back_btn');
+    var subsMess = document.getElementById('subs-mess');
 
     if ($submitBtn){
         var docForm = document.forms['create-document'];
@@ -502,12 +502,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 address =  document.getElementById('address'),
                 city =  document.getElementById('city'),
                 country =  document.getElementById('country'),
-                doc_state =  document.getElementById('state');
+            doc_state =  document.getElementById('state');
             var state = JSON.parse(localStorage.getItem('state'));
             var category = JSON.parse(localStorage.getItem('category'));
             var docName = JSON.parse(localStorage.getItem('doc_name'));
             var buttons = document.querySelectorAll('[data-doc]'),
-                step = 0;
+            step = 0;
 
             for(var i = 0; i < buttons.length; i++) {
                 buttons[i].addEventListener('click', function ($ev) {
@@ -515,7 +515,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     var s = b.getAttribute('data-doc');
 
                     s = Number(s);
-                    removeError('is-danger');
+                    //removeError('is-danger');
+                    var errMess = document.getElementById('err');
+                    var errMessB = document.querySelector('#err .message-body');
+                    errMessB.textContent = '';
+                    errMess.classList.remove('is-error');
+                    errMess.classList.add('is-hidden');
 
                     if (!isNaN(s)){
                         switch (s) {
@@ -554,12 +559,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                              updateProgress(90);
                                              setUpDownload();
                                              return true;
+                                         } else {
+                                             showSnackBar("Error submitting data");
+                                             showLoadingButton(b, false);
+                                             loading = false;
+                                             console.log('data', data);
+                                             return false;
                                          }
-                                         showSnackBar("Error submitting data");
-                                         showLoadingButton(b, false);
-                                         loading = false;
-                                         console.log('data', data);
-                                         return false;
                                      }, function(err){
                                          showLoadingButton(b, false);
                                          loading = false;
@@ -579,12 +585,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function setUpDownload() {
+
+
             var docPrev = document.querySelector('#doc_prev .image');
             var file = JSON.parse(localStorage.getItem('output'));
 
             var path =  '/wp-content/themes/clinton-child/assets/generated_documents/' + file;
             docPrev.setAttribute('src', path + '.jpg');
 
+            if (!subsMess){
             var downBtn = document.querySelectorAll('.down-doc');
 
             for(var i = 0; i < downBtn.length; i++) {
@@ -592,6 +601,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.setAttribute('download', "propellegal-document");
                 btn.setAttribute('href', path + '.pdf');
             }
+            } else {
+                subsMess.classList.remove('is-hidden');
+            }
+
         }
     }
 
@@ -946,16 +959,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var uploadDoc = document.getElementById('upload-doc'),
         fileEl = document.getElementById('file-upload'),
-        file_num = document.querySelector('span#doc-count'),
-        filesToUpload = [],
+    file_num = document.querySelector('span#doc-count'),
+    filesToUpload = [],
         tags = document.getElementById('docs'),
-        step = 0,
+    step = 0,
         hiddens = document.querySelectorAll('.upload-box-cont'),
-        buttons = document.querySelectorAll('[data-step]'),
+    buttons = document.querySelectorAll('[data-step]'),
         progressBar = document.querySelector('.progress'),
-        name, content,
+    name, content,
         fileBox = document.getElementById('file-box'),
-        fileCont = document.getElementById('display-files');
+    fileCont = document.getElementById('display-files');
 
     if(uploadDoc){
         fileEl.addEventListener('change', function($event){
@@ -1945,7 +1958,7 @@ document.addEventListener('DOMContentLoaded', function () {
         field.focus();
     }
 
-    function displayMessage(reason, type){
+    function displayMessage(reason, type) {
         messageBody.textContent = reason;
         messageCont.classList.remove('is-hidden');
         messageCont.classList.add(type);
