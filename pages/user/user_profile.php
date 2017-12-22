@@ -6,7 +6,7 @@ $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
 ?>
 
-<a class="button is-primary is-outlined is-hidden-destop is-small" id="open-nav">MENU</a>
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 
 <section class="section" id="user_profile">
     <h2 class="title is-4">

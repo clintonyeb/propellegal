@@ -875,7 +875,7 @@ a
   with: 100%
   text-overflow: ellipsis
 
-  /* The side navigation menu
+  //The side navigation menu
 
 .sidenav
   height: 100%
@@ -990,3 +990,37 @@ a
   text-align: center
   vertical-align: top
   font-weight: bold
+
+.currency
+  font-size: 1rem
+  vertical-align: super
+
+#pricing
+  .columns
+    margin-left: 5rem
+    margin-right: 5rem
+    margin-top: 2rem
+    .column
+      padding: 0
+  .card
+    .card-header
+      p
+        display: inline-block
+    &.is-selected
+      position: relative
+      bottom: 22px
+      border-top: 2px solid $primary
+      .popular
+        height: 20px
+        padding-top: 5px
+        padding-bottom: 5px
+        font-size: .8rem
+  .content
+    .title
+      font-weight: 800
+      color: red
+    .button
+      width: 70%
+  .foot
+    .subtitle
+      font-size: .9rem

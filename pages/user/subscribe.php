@@ -7,7 +7,7 @@ $avatar_name = $avatar -> avatar_name;
 
 <span data-href="user_subscription"></span>
 <a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
-<section class="section">
+<section class="section" id="subscribe"
   <h2 class="title is-4">
     Subscribe
   </h2>
@@ -86,19 +86,14 @@ $avatar_name = $avatar -> avatar_name;
 
                 <div class="field is-horizontal">
                   <div class="field-label">
-                    <label class="label">Choose Plan</label>
+                    <label class="label">Chosen Plan</label>
                   </div>
                   <div class="field-body">
                     <div class="field">
                       <div class="control">
-                      <div class="select is-fullwidth">
-                        <select id="amount" name="amount">
-                          <option selected value="100">$100 for 3 months</option>
-                          <option value="150">$150 for 5 months</option>
-                          <option value="200">$200 for 10 months</option>
-                        </select>
+                        <input type="hidden" id="amount" name="amount">
+                        <p id="cost">Cost Here</p>
                       </div>
-                    </div>
                     </div>
                   </div>
                 </div>

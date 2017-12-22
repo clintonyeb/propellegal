@@ -1,3 +1,17 @@
+<?php
+    $acc_status = checkSubscription();
+?>
+
+
+<?php if(!$acc_status): ?>
+    <p>Redirecting to payment...</p>
+    <script type='text/javascript'>
+        location.href = '/user/pricing'
+    </script>
+
+<?php else: ?>
+
+<a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 <span data-href="create_document"></span>
 <a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
 <section class="section">
@@ -7,3 +21,5 @@
         </form>
     </div>
 </section>
+
+<?php endif; ?>

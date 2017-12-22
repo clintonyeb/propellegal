@@ -39,7 +39,11 @@ function my_theme_enqueue_styles() {
   }
 
   wp_localize_script( 'script-js', '$wp_data',
-                      array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 'client_auth' => CLIENT_KEY, 'home' => HOME, 'authenticated' => $USER_PAYLOAD['status']));
+                      array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 
+                      'client_auth' => CLIENT_KEY, 
+                      'home' => HOME, 
+                      'authenticated' => $USER_PAYLOAD['status'], 
+                      'active' => $USER_PAYLOAD['active']));
 }
 
 add_action('wp_ajax_nopriv_register_form', 'register_form');
@@ -88,6 +92,8 @@ add_action('wp_ajax_admin_actions', 'admin_actions');
 add_action('wp_ajax_nopriv_admin_actions', 'admin_actions');
 add_action('wp_ajax_user_mess', 'user_mess');
 add_action('wp_ajax_nopriv_user_mess', 'user_mess');
+add_action('wp_ajax_payment_price', 'payment_price');
+add_action('wp_ajax_nopriv_payment_price', 'payment_price');
 
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
 add_filter('show_admin_bar', '__return_false');
@@ -671,7 +677,8 @@ function encryptData($payload){
       'data' => [
         'user_id' => $payload -> id,
         'role_id' => $payload -> role_id,
-        'full_name' => $payload -> full_name
+        'full_name' => $payload -> full_name,
+        'active' => checkAccountActive(($payload -> id))
         // TODO: Remove Fullname from token payload
       ]
     ];
@@ -3891,4 +3898,34 @@ function checkSubscription(){
   $date_today = new DateTime("now");
   $acc_status = $date_expire > $date_today;
   return $acc_status;
+}
+
+function checkAccountActive($user_id){
+  global $wpdb;
+
+  $table_subscriptions = _SUBSCRIPTION_TABLE_;
+
+  $query = "SELECT date_renewed, date_expire, amount
+             FROM $table_subscriptions
+             WHERE user_id='$user_id'
+             LIMIT 1;";
+
+  $results = ($wpdb -> get_results($query, OBJECT));
+  $data = $results[0];
+
+  $renewed = $data -> date_renewed;
+  $expire = $data -> date_expire;
+  $amount = $data -> amount;
+  $date_expire = new DateTime($expire);
+  $date_today = new DateTime("now");
+  $acc_status = $date_expire > $date_today;
+  return $acc_status;
+}
+
+function payment_price(){
+  global $USER_PAYLOAD;
+  $user = $USER_PAYLOAD['data'];
+  $user_id = $user -> user_id;
+
+  
 }

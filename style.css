@@ -16984,7 +16984,6 @@ a.is-hoverable:hover {
   white-space: nowrap;
   with: 100%;
   text-overflow: ellipsis;
-  /* The side navigation menu */
 }
 
 /* line 880, assets/sass/_custom.sass */
@@ -17110,4 +17109,51 @@ a.is-hoverable:hover {
   text-align: center;
   vertical-align: top;
   font-weight: bold;
+}
+
+/* line 994, assets/sass/_custom.sass */
+.currency {
+  font-size: 1rem;
+  vertical-align: super;
+}
+
+/* line 999, assets/sass/_custom.sass */
+#pricing .columns {
+  margin-left: 5rem;
+  margin-right: 5rem;
+  margin-top: 2rem;
+}
+/* line 1003, assets/sass/_custom.sass */
+#pricing .columns .column {
+  padding: 0;
+}
+/* line 1007, assets/sass/_custom.sass */
+#pricing .card .card-header p {
+  display: inline-block;
+}
+/* line 1009, assets/sass/_custom.sass */
+#pricing .card.is-selected {
+  position: relative;
+  bottom: 22px;
+  border-top: 2px solid #455a64;
+}
+/* line 1013, assets/sass/_custom.sass */
+#pricing .card.is-selected .popular {
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 0.8rem;
+}
+/* line 1019, assets/sass/_custom.sass */
+#pricing .content .title {
+  font-weight: 800;
+  color: red;
+}
+/* line 1022, assets/sass/_custom.sass */
+#pricing .content .button {
+  width: 70%;
+}
+/* line 1025, assets/sass/_custom.sass */
+#pricing .foot .subtitle {
+  font-size: 0.9rem;
 }

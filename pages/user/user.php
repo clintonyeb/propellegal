@@ -134,7 +134,7 @@ $acc_status = $date_expire > $date_today;
                       <strong>Status: </strong> <?php echo ($acc_status ? 'Active' : 'Not Active'); ?>
                       <?php
                       if (!$acc_status) {
-                        echo '<a class="button is-primary is-small" href="/user/subscribe">Renew Subscription</a>';
+                        echo '<a class="button is-primary is-small" href="/user/pricing">Renew Subscription</a>';
                       }
 
                       ?>
