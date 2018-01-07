@@ -1,7 +1,7 @@
 <?php
-define ('SITE_ROOT', realpath(dirname(__FILE__)));
+define('SITE_ROOT', realpath(dirname(__FILE__)));
 define("HOME", get_stylesheet_directory());
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require 'vendor/autoload.php';
 require_once(SITE_ROOT . "/inc/global.php");
 
@@ -14,42 +14,50 @@ $USER_PAYLOAD = array(
   'status' => false
 );
 
-if (array_key_exists('token', $_COOKIE)){
+if (array_key_exists('token', $_COOKIE)) {
   validate_jwt($_COOKIE['token']);
 }
 
 
-if( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 // Initialize Genesis
 require_once get_template_directory() . '/lib/init.php';
 
 
-function my_theme_enqueue_styles() {
+function my_theme_enqueue_styles()
+{
   global $client_key;
   global $USER_PAYLOAD;
-  wp_enqueue_script('util', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/utils.js');
-  wp_enqueue_script('transition', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/transition.js', array('jquery'));
-  wp_enqueue_script('dropdown', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/dropdown.js', array('transition'));
-  if (is_page('Subscribe') ) {
-    wp_enqueue_script( 'square-pay', 'https://js.squareup.com/v2/paymentform', array('jquery'));
-    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown', 'square-pay'));
+  wp_enqueue_script('util', get_bloginfo('stylesheet_directory') . '/assets/js/utils.js');
+  wp_enqueue_script('transition', get_bloginfo('stylesheet_directory') . '/assets/js/transition.js', array('jquery'));
+  wp_enqueue_script('dropdown', get_bloginfo('stylesheet_directory') . '/assets/js/dropdown.js', array('transition'));
+  if (is_page('Subscribe')) {
+    wp_enqueue_script('square-pay', 'https://js.squareup.com/v2/paymentform', array('jquery'));
+    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'square-pay'));
   } else {
-    wp_enqueue_script( 'script-js', get_bloginfo( 'stylesheet_directory' ) . '/assets/js/script.js', array('util', 'dropdown'));
+    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown'));
   }
 
-  wp_localize_script( 'script-js', '$wp_data',
-                      array( 'ajaxUrl' => admin_url( 'admin-ajax.php' ), 
-                      'client_auth' => CLIENT_KEY, 
-                      'home' => HOME, 
-                      'authenticated' => $USER_PAYLOAD['status'], 
-                      'active' => $USER_PAYLOAD['active']));
+  wp_localize_script(
+    'script-js',
+    '$wp_data',
+    array(
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'client_auth' => CLIENT_KEY,
+      'home' => HOME,
+      'authenticated' => $USER_PAYLOAD['status'],
+      'active' => $USER_PAYLOAD['active']
+    )
+  );
 }
 
 add_action('wp_ajax_nopriv_register_form', 'register_form');
 add_action('wp_ajax_register_form', 'register_form');
 add_action('wp_ajax_nopriv_login', 'login');
 add_action('wp_ajax_login', 'login');
+add_action('wp_ajax_nopriv_resend_confirm', 'resend_confirm');
+add_action('wp_ajax_resend_confirm', 'resend_confirm');
 add_action('wp_ajax_nopriv_get_doc', 'get_doc');
 add_action('wp_ajax_get_doc', 'get_doc');
 add_action('wp_ajax_nopriv_get_file', 'get_file');
@@ -95,17 +103,35 @@ add_action('wp_ajax_nopriv_user_mess', 'user_mess');
 add_action('wp_ajax_payment_price', 'payment_price');
 add_action('wp_ajax_nopriv_payment_price', 'payment_price');
 
-add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
+add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
 add_filter('show_admin_bar', '__return_false');
 
-remove_filter( 'the_content', 'wpautop' );
-remove_filter( 'the_excerpt', 'wpautop' );
+remove_filter('the_content', 'wpautop');
+remove_filter('the_excerpt', 'wpautop');
 
 // initial function calls
 
-function wpdocs_set_html_mail_content_type() {
+function wpdocs_set_html_mail_content_type()
+{
   return 'text/html';
 }
+
+// Email code from: https://wordpress.stackexchange.com/a/185296
+if ( ! defined( 'DOING_CRON' ) || ( defined( 'DOING_CRON' ) && ! DOING_CRON ) ) {
+  function wp_cron_mail() {
+    $args = func_get_args();
+    $args[] = mt_rand();
+    wp_schedule_single_event( time() + 5, 'cron_send_mail', $args );
+  }
+}
+
+function example_cron_send_mail() {
+  $args = func_get_args();
+  array_pop( $args );
+  call_user_func_array( 'wp_mail', $args );
+}
+
+add_action( 'cron_send_mail', 'example_cron_send_mail', 10, 10 );
 
 /* define the wp_mail_failed callback
  * function action_wp_mail_failed($wp_error)
@@ -116,7 +142,8 @@ function wpdocs_set_html_mail_content_type() {
 // add the action
 //add_action('wp_mail_failed', 'action_wp_mail_failed', 10, 1);
 
-function register_form(){
+function register_form()
+{
   global $wpdb;
 
   // check if request is from our client
@@ -134,7 +161,7 @@ function register_form(){
     'remoteip' => $_SERVER['REMOTE_ADDR']
   );
 
-  $captcha_response = wp_remote_post( $captcha_url, array(
+  $captcha_response = wp_remote_post($captcha_url, array(
     'method' => 'POST',
     'timeout' => 45,
     'redirection' => 5,
@@ -143,11 +170,10 @@ function register_form(){
     'headers' => array(),
     'body' => $c_data,
     'cookies' => array()
-  )
-  );
+  ));
 
-  if ( is_wp_error( $captcha_response ) ) {
-    $error_message = $captcha_response -> get_error_message();
+  if (is_wp_error($captcha_response)) {
+    $error_message = $captcha_response->get_error_message();
     wp_send_json(array(
       'message' => $error_message,
       'status' => false
@@ -156,8 +182,8 @@ function register_form(){
     return die(0);
   } else {
     $captcha_response = json_decode($captcha_response["body"]);
-    $state = $captcha_response -> success;
-    if (!$state){
+    $state = $captcha_response->success;
+    if (!$state) {
       wp_send_json(array(
         'message' => 'Server could not validate sent data',
         'status' => false
@@ -170,7 +196,7 @@ function register_form(){
   $full_name = trim($_POST['full_name']);
   $password = trim($_POST['password']);
 
-  if ($email == "" || $full_name == "" || $password == ""){
+  if ($email == "" || $full_name == "" || $password == "") {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -178,7 +204,7 @@ function register_form(){
     return die(0);
   }
 
-  if (strlen($email) < 1 || strlen($full_name) < 5 || strlen($password) < 6){
+  if (strlen($email) < 1 || strlen($full_name) < 5 || strlen($password) < 6) {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -186,7 +212,7 @@ function register_form(){
     return die(0);
   }
 
-  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)){
+  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -200,7 +226,7 @@ function register_form(){
 
   $email_exists = $wpdb->get_row("SELECT id,email FROM $table_user WHERE email = '$email'");
 
-  if ($email_exists !== null){
+  if ($email_exists !== null) {
     wp_send_json(array(
       'message' => "Account with email already exists, please login instead",
       'status' => false
@@ -214,10 +240,10 @@ function register_form(){
 
   $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
 
-  $result =  $wpdb->insert(
+  $result = $wpdb->insert(
     $table_user,
     array(
-      'date_created' => current_time( 'mysql' ),
+      'date_created' => current_time('mysql'),
       'email' => $email,
       'full_name' => $full_name,
       'password' => $hashed_password,
@@ -236,13 +262,13 @@ function register_form(){
 
 
 
-  if ($result){
+  if ($result) {
 
-    $user_id = $wpdb -> insert_id;
+    $user_id = $wpdb->insert_id;
 
     $table_subscriptions = _SUBSCRIPTION_TABLE_;
 
-    $resultPay =  $wpdb->insert(
+    $resultPay = $wpdb->insert(
       $table_subscriptions,
       array(
         'user_id' => $user_id,
@@ -254,28 +280,7 @@ function register_form(){
 
     // send email
 
-    $otp = generateOTP($email);
-    $admin = admin_url( 'admin-ajax.php' );
-    $auth = "?action=activate&auth=$otp";
-    $link = $admin . $auth;
-    $subject = 'Propellegal Account Confirmation';
-    $body = "<html>
-                   <head>
-                     <title>Email Verification</title>
-                   </head>
-                   <body>";
-    $body .= "<h2>Hi $full_name </h2>";
-    $body .= "<h4><a href=\"$link\">CLICK TO ACTICATE ACCOUNT</a></h4>";
-    $body .= " </body>
-                </html>";
-
-    $mail_res = sendEmail($subject, $body, $email);
-
-    if ($mail_res) {
-      error_log('Mail sent');
-    } else {
-      error_log('Mail failed');
-    }
+    sendConfirmationEmail($email, $full_name);
 
     //remove_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
 
@@ -295,23 +300,103 @@ function register_form(){
   die();
 }
 
-function sendEmail($subject, $content, $to){
+
+function resend_confirm(){
+  global $wpdb;
+  
+  $email = trim($_POST['email']);
+
+  if ($email == "") {
+    wp_send_json(array(
+      'message' => 'Server could not validate sent data',
+      'status' => false
+    ));
+    return die(0);
+  }
+
+  if (strlen($email) < 1) {
+    wp_send_json(array(
+      'message' => 'Server could not validate sent data',
+      'status' => false
+    ));
+    return die(0);
+  }
+
+  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
+    wp_send_json(array(
+      'message' => 'Server could not validate sent data',
+      'status' => false
+    ));
+    return die(0);
+  }
+
+  // reached here, then client data has been validated
+
+  $table_user = _USER_TABLE_;
+
+  $email_exists = $wpdb->get_row("SELECT id,email,full_name FROM $table_user WHERE email = '$email'");
+
+  if ($email_exists === null) {
+    wp_send_json(array(
+      'message' => "Your account could not be found",
+      'status' => false
+    ));
+    return die(0);
+  }
+
+  sendConfirmationEmail($email_exists -> email, $email_exists -> full_name);
+
+  wp_send_json(array(
+    'message' => "Confimation email sent",
+    'status' => true
+  ));
+}
+
+function sendConfirmationEmail($email, $full_name)
+{
+  $otp = generateOTP($email);
+  $admin = admin_url('admin-ajax.php');
+  $auth = "?action=activate&auth=$otp";
+  $link = $admin . $auth;
+  $subject = 'Propellegal Account Confirmation';
+  $body = "<html>
+                   <head>
+                     <title>Email Verification</title>
+                   </head>
+                   <body>";
+  $body .= "<h2>Hi $full_name </h2>";
+  $body .= "<h4><a href=\"$link\">CLICK TO ACTICATE ACCOUNT</a></h4>";
+  $body .= " </body>
+                </html>";
+
+  $mail_res = sendEmail($subject, $body, $email);
+
+  if ($mail_res) {
+    error_log('Mail sent');
+  } else {
+    error_log('Mail failed');
+  }
+}
+
+function sendEmail($subject, $content, $to)
+{
   $to = $to;
   $subject = 'Propellegal Account Confirmation';
   $body = $content;
   $header = "MIME-Version: 1.0" . "\r\n";
   $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
 
-  return wp_mail( $to, $subject, $body, $header );
+  return wp_cron_mail($to, $subject, $body, $header);
 }
 
-function activate(){
+function activate()
+{
   global $wpdb;
 
   parse_str($_SERVER['QUERY_STRING']);
 
   $data = decode_jwt($auth, OTP_KEY);
-  $email = $data -> data -> email;
+  $email = $data->data->email;
 
   $table_user = _USER_TABLE_;
 
@@ -321,14 +406,14 @@ function activate(){
                     FROM $table_user
                     WHERE email = '$email'
 ");
-    if ($email_exists){
-      $up = $wpdb -> update(
+    if ($email_exists) {
+      $up = $wpdb->update(
         $table_user,
         array(
           'activated' => 1
         ),
         array(
-          'id' => $email_exists -> id
+          'id' => $email_exists->id
         ),
         array(
           '%d'
@@ -338,7 +423,7 @@ function activate(){
         )
       );
 
-      if ($up){
+      if ($up) {
         echo '<h2>Account Activation Successfull</h2>';
 
         // send welcome message
@@ -354,10 +439,10 @@ function activate(){
         $body .= "</body></html>";
 
 
-        $mail_res = sendEmail($subject, $body, $email_exists -> email);
+        $mail_res = sendEmail($subject, $body, $email_exists->email);
 
         if ($mail_res)
-          addActivity(_ACTIVATED_ACCOUNT_, $email_exists -> id);
+          addActivity(_ACTIVATED_ACCOUNT_, $email_exists->id);
       } else {
         echo '<h2>Account already activated</h2>';
       }
@@ -370,7 +455,8 @@ function activate(){
   die();
 }
 
-function login(){
+function login()
+{
   global $wpdb;
 
   // check if request is from our client
@@ -383,7 +469,7 @@ function login(){
 
   // validate payload
 
-  if ($email == "" || $password == ""){
+  if ($email == "" || $password == "") {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -391,7 +477,7 @@ function login(){
     return die(0);
   }
 
-  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)){
+  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -403,37 +489,37 @@ function login(){
 
   $table_user = _USER_TABLE_;
 
-  $results = $wpdb -> get_results("
+  $results = $wpdb->get_results("
                       SELECT email, password, id, full_name, role_id, activated, avatar_name
                       FROM $table_user
                       WHERE email = '$email'
                       LIMIT 1;
 ");
 
-  if (count($results) == 1){
+  if (count($results) == 1) {
 
     // valiate password match
     $res_data = $results[0];
 
-    if($res_data -> activated != 1){
+    if ($res_data->activated != 1) {
       wp_send_json(array(
-        'message' => "Your Account is not activated, please check your mail to activate account",
+        'message' => "Your Account is not activated, please check your mail  ",
         'status' => false,
       ));
 
       return die(0);
     }
 
-    $hashed_password = $res_data -> password;
+    $hashed_password = $res_data->password;
 
     if (password_verify($password, $hashed_password)) {
       $token = encryptData($res_data);
 
       setcookie('token', $token, time() + (86400 * 30 * 7), "/"); // 86400 = 7 days
 
-      addActivity(_LOGGED_IN_, $res_data -> id);
+      addActivity(_LOGGED_IN_, $res_data->id);
 
-      $role = $res_data -> role_id;
+      $role = $res_data->role_id;
 
       wp_send_json(array(
         'message' => "Login Success",
@@ -443,14 +529,14 @@ function login(){
       ));
     } else {
       wp_send_json(array(
-        'message' => "Username and Password Incorrect",
+        'message' => "Username or Password Incorrect",
         'status' => false
       ));
     }
 
   } else {
     wp_send_json(array(
-      'message' => "Username and Password Incorrect",
+      'message' => "Username or Password Incorrect",
       'status' => false
     ));
   }
@@ -458,7 +544,8 @@ function login(){
 }
 
 
-function recover_pass(){
+function recover_pass()
+{
   global $wpdb;
   global $phpmailer;
 
@@ -472,7 +559,7 @@ function recover_pass(){
 
   // validate payload
 
-  if ($email == ""){
+  if ($email == "") {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -480,7 +567,7 @@ function recover_pass(){
     return die(0);
   }
 
-  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)){
+  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -492,14 +579,14 @@ function recover_pass(){
 
   $table_user = _USER_TABLE_;
 
-  $results = $wpdb -> get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
+  $results = $wpdb->get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
 
-  if (count($results) == 1){
+  if (count($results) == 1) {
 
     // valiate password match
     $res_data = $results[0];
 
-    if($res_data -> activated != 1){
+    if ($res_data->activated != 1) {
       wp_send_json(array(
         'message' => "Your Account is not activated, please check your mail to activate account",
         'status' => false,
@@ -508,13 +595,13 @@ function recover_pass(){
       return die(0);
     }
 
-    $otp = generateOTP($res_data -> email);
+    $otp = generateOTP($res_data->email);
     $recover_page = get_home_url() . '/recover-account';
     $auth = "?auth=$otp";
     $to = $email;
     $subject = 'Propellegal Password Recovery';
     $body = '<html><head><title>Password Recovery</title></head><body>';
-    $body .= '<h2>Hi ' . $res_data -> full_name . ' !</h2>';
+    $body .= '<h2>Hi ' . $res_data->full_name . ' !</h2>';
     $body .= '<p>You requested to create a new password. If this was you, use the link below to create a new password.</p>';
     $body .= '</p>If you have mistakenly received this email, you can safely ignore it.</p>';
     $body .= '<h4><a href="' . $recover_page . $auth . '">CLICK TO RECOVER ACCOUNT PASSWORD</a></h4>';
@@ -523,13 +610,13 @@ function recover_pass(){
     $header = "MIME-Version: 1.0" . "\r\n";
     $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
 
-    $mail_res = wp_mail( $to, $subject, $body, $header );
+    $mail_res = wp_cron_mail($to, $subject, $body, $header);
 
     if ($mail_res) {
       error_log('Mail sent');
 
     } else {
-      return  wp_send_json(array(
+      return wp_send_json(array(
         'message' => "Email failed to send " . $mail_res,
         'status' => false
       ));
@@ -548,7 +635,8 @@ function recover_pass(){
   die();
 }
 
-function do_pass_recovery(){
+function do_pass_recovery()
+{
   global $wpdb;
 
   // check if request is from our client
@@ -562,7 +650,7 @@ function do_pass_recovery(){
 
   // validate payload
 
-  if ($email == "" || $password == ""){
+  if ($email == "" || $password == "") {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -570,7 +658,7 @@ function do_pass_recovery(){
     return die(0);
   }
 
-  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)){
+  if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
     wp_send_json(array(
       'message' => 'Server could not validate sent data',
       'status' => false
@@ -582,9 +670,9 @@ function do_pass_recovery(){
 
   $table_user = _USER_TABLE_;
 
-  $results = $wpdb -> get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
+  $results = $wpdb->get_results("SELECT email,id,full_name,role_id,activated FROM $table_user WHERE email = '$email' LIMIT 1;");
 
-  if (count($results) == 1){
+  if (count($results) == 1) {
     $data = $results[0];
 
     $p_options = [
@@ -593,13 +681,13 @@ function do_pass_recovery(){
 
     $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
 
-    $up = $wpdb -> update(
+    $up = $wpdb->update(
       $table_user,
       array(
         'password' => $hashed_password
       ),
       array(
-        'id' => ($data -> id)
+        'id' => ($data->id)
       ),
       array(
         '%s'
@@ -609,7 +697,7 @@ function do_pass_recovery(){
       )
     );
 
-    if ($up === false){
+    if ($up === false) {
       wp_send_json(array(
         'message' => 'Error changing password db',
         'status' => false
@@ -617,7 +705,7 @@ function do_pass_recovery(){
 
       return die(0);
     } else {
-      addActivity(_RECOVER_PASSWORD_, $data -> id);
+      addActivity(_RECOVER_PASSWORD_, $data->id);
       wp_send_json(array(
         'message' => 'Password succesfully changed, please login to your account using the new password',
         'status' => true
@@ -634,7 +722,8 @@ function do_pass_recovery(){
   die();
 }
 
-function generateOTP($email){
+function generateOTP($email)
+{
   $token_id = base64_encode(rand_sha1(32));
   $issued_at = time();
   $not_before = $issued_at + 10;
@@ -661,8 +750,9 @@ function generateOTP($email){
 }
 
 
-function encryptData($payload){
-  if($payload){
+function encryptData($payload)
+{
+  if ($payload) {
     $token_id = base64_encode(rand_sha1(32));
     $issued_at = time();
     $not_before = $issued_at + 10;
@@ -675,10 +765,10 @@ function encryptData($payload){
       'nbf' => $not_before,
       'exp' => $expire,
       'data' => [
-        'user_id' => $payload -> id,
-        'role_id' => $payload -> role_id,
-        'full_name' => $payload -> full_name,
-        'active' => checkAccountActive(($payload -> id))
+        'user_id' => $payload->id,
+        'role_id' => $payload->role_id,
+        'full_name' => $payload->full_name,
+        'active' => checkAccountActive(($payload->id))
         // TODO: Remove Fullname from token payload
       ]
     ];
@@ -696,53 +786,57 @@ function encryptData($payload){
   return null;
 }
 
-function rand_sha1($length) {
+function rand_sha1($length)
+{
   $max = ceil($length / 40);
   $random = '';
-  for ($i = 0; $i < $max; $i ++) {
-    $random .= sha1(microtime(true).mt_rand(10000,90000));
+  for ($i = 0; $i < $max; $i++) {
+    $random .= sha1(microtime(true) . mt_rand(10000, 90000));
   }
   return substr($random, 0, $length);
 }
 
 
-function decode_jwt($jwt, $key, $h = false){
+function decode_jwt($jwt, $key, $h = false)
+{
   JWT::$leeway = 60;
   $decoded = '';
 
-  try{
+  try {
     $decoded = JWT::decode($jwt, $key, array('HS256'));
-  } catch(\Exception $e){
-    if (!$h){
+  } catch (\Exception $e) {
+    if (!$h) {
       setcookie("token", "", 1, '/');
     }
-    return NULL;
+    return null;
   }
 
   return $decoded;
 }
 
-function validate_jwt($jwt){
+function validate_jwt($jwt)
+{
   global $USER_PAYLOAD;
 
-  if ($jwt){
+  if ($jwt) {
     $decoded = decode_jwt($jwt, SECRET_KEY);
-    if ($decoded && $decoded -> exp > time()){
-      $USER_PAYLOAD =  array(
+    if ($decoded && $decoded->exp > time()) {
+      $USER_PAYLOAD = array(
         'status' => true,
-        'data' => $decoded -> data
+        'data' => $decoded->data
       );
     }
   }
 }
 
-function addActivity($type_name, $user_id){
+function addActivity($type_name, $user_id)
+{
   global $wpdb;
 
   $table_activities = _ACTIVITY_TABLE_;
   $date = date('Y-m-d H:i:s');
 
-  $sql_insert = $wpdb -> insert(
+  $sql_insert = $wpdb->insert(
     $table_activities,
     array(
       "date_created" => $date,
@@ -756,16 +850,17 @@ function addActivity($type_name, $user_id){
     )
   );
 
-  return $wpdb -> insert_id;
+  return $wpdb->insert_id;
 }
 
-function addNotification($act_type, $user_id, $item_id, $viewed = 0){
+function addNotification($act_type, $user_id, $item_id, $viewed = 0)
+{
   global $wpdb;
   $table_notifs = _NOTIF_TABLE_;
 
   $date = date('Y-m-d H:i:s');
 
-  $sql_insert = $wpdb -> insert(
+  $sql_insert = $wpdb->insert(
     $table_notifs,
     array(
       "act_type" => $act_type,
@@ -783,14 +878,15 @@ function addNotification($act_type, $user_id, $item_id, $viewed = 0){
     )
   );
 
-  return $wpdb -> insert_id;
+  return $wpdb->insert_id;
 }
 
-function getUserNotifCount(){
+function getUserNotifCount()
+{
   global $USER_PAYLOAD;
   global $wpdb;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $table_notifs = _NOTIF_TABLE_;
 
   $query = "SELECT COUNT(*)
@@ -798,19 +894,20 @@ function getUserNotifCount(){
              WHERE target_user_id=$user_id
              AND viewed=0";
 
-  $count = $wpdb -> get_var($query);
+  $count = $wpdb->get_var($query);
 
   return $count;
 }
 
-function getUserNotifs($limit){
+function getUserNotifs($limit)
+{
   global $USER_PAYLOAD;
   global $wpdb;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $table_notifs = _NOTIF_TABLE_;
 
-  $up = $wpdb -> update(
+  $up = $wpdb->update(
     $table_notifs,
     array(
       'viewed' => 1
@@ -834,12 +931,13 @@ function getUserNotifs($limit){
              ORDER BY date_assigned DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getRolePath($role_id){
-  switch($role_id){
+function getRolePath($role_id)
+{
+  switch ($role_id) {
     case 1:
       return "admin";
     case 2:
@@ -850,11 +948,11 @@ function getRolePath($role_id){
   }
 }
 
-function getNotifsTemplate($noti, $full_name="You"){
+function getNotifsTemplate($noti, $full_name = "You")
+{
 
-  if (!$noti){
-    return (
-      '
+  if (!$noti) {
+    return ('
                 <article class="media">
                 <figure class="media-left">
                 <p class="media-icon">
@@ -871,15 +969,14 @@ function getNotifsTemplate($noti, $full_name="You"){
                 </div>
                 </div>
                 </article>
-                '
-    );
+                ');
 
   }
-  $date = time_elapsed_string($noti -> date_assigned);
+  $date = time_elapsed_string($noti->date_assigned);
   $content = "";
-  $action = $noti-> act_type;
+  $action = $noti->act_type;
 
-  switch($action){
+  switch ($action) {
     case _ASK_ATTORNEY_:
       $content = "Your request is being processed";
       break;
@@ -892,8 +989,7 @@ function getNotifsTemplate($noti, $full_name="You"){
 
   }
 
-  return (
-    '
+  return ('
                 <article class="media">
                 <figure class="media-left">
                 <p class="media-icon">
@@ -910,12 +1006,12 @@ function getNotifsTemplate($noti, $full_name="You"){
                 </div>
                 </div>
                 </article>
-                '
-  );
+                ');
 
 }
 
-function submit_feedback(){
+function submit_feedback()
+{
   global $USER_PAYLOAD;
 
   $files = $_FILES['file'];
@@ -923,10 +1019,10 @@ function submit_feedback(){
   $act_id = $_POST['act_id'];
   $figure = $_POST['rating'];
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $date = date('Y-m-d H:i:s');
 
-  $sql_insert = $wpdb -> insert(
+  $sql_insert = $wpdb->insert(
     $table_notifs,
     array(
       "act_id" => $act_id,
@@ -940,8 +1036,8 @@ function submit_feedback(){
     )
   );
 
-  if ($sql_insert){
-    return  wp_send_json(array(
+  if ($sql_insert) {
+    return wp_send_json(array(
       "status" => true,
       "message" => "Succes"
     ));
@@ -955,13 +1051,14 @@ function submit_feedback(){
   die();
 }
 
-function get_files(){
+function get_files()
+{
   $category = $_POST['category'];
   $state = $_POST['state'];
 
   $dir = HOME . "/assets/docs/$state/$category";
 
-  if (is_dir($dir)){
+  if (is_dir($dir)) {
     $files = array_diff(scandir($dir, 1), array('.', '..'));
 
     wp_send_json(array(
@@ -979,7 +1076,8 @@ function get_files(){
 $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
 
-function generate_document(){
+function generate_document()
+{
   global $phpWord;
   global $wpdb;
   global $USER_PAYLOAD;
@@ -1000,9 +1098,9 @@ function generate_document(){
   $path = get_stylesheet_directory() . "/assets/docs/$state/$category";
   $template = $path . "/$doc_name" . '.tpl';
 
-  $tmp_content =  file_get_contents($template);
+  $tmp_content = file_get_contents($template);
 
-  $result = $m -> render($tmp_content, array(
+  $result = $m->render($tmp_content, array(
     'user_name' => $firstname . ' ' . $lastname,
     'category' => $category,
     'address' => $address,
@@ -1011,9 +1109,9 @@ function generate_document(){
     'state' => $state
   ));
 
-  $section = $phpWord -> addSection();
+  $section = $phpWord->addSection();
 
-  $section -> addText($result);
+  $section->addText($result);
 
   $out_path = get_stylesheet_directory() . "/assets/generated_documents/";
   $out_file = uniqid('output-', true);
@@ -1040,21 +1138,23 @@ function generate_document(){
 
   $table_doc = _DOC_TABLE_;
 
-  $act_id = addActivity(_CREATE_DOCUMENT_, $user -> user_id);
+  $act_id = addActivity(_CREATE_DOCUMENT_, $user->user_id);
 
-  $res = $wpdb -> insert($table_doc,
-                         array(
-                           "act_id" => $act_id,
-                           "category" => $category,
-                           "state" => $state,
-                           "request_type" => "self",
-                           "file_name" => $out_file
-                         ), array(
-                           "%d", "%s", "%s", "%s", "%s"
-                         )
+  $res = $wpdb->insert(
+    $table_doc,
+    array(
+      "act_id" => $act_id,
+      "category" => $category,
+      "state" => $state,
+      "request_type" => "self",
+      "file_name" => $out_file
+    ),
+    array(
+      "%d", "%s", "%s", "%s", "%s"
+    )
   );
 
-  if ($res){
+  if ($res) {
     wp_send_json(array(
       'message' => 'Success',
       'status' => true,
@@ -1072,8 +1172,9 @@ function generate_document(){
 
 use Dompdf\Dompdf;
 
-function get_pdf($html){
-  $tmp_content =  file_get_contents($html);
+function get_pdf($html)
+{
+  $tmp_content = file_get_contents($html);
   $dompdf = new Dompdf();
   $dompdf->loadHtml($tmp_content);
 
@@ -1082,7 +1183,8 @@ function get_pdf($html){
 }
 
 
-function upload_doc(){
+function upload_doc()
+{
   global $USER_PAYLOAD;
   global $wpdb;
 
@@ -1101,42 +1203,48 @@ function upload_doc(){
 
   $total = count($files['name']);
 
-  for($i = 0; $i < $total; $i++){
+  for ($i = 0; $i < $total; $i++) {
     $target_file = _saveFile($files, $i);
 
-    if ($target_file){
+    if ($target_file) {
       array_push($save_files, $target_file);
     } else {
       sendError("Error uploading files");
     }
   }
 
-  $act_id = addActivity(_REVIEW_DOCUMENT_, $user -> user_id);
+  $act_id = addActivity(_REVIEW_DOCUMENT_, $user->user_id);
 
-  $res = $wpdb -> insert($table_doc_reviews,
-                         array(
-                           "act_id" => $act_id,
-                           "mess" => $content,
-                           "status" => _RECEIVED_,
-                           "last_updated" => $date,
-                           "viewed" => 0,
-                           "doc_user_name" => $name,
-                         ), array(
-                           "%d", "%s", "%s", "%s", "%d", "%s"
-                         ));
+  $res = $wpdb->insert(
+    $table_doc_reviews,
+    array(
+      "act_id" => $act_id,
+      "mess" => $content,
+      "status" => _RECEIVED_,
+      "last_updated" => $date,
+      "viewed" => 0,
+      "doc_user_name" => $name,
+    ),
+    array(
+      "%d", "%s", "%s", "%s", "%d", "%s"
+    )
+  );
 
-  if ($res){
-    $doc_id = $wpdb -> insert_id;
+  if ($res) {
+    $doc_id = $wpdb->insert_id;
 
     // add files
-    foreach ($save_files as $f){
-      $wpdb -> insert($table_doc_files,
-                      array(
-                        "doc_id" => $doc_id,
-                        "path" => $f
-                      ), array(
-                        "%d", "%s"
-                      ));
+    foreach ($save_files as $f) {
+      $wpdb->insert(
+        $table_doc_files,
+        array(
+          "doc_id" => $doc_id,
+          "path" => $f
+        ),
+        array(
+          "%d", "%s"
+        )
+      );
     }
 
     wp_send_json(array(
@@ -1154,11 +1262,12 @@ function upload_doc(){
 }
 
 
-function _saveFile($files, $i, $crush = 0){
-  $target_dir =  "assets/uploads/";
+function _saveFile($files, $i, $crush = 0)
+{
+  $target_dir = "assets/uploads/";
   $target_file = $target_dir . basename($files['name'][$i]);
 
-  if ($crush != 0){
+  if ($crush != 0) {
     $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
     $imageName = pathinfo($target_file, PATHINFO_FILENAME);
 
@@ -1169,7 +1278,7 @@ function _saveFile($files, $i, $crush = 0){
     return _saveFile($files, $i, ++$crush);
   }
 
-  $res = move_uploaded_file($files["tmp_name"][$i], SITE_ROOT . '/' .  $target_file);
+  $res = move_uploaded_file($files["tmp_name"][$i], SITE_ROOT . '/' . $target_file);
 
   if ($res)
     return pathinfo($target_file, PATHINFO_BASENAME);
@@ -1177,12 +1286,13 @@ function _saveFile($files, $i, $crush = 0){
   return false;
 }
 
-function role_id_to_string($id){
+function role_id_to_string($id)
+{
   global $USER_ROLE;
   global $ADMIN_ROLE;
   global $LAWYER_ROLE;
 
-  switch($id){
+  switch ($id) {
     case 1:
       return $USER_ROLE;
     case 2:
@@ -1194,9 +1304,10 @@ function role_id_to_string($id){
   }
 }
 
-add_action( 'phpmailer_init', 'configure_smtp' );
+add_action('phpmailer_init', 'configure_smtp');
 
-function configure_smtp( PHPMailer $phpmailer ){
+function configure_smtp(PHPMailer $phpmailer)
+{
   $phpmailer->isSMTP(); //switch to smtp
   $phpmailer->Host = "relay-hosting.secureserver.net";
   //$phpmailer->SMTPSecure = 'tls';
@@ -1216,15 +1327,17 @@ function configure_smtp( PHPMailer $phpmailer ){
  * }*/
 
 
-function redirect($url) {
+function redirect($url)
+{
   ob_start();
-  header('Location: '.$url);
+  header('Location: ' . $url);
   ob_end_flush();
   die();
 }
 
 
-function ask_attorney(){
+function ask_attorney()
+{
   global $USER_PAYLOAD;
   global $wpdb;
   $content = $_POST['content'];
@@ -1234,10 +1347,10 @@ function ask_attorney(){
 
   //error_log(print_r($USER_PAYLOAD, true));
   // validate cookie
-  if(!$USER_PAYLOAD["status"]) return redirect("/login");
+  if (!$USER_PAYLOAD["status"]) return redirect("/login");
   $user = $USER_PAYLOAD["data"];
   $date = date('Y-m-d H:i:s');
-  $act_id = addActivity(_ASK_ATTORNEY_, $user -> user_id);
+  $act_id = addActivity(_ASK_ATTORNEY_, $user->user_id);
 
   $files = $_FILES['file'];
 
@@ -1247,72 +1360,80 @@ function ask_attorney(){
 
 
   $table_requests = _REQUEST_TABLE_;
-  $res = $wpdb -> insert($table_requests,
-                         array(
-                           "act_id" => $act_id,
-                           "mess" => $content,
-                           "status" => _RECEIVED_,
-                           "last_updated" => $date,
-                           "viewed" => 0
-                         ), array(
-                           "%d",
-                           "%s",
-                           "%s",
-                           "%s",
-                           "%d"
-                         )
+  $res = $wpdb->insert(
+    $table_requests,
+    array(
+      "act_id" => $act_id,
+      "mess" => $content,
+      "status" => _RECEIVED_,
+      "last_updated" => $date,
+      "viewed" => 0
+    ),
+    array(
+      "%d",
+      "%s",
+      "%s",
+      "%s",
+      "%d"
+    )
   );
 
-  if ($res){
-    $req_id =  $wpdb -> insert_id;
+  if ($res) {
+    $req_id = $wpdb->insert_id;
 
-    $id = addRequestMessage($user-> user_id, $req_id, $content);
+    $id = addRequestMessage($user->user_id, $req_id, $content);
 
-    if ($files){
+    if ($files) {
       $total = count($files['name']);
 
-      for($i = 0; $i < $total; $i++){
+      for ($i = 0; $i < $total; $i++) {
         $target_file = _saveFile($files, $i);
 
-        if ($target_file){
+        if ($target_file) {
           array_push($saved_files, $target_file);
         } else {
           sendError("Error uploading files");
         }
       }
 
-      foreach ($saved_files as $f){
-        $wpdb -> insert($table_req_files,
-                        array(
-                          "item_id" => $id,
-                          "path" => $f,
-                          "req_type" => _ASK_ATTORNEY_
-                        ), array(
-                          "%d", "%s", "%s"
-                        ));
+      foreach ($saved_files as $f) {
+        $wpdb->insert(
+          $table_req_files,
+          array(
+            "item_id" => $id,
+            "path" => $f,
+            "req_type" => _ASK_ATTORNEY_
+          ),
+          array(
+            "%d", "%s", "%s"
+          )
+        );
       }
     }
     wp_send_json(array(
       'message' => 'Success',
-      'status' => true));
+      'status' => true
+    ));
   } else {
     wp_send_json(array(
       'message' => 'Error adding request',
-      'status' => false));
+      'status' => false
+    ));
 
   }
 
   die();
 }
 
-function addRequestMessage($user_id, $req_id, $content){
+function addRequestMessage($user_id, $req_id, $content)
+{
   global $wpdb;
 
   $date = date('Y-m-d H:i:s');
 
   $table_req_mess = _REQUEST_MESS_;
 
-  $res = $wpdb -> insert(
+  $res = $wpdb->insert(
     $table_req_mess,
     array(
       "req_id" => $req_id,
@@ -1328,13 +1449,14 @@ function addRequestMessage($user_id, $req_id, $content){
     )
   );
 
-  return $wpdb -> insert_id;
+  return $wpdb->insert_id;
 }
 
-function req_mess(){
+function req_mess()
+{
   $files = $_FILES['file'];
   $content = $_POST['content'];
-  $req_id =  $_POST['req_id'];
+  $req_id = $_POST['req_id'];
   global $USER_PAYLOAD;
   global $wpdb;
   $user = $USER_PAYLOAD['data'];
@@ -1343,50 +1465,56 @@ function req_mess(){
 
 
 
-  if ($id = addRequestMessage($user -> user_id, $req_id, $content)) {
+  if ($id = addRequestMessage($user->user_id, $req_id, $content)) {
 
-    if ($files){
+    if ($files) {
       $total = count($files['name']);
 
-      for($i = 0; $i < $total; $i++){
+      for ($i = 0; $i < $total; $i++) {
         $target_file = _saveFile($files, $i);
 
-        if ($target_file){
+        if ($target_file) {
           array_push($saved_files, $target_file);
         } else {
           sendError("Error uploading files");
         }
       }
 
-      foreach ($saved_files as $f){
-        $wpdb -> insert($table_req_files,
-                        array(
-                          "item_id" => $id,
-                          "path" => $f,
-                          "req_type" => _ASK_ATTORNEY_
-                        ), array(
-                          "%d", "%s", "%s"
-                        ));
+      foreach ($saved_files as $f) {
+        $wpdb->insert(
+          $table_req_files,
+          array(
+            "item_id" => $id,
+            "path" => $f,
+            "req_type" => _ASK_ATTORNEY_
+          ),
+          array(
+            "%d", "%s", "%s"
+          )
+        );
       }
 
     }
 
     wp_send_json(array(
       'message' => 'Success',
-      'status' => true));
+      'status' => true
+    ));
   } else {
     wp_send_json(array(
       'message' => 'error adding request',
-      'status' => false));
+      'status' => false
+    ));
   }
 
   die();
 }
 
-function addReviewMessage($d, $table_name){
+function addReviewMessage($d, $table_name)
+{
   global $wpdb;
 
-  $res = $wpdb -> insert(
+  $res = $wpdb->insert(
     $table_name,
     $d,
     array(
@@ -1397,16 +1525,17 @@ function addReviewMessage($d, $table_name){
     )
   );
 
-  return $wpdb -> insert_id;
+  return $wpdb->insert_id;
 }
 
-function rev_mess(){
+function rev_mess()
+{
   global $USER_PAYLOAD;
 
   $content = $_POST['content'];
-  $req_id =  $_POST['req_id'];
+  $req_id = $_POST['req_id'];
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $date = date('Y-m-d H:i:s');
   $table_rev_mess = _DOC_REVIEW_MESS_;
 
@@ -1426,51 +1555,57 @@ function rev_mess(){
 
   if ($id = addReviewMessage($d, $table_rev_mess)) {
 
-    if ($files){
+    if ($files) {
       $total = count($files['name']);
 
-      for($i = 0; $i < $total; $i++){
+      for ($i = 0; $i < $total; $i++) {
         $target_file = _saveFile($files, $i);
 
-        if ($target_file){
+        if ($target_file) {
           array_push($saved_files, $target_file);
         } else {
           sendError("Error uploading files");
         }
       }
 
-      foreach ($saved_files as $f){
-        $wpdb -> insert($table_req_files,
-                        array(
-                          "item_id" => $id,
-                          "path" => $f,
-                          "req_type" => _REVIEW_DOCUMENT_
-                        ), array(
-                          "%d", "%s", "%s"
-                        ));
+      foreach ($saved_files as $f) {
+        $wpdb->insert(
+          $table_req_files,
+          array(
+            "item_id" => $id,
+            "path" => $f,
+            "req_type" => _REVIEW_DOCUMENT_
+          ),
+          array(
+            "%d", "%s", "%s"
+          )
+        );
       }
 
     }
 
     wp_send_json(array(
       'message' => 'Success',
-      'status' => true));
+      'status' => true
+    ));
   } else {
     wp_send_json(array(
       'message' => 'error adding review',
-      'status' => false));
+      'status' => false
+    ));
   }
 
   die();
 }
 
-function reg_mess(){
+function reg_mess()
+{
   global $USER_PAYLOAD;
 
   $content = $_POST['content'];
-  $req_id =  $_POST['req_id'];
+  $req_id = $_POST['req_id'];
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $date = date('Y-m-d H:i:s');
 
   $table_reg_mess = _BUS_MESS_TABLE_;
@@ -1491,46 +1626,52 @@ function reg_mess(){
 
   if ($id = addReviewMessage($d, $table_reg_mess)) {
 
-    if ($files){
+    if ($files) {
       $total = count($files['name']);
 
-      for($i = 0; $i < $total; $i++){
+      for ($i = 0; $i < $total; $i++) {
         $target_file = _saveFile($files, $i);
 
-        if ($target_file){
+        if ($target_file) {
           array_push($saved_files, $target_file);
         } else {
           sendError("Error uploading files");
         }
       }
 
-      foreach ($saved_files as $f){
-        $wpdb -> insert($table_req_files,
-                        array(
-                          "item_id" => $id,
-                          "path" => $f,
-                          "req_type" => _REGISTER_BUSINESS_
-                        ), array(
-                          "%d", "%s", "%s"
+      foreach ($saved_files as $f) {
+        $wpdb->insert(
+          $table_req_files,
+          array(
+            "item_id" => $id,
+            "path" => $f,
+            "req_type" => _REGISTER_BUSINESS_
+          ),
+          array(
+            "%d", "%s", "%s"
 
-                        ));
+          )
+        );
       }
 
     }
 
     wp_send_json(array(
       'message' => 'Success',
-      'status' => true));
+      'status' => true
+    ));
   } else {
     wp_send_json(array(
       'message' => 'error adding review',
-      'status' => false));
+      'status' => false
+    ));
   }
 
   die();
 }
 
-function ask_business(){
+function ask_business()
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
@@ -1550,50 +1691,56 @@ function ask_business(){
   $user = $USER_PAYLOAD['data'];
   $date = date('Y-m-d H:i:s');
 
-  $act_id = addActivity(_REGISTER_BUSINESS_, $user -> user_id);
+  $act_id = addActivity(_REGISTER_BUSINESS_, $user->user_id);
 
-  $res = $wpdb -> insert($table_registrations,
-                         array(
-                           "act_id" => $act_id,
-                           "mess" => $mess,
-                           "status" => _RECEIVED_,
-                           "last_updated" => $date,
-                           "viewed" => 0,
-                           "bus_fname" => $firstname,
-                           "bus_lname" => $lastname,
-                           "bus_phone" => $phone,
-                           "bus_city" => $city,
-                           "bus_state" => $state,
-                           "bus_zipcode" => $zip,
-                           "bus_address" => $address,
-                           "bus_type" => $busType,
-                           "com_name" => $comName,
-                           "com_desc" => $comDesc
-                         ), array(
-                           "%d", "%s", "%s", "%s", "%d", "%s", "%s",
-                           "%s", "%s", "%s", "%s", "%s", "%s", "%s"
-                         ));
+  $res = $wpdb->insert(
+    $table_registrations,
+    array(
+      "act_id" => $act_id,
+      "mess" => $mess,
+      "status" => _RECEIVED_,
+      "last_updated" => $date,
+      "viewed" => 0,
+      "bus_fname" => $firstname,
+      "bus_lname" => $lastname,
+      "bus_phone" => $phone,
+      "bus_city" => $city,
+      "bus_state" => $state,
+      "bus_zipcode" => $zip,
+      "bus_address" => $address,
+      "bus_type" => $busType,
+      "com_name" => $comName,
+      "com_desc" => $comDesc
+    ),
+    array(
+      "%d", "%s", "%s", "%s", "%d", "%s", "%s",
+      "%s", "%s", "%s", "%s", "%s", "%s", "%s"
+    )
+  );
 
-  if ($res){
+  if ($res) {
     wp_send_json(array(
       'message' => 'Success',
-      'status' => true));
+      'status' => true
+    ));
   } else {
     wp_send_json(array(
       'message' => 'Failed',
-      'status' => false));
+      'status' => false
+    ));
   }
 
   die();
 }
 
-function getActivities($limit = 10){
+function getActivities($limit = 10)
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
   $user = $USER_PAYLOAD['data'];
   $table_activities = _ACTIVITY_TABLE_;
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
   $query = "SELECT id, date_created, type_name
              FROM $table_activities
@@ -1601,11 +1748,12 @@ function getActivities($limit = 10){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getActivitiesForUser($user_id, $limit = 10){
+function getActivitiesForUser($user_id, $limit = 10)
+{
   global $wpdb;
 
   $table_activities = _ACTIVITY_TABLE_;
@@ -1619,11 +1767,12 @@ function getActivitiesForUser($user_id, $limit = 10){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getAllActivities($limit = 20){
+function getAllActivities($limit = 20)
+{
   global $wpdb;
 
   $table_activities = _ACTIVITY_TABLE_;
@@ -1636,12 +1785,13 @@ function getAllActivities($limit = 20){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
 
-function getRequests($limit = 10){
+function getRequests($limit = 10)
+{
   global $wpdb;
 
   $table_requests = _REQUEST_TABLE_;
@@ -1654,14 +1804,15 @@ function getRequests($limit = 10){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
 $PAGE = 0;
 $DATA_COUNT = 0;
 
-function getAllRequests($limit = 20, $page = 1, $q = ""){
+function getAllRequests($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $USER_PAYLOAD;
@@ -1672,9 +1823,9 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_requests.id)
              FROM $table_requests
@@ -1684,13 +1835,14 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s';";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
     $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_requests
@@ -1701,13 +1853,14 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              ORDER BY date_created DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -1718,7 +1871,7 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              ON $table_requests.act_id = $table_activities.id
              WHERE user_id = $user_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_requests.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_requests
@@ -1728,15 +1881,15 @@ function getAllRequests($limit = 20, $page = 1, $q = ""){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getActivityTemplate($act, $full_name="You"){
+function getActivityTemplate($act, $full_name = "You")
+{
 
-  if (!$act){
-    return (
-      '
+  if (!$act) {
+    return ('
                 <article class="media">
                 <figure class="media-left">
                 <p class="media-icon">
@@ -1753,14 +1906,13 @@ function getActivityTemplate($act, $full_name="You"){
                 </div>
                 </div>
                 </article>
-                '
-    );
+                ');
 
   }
-  $date = time_elapsed_string($act -> date_created);
+  $date = time_elapsed_string($act->date_created);
   $content = "";
 
-  switch($act -> type_name){
+  switch ($act->type_name) {
     case _CREATE_DOCUMENT_:
       $content = "<i>$full_name</i> created a new <strong>document</strong>";
       break;
@@ -1794,8 +1946,7 @@ function getActivityTemplate($act, $full_name="You"){
       break;
   }
 
-  return (
-    '
+  return ('
                 <article class="media">
                 <figure class="media-left">
                 <p class="media-icon">
@@ -1812,22 +1963,21 @@ function getActivityTemplate($act, $full_name="You"){
                 </div>
                 </div>
                 </article>
-                '
-  );
+                ');
 
 }
 
-function getAllRequestsTemplate($req){
+function getAllRequestsTemplate($req)
+{
 
-  $status = $req -> status;
-  $viewed = $req -> viewed;
-  $mess = $req -> mess;
-  $last_updated = time_elapsed_string($req -> last_updated);
-  $req_id = $req -> id;
+  $status = $req->status;
+  $viewed = $req->viewed;
+  $mess = $req->mess;
+  $last_updated = time_elapsed_string($req->last_updated);
+  $req_id = $req->id;
   $status_color = get_color($status);
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -1842,21 +1992,20 @@ function getAllRequestsTemplate($req){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$last_updated</small>
        </td>
-        "
-  );
+        ");
 }
 
-function getLawyerReqTemp($req){
+function getLawyerReqTemp($req)
+{
 
-  $status = $req -> status;
-  $viewed = $req -> viewed;
-  $mess = $req -> mess;
-  $last_updated = time_elapsed_string($req -> last_updated);
-  $req_id = $req -> id;
+  $status = $req->status;
+  $viewed = $req->viewed;
+  $mess = $req->mess;
+  $last_updated = time_elapsed_string($req->last_updated);
+  $req_id = $req->id;
   $status_color = get_color($status);
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -1871,12 +2020,12 @@ function getLawyerReqTemp($req){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$last_updated</small>
        </td>
-        "
-  );
+        ");
 }
 
-function get_color($status){
-  switch($status){
+function get_color($status)
+{
+  switch ($status) {
     case _RECEIVED_:
       return "has-text-warning";
     case _REGISTERED_:
@@ -1894,7 +2043,8 @@ function get_color($status){
   }
 }
 
-function time_elapsed_string($datetime, $full = false) {
+function time_elapsed_string($datetime, $full = false)
+{
   $now = new DateTime;
   $ago = new DateTime($datetime);
   $diff = $now->diff($ago);
@@ -1923,13 +2073,14 @@ function time_elapsed_string($datetime, $full = false) {
   return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-function getActivityCount($act_name){
+function getActivityCount($act_name)
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
   $user = $USER_PAYLOAD['data'];
   $table_activities = _ACTIVITY_TABLE_;
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
   $query = "
            SELECT COUNT(id)
@@ -1938,11 +2089,12 @@ function getActivityCount($act_name){
            AND user_id = '$user_id'
      ";
 
-  $results = $wpdb -> get_var($query);
+  $results = $wpdb->get_var($query);
   return $results;
 }
 
-function getAllActivityCount($act_name){
+function getAllActivityCount($act_name)
+{
   global $wpdb;
   $table_activities = _ACTIVITY_TABLE_;
 
@@ -1952,11 +2104,12 @@ function getAllActivityCount($act_name){
            WHERE type_name = '$act_name'
      ";
 
-  $results = $wpdb -> get_var($query);
+  $results = $wpdb->get_var($query);
   return $results;
 }
 
-function getRequestMessages($req_id){
+function getRequestMessages($req_id)
+{
   global $wpdb;
 
   $table_requests = _REQUEST_TABLE_;
@@ -1969,21 +2122,21 @@ function getRequestMessages($req_id){
              ON $table_mess.user_id = $table_users.id
              WHERE req_id= $req_id;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getRequestMessagesTemplate($mess, $files){
+function getRequestMessagesTemplate($mess, $files)
+{
 
-  $full_name = $mess -> full_name;
-  $date = time_elapsed_string($mess -> date_created);
-  $content = $mess -> content;
-  $avatar = $mess -> avatar_name;
+  $full_name = $mess->full_name;
+  $date = time_elapsed_string($mess->date_created);
+  $content = $mess->content;
+  $avatar = $mess->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
   $file_t = fileTemp($files);
 
-  return(
-    "
+  return ("
       <article class=\"media\" style=\"max-width: 85%\">
      <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2001,28 +2154,30 @@ function getRequestMessagesTemplate($mess, $files){
         </div>
         </div>
         </article>
-        "
-  );
+        ");
 }
 
 
-function sendError($mess = "Error"){
+function sendError($mess = "Error")
+{
   wp_send_json(array(
     'message' => $mess,
     'status' => false
   ));
 }
 
-function sendResponse($mess = "Success", $data = array()){
+function sendResponse($mess = "Success", $data = array())
+{
   wp_send_json(array(
     'message' => $mess,
     'status' => true,
-    'data'=> $data
+    'data' => $data
   ));
 }
 
 
-function getAllDocReviews($limit = 20, $page = 1, $q = ""){
+function getAllDocReviews($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $USER_PAYLOAD;
@@ -2033,9 +2188,9 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_doc_reviews.id)
              FROM $table_doc_reviews
@@ -2045,13 +2200,14 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s';";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status, feedback
@@ -2063,13 +2219,14 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              ORDER BY last_updated DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -2080,7 +2237,7 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              ON $table_doc_reviews.act_id = $table_activities.id
              WHERE user_id = $user_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_doc_reviews.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_doc_reviews
@@ -2090,21 +2247,21 @@ function getAllDocReviews($limit = 20, $page = 1, $q = ""){
              ORDER BY last_updated DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
 
-function getAllDocReviewsTemplate($req){
-  $status = $req -> status;
-  $viewed = $req -> viewed;
-  $mess = $req -> mess;
-  $last_updated = time_elapsed_string($req -> last_updated);
-  $req_id = $req -> id;
+function getAllDocReviewsTemplate($req)
+{
+  $status = $req->status;
+  $viewed = $req->viewed;
+  $mess = $req->mess;
+  $last_updated = time_elapsed_string($req->last_updated);
+  $req_id = $req->id;
   $status_color = get_color($status);
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -2119,11 +2276,11 @@ function getAllDocReviewsTemplate($req){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$last_updated</small>
        </td>
-        "
-  );
+        ");
 }
 
-function getDocRevDetails($req_id){
+function getDocRevDetails($req_id)
+{
   global $wpdb;
 
   $table_docs = _DOC_REVIEW_TABLE_;
@@ -2142,25 +2299,25 @@ function getDocRevDetails($req_id){
              LIMIT 1;";
 
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results[0];
 }
 
-function getDocRevDetailsTemplate($req, $fn){
-  $status = $req -> status;
-  $mess = $req -> mess;
-  $date = time_elapsed_string($req -> date_created);
-  $doc_id = $req -> id;
+function getDocRevDetailsTemplate($req, $fn)
+{
+  $status = $req->status;
+  $mess = $req->mess;
+  $date = time_elapsed_string($req->date_created);
+  $doc_id = $req->id;
   $status_color = get_color($status);
-  $full_name = $req -> full_name;
-  $doc_user_name = $req -> doc_user_name;
-  $avatar = $req -> avatar_name;
+  $full_name = $req->full_name;
+  $doc_user_name = $req->doc_user_name;
+  $avatar = $req->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
   $file_t = fileTemp($fn);
 
-  return(
-    "
+  return ("
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2183,11 +2340,11 @@ function getDocRevDetailsTemplate($req, $fn){
         </div>
         </div>
         </article>
-        "
-  );
+        ");
 }
 
-function getFileCount($req_id){
+function getFileCount($req_id)
+{
   global $wpdb;
   $table_files = _DOC_FILES_;
 
@@ -2196,11 +2353,12 @@ function getFileCount($req_id){
              WHERE $table_files.doc_id = $req_id;";
 
 
-  $results = $wpdb -> get_results($query);
+  $results = $wpdb->get_results($query);
   return $results;
 }
 
-function getReviewFiles($req_id){
+function getReviewFiles($req_id)
+{
   global $wpdb;
   $table_files = _DOC_FILES_;
 
@@ -2208,11 +2366,12 @@ function getReviewFiles($req_id){
              FROM $table_files
              WHERE $table_files.doc_id = $req_id;";
 
-  $results = $wpdb -> get_results($query);
+  $results = $wpdb->get_results($query);
   return $results;
 }
 
-function getReqFileCount($req_id, $req_type){
+function getReqFileCount($req_id, $req_type)
+{
   global $wpdb;
   $table_files = _REQ_FILES_;
 
@@ -2222,11 +2381,12 @@ function getReqFileCount($req_id, $req_type){
              AND req_type=$req_type;";
 
 
-  $results = $wpdb -> get_var($query);
+  $results = $wpdb->get_var($query);
   return $results;
 }
 
-function getReqFiles($req_id){
+function getReqFiles($req_id)
+{
   global $wpdb;
   $table_files = _REQ_FILES_;
 
@@ -2236,16 +2396,18 @@ function getReqFiles($req_id){
              AND req_type=$req_type;";
 
 
-  $results = $wpdb -> get_results($query);
+  $results = $wpdb->get_results($query);
   return $results;
 }
 
-function getFileTemp($file){
-  $path = $file -> path;
+function getFileTemp($file)
+{
+  $path = $file->path;
   return ("<a href=\"wp-content/themes/clinton/assets/uploads/$path\" download>$path</a>");
 }
 
-function getMessages($id, $type_id, $table_name, $req_type){
+function getMessages($id, $type_id, $table_name, $req_type)
+{
   global $wpdb;
   $table_users = _USER_TABLE_;
 
@@ -2256,11 +2418,12 @@ function getMessages($id, $type_id, $table_name, $req_type){
              WHERE $type_id=$id;";
 
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function get_req_files($req_id, $req_type){
+function get_req_files($req_id, $req_type)
+{
   $table_files = _REQ_FILES_;
   global $wpdb;
   error_log($req_id);
@@ -2269,24 +2432,25 @@ function get_req_files($req_id, $req_type){
              WHERE item_id=$req_id
              AND req_type='$req_type';";
 
-  return($wpdb -> get_results($query, OBJECT));
+  return ($wpdb->get_results($query, OBJECT));
 }
 
-function getReviewMessages($doc_id){
+function getReviewMessages($doc_id)
+{
   $table_mess = _DOC_REVIEW_MESS_;
   return getMessages($doc_id, 'doc_id', $table_mess, _REVIEW_DOCUMENT_);
 }
 
-function getRevMessTemplate($rev, $files){
-  $full_name = $rev -> full_name;
-  $date = time_elapsed_string($rev -> date_created);
-  $content = $rev -> content;
-  $avatar = $rev -> avatar_name;
+function getRevMessTemplate($rev, $files)
+{
+  $full_name = $rev->full_name;
+  $date = time_elapsed_string($rev->date_created);
+  $content = $rev->content;
+  $avatar = $rev->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
   $files_t = fileTemp($files);
 
-  return(
-    "
+  return ("
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2306,15 +2470,15 @@ function getRevMessTemplate($rev, $files){
         </div>
         </div>
         </article>
-        "
-  );
+        ");
 }
 
-function fileTemp($files){
+function fileTemp($files)
+{
   $files_t = "";
 
-  foreach($files as $f){
-    $path = $f -> path;
+  foreach ($files as $f) {
+    $path = $f->path;
     $files_t .= "
           <a href=\"/wp-content/themes/clinton-child/assets/uploads/$path\" download>
           <span class=\"icon is-small has-text-darker-yellow\">
@@ -2326,7 +2490,8 @@ function fileTemp($files){
   return $files_t;
 }
 
-function getAllBusRegs($limit = 20, $page = 1, $q = ""){
+function getAllBusRegs($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $USER_PAYLOAD;
@@ -2337,9 +2502,9 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_regs.id)
              FROM $table_regs
@@ -2349,13 +2514,14 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              AND mess LIKE '%s';";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status, feedback
@@ -2367,13 +2533,14 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              ORDER BY last_updated DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -2384,7 +2551,7 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              ON $table_regs.act_id = $table_activities.id
              WHERE user_id = $user_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_regs.id, last_updated, type_name, mess, viewed, status, feedback
              FROM $table_regs
@@ -2394,11 +2561,12 @@ function getAllBusRegs($limit = 20, $page = 1, $q = ""){
              ORDER BY last_updated DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getRegDetails($req_id){
+function getRegDetails($req_id)
+{
   global $wpdb;
 
   $table_regs = _BUS_REG_TABLE_;
@@ -2416,29 +2584,29 @@ function getRegDetails($req_id){
              LIMIT 1;";
 
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results[0];
 }
 
-function getRegDetailsTemp($reg) {
-  $full_name = $reg -> full_name;
-  $date = time_elapsed_string($reg -> date_created);
-  $mess = $reg-> mess;
-  $firtname = $reg -> bus_fname;
-  $lastname = $reg -> bus_lname;
-  $bus_phone = $reg -> bus_phone;
-  $bus_city = $reg -> bus_city;
-  $bus_state = $reg -> bus_state;
-  $bus_zipcode = $reg -> bus_zipcode;
-  $bus_address = $reg -> bus_address;
-  $bus_type = $reg -> bus_type;
-  $com_name = $reg -> com_name;
-  $com_desc = $reg -> com_desc;
-  $avatar = $reg -> avatar_name;
+function getRegDetailsTemp($reg)
+{
+  $full_name = $reg->full_name;
+  $date = time_elapsed_string($reg->date_created);
+  $mess = $reg->mess;
+  $firtname = $reg->bus_fname;
+  $lastname = $reg->bus_lname;
+  $bus_phone = $reg->bus_phone;
+  $bus_city = $reg->bus_city;
+  $bus_state = $reg->bus_state;
+  $bus_zipcode = $reg->bus_zipcode;
+  $bus_address = $reg->bus_address;
+  $bus_type = $reg->bus_type;
+  $com_name = $reg->com_name;
+  $com_desc = $reg->com_desc;
+  $avatar = $reg->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
-  return(
-    "
+  return ("
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2503,17 +2671,18 @@ function getRegDetailsTemp($reg) {
         </div>
         </div>
         <hr />
-        "
-  );
+        ");
 }
 
-function getRegMessages($reg_id){
+function getRegMessages($reg_id)
+{
   $table_mess = _BUS_MESS_TABLE_;
   return getMessages($reg_id, 'reg_id', $table_mess, _REGISTER_BUSINESS_);
 }
 
 
-function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
+function getAllCreatDocuments($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $USER_PAYLOAD;
@@ -2524,7 +2693,7 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
   $query = "SELECT COUNT($table_doc.id)
              FROM $table_doc
@@ -2532,7 +2701,7 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
              ON $table_doc.act_id = $table_activities.id
              WHERE user_id = $user_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_doc.id, date_created, category, state
              FROM $table_doc
@@ -2542,21 +2711,21 @@ function getAllCreatDocuments($limit = 20, $page = 1, $q = ""){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getAllDocTemp($doc){
+function getAllDocTemp($doc)
+{
   $status = _COMPLETED_;
-  $date = time_elapsed_string($doc -> date_created);
-  $doc_id = $doc -> id;
+  $date = time_elapsed_string($doc->date_created);
+  $doc_id = $doc->id;
   $status_color = get_color($status);
-  $category = $doc -> category;
-  $state = $doc -> state;
+  $category = $doc->category;
+  $state = $doc->state;
   $mess = "Created a document under $category in $state state";
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -2571,12 +2740,12 @@ function getAllDocTemp($doc){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$date</small>
        </td>
-        "
-  );
+        ");
 }
 
 
-function getDetailCreatDoc($doc_id){
+function getDetailCreatDoc($doc_id)
+{
   global $wpdb;
 
   $table_doc = _DOC_TABLE_;
@@ -2593,26 +2762,26 @@ function getDetailCreatDoc($doc_id){
              LIMIT 1;";
 
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results[0];
 }
 
-function getCreDocDetailTemp($doc){
-  $state = $doc -> state;
-  $request_type = $doc -> request_type;
-  $date = time_elapsed_string($doc -> date_created);
-  $doc_id = $doc -> id;
-  $category = $doc -> category;
-  $full_name = $doc -> full_name;
-  $file_name = $doc -> file_name;
+function getCreDocDetailTemp($doc)
+{
+  $state = $doc->state;
+  $request_type = $doc->request_type;
+  $date = time_elapsed_string($doc->date_created);
+  $doc_id = $doc->id;
+  $category = $doc->category;
+  $full_name = $doc->full_name;
+  $file_name = $doc->file_name;
   $file_pdf = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . ".pdf";
-  $file_image =  '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
+  $file_image = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
   $mess = "Created a document under $category in $state state";
-  $avatar = $doc -> avatar_name;
+  $avatar = $doc->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
-  return(
-    "
+  return ("
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2644,26 +2813,25 @@ function getCreDocDetailTemp($doc){
         </div>
         </div>
         </article>
-        "
-  );
+        ");
 }
 
-function getAdminCreDocDetailTemp($doc){
-  $state = $doc -> state;
-  $request_type = $doc -> request_type;
-  $date = time_elapsed_string($doc -> date_created);
-  $doc_id = $doc -> id;
-  $category = $doc -> category;
-  $full_name = $doc -> full_name;
-  $file_name = $doc -> file_name;
+function getAdminCreDocDetailTemp($doc)
+{
+  $state = $doc->state;
+  $request_type = $doc->request_type;
+  $date = time_elapsed_string($doc->date_created);
+  $doc_id = $doc->id;
+  $category = $doc->category;
+  $full_name = $doc->full_name;
+  $file_name = $doc->file_name;
   $file_pdf = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . ".pdf";
-  $file_image =  '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
+  $file_image = '/wp-content/themes/clinton-child/assets/generated_documents/' . $file_name . '.jpg';
   $mess = "Created a document under $category in $state state";
-  $avatar = $doc -> avatar_name;
+  $avatar = $doc->avatar_name;
   $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
 
-  return(
-    "
+  return ("
           <article class=\"media\" style=\"max-width: 85%\">
   <figure class=\"media-left\">
     <p class=\"image is-64x64\">
@@ -2692,18 +2860,18 @@ function getAdminCreDocDetailTemp($doc){
         </div>
         </div>
         </article>
-        "
-  );
+        ");
 }
 
 
-function getUserDetails($user_id=""){
+function getUserDetails($user_id = "")
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
   $user = $USER_PAYLOAD['data'];
-  if (!$user_id){
-    $user_id = $user -> user_id;
+  if (!$user_id) {
+    $user_id = $user->user_id;
   }
 
   $table_users = _USER_TABLE_;
@@ -2714,12 +2882,13 @@ function getUserDetails($user_id=""){
              LIMIT 1;";
 
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results[0];
 }
 
 
-function upload_avatar(){
+function upload_avatar()
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
@@ -2730,22 +2899,22 @@ function upload_avatar(){
   $table_user = _USER_TABLE_;
   $avatar = _saveAvatar($files);
 
-  if ($avatar){
+  if ($avatar) {
 
     // resize avatar
-    $target_dir =  "/assets/avatar/";
+    $target_dir = "/assets/avatar/";
     $target_file = $target_dir . $avatar;
 
     $res = resizeImage($target_file, 100, 100);
 
     // update database
-    $up = $wpdb -> update(
+    $up = $wpdb->update(
       $table_user,
       array(
         'avatar_name' => $avatar
       ),
       array(
-        'id' => ($user -> user_id)
+        'id' => ($user->user_id)
       ),
       array(
         '%s'
@@ -2759,7 +2928,7 @@ function upload_avatar(){
       return wp_send_json(array(
         'message' => 'Success',
         'status' => true,
-        'data'=> $avatar
+        'data' => $avatar
       ));
     }
   }
@@ -2772,20 +2941,22 @@ function upload_avatar(){
   die();
 }
 
-function resizeImage($file, $w, $h){
+function resizeImage($file, $w, $h)
+{
   $path = SITE_ROOT . $file;
   error_log(print_r($path, true));
   $image = new \Eventviva\ImageResize($path);
-  $image -> resizeToBestFit(100, 100);
-  $image -> save($path);
+  $image->resizeToBestFit(100, 100);
+  $image->save($path);
 
 }
 
-function _saveAvatar($files, $crush = 0){
-  $target_dir =  "assets/avatar/";
+function _saveAvatar($files, $crush = 0)
+{
+  $target_dir = "assets/avatar/";
   $target_file = $target_dir . basename($files['name'][0]);
 
-  if ($crush != 0){
+  if ($crush != 0) {
     $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
     $imageName = pathinfo($target_file, PATHINFO_FILENAME);
 
@@ -2796,7 +2967,7 @@ function _saveAvatar($files, $crush = 0){
     return _saveAvatar($files, ++$crush);
   }
 
-  $res = move_uploaded_file($files["tmp_name"][0], SITE_ROOT . '/' .  $target_file);
+  $res = move_uploaded_file($files["tmp_name"][0], SITE_ROOT . '/' . $target_file);
 
   if ($res)
     return pathinfo($target_file, PATHINFO_BASENAME);
@@ -2804,13 +2975,14 @@ function _saveAvatar($files, $crush = 0){
   return false;
 }
 
-function getAvatar($user_id=""){
+function getAvatar($user_id = "")
+{
   global $wpdb;
   global $USER_PAYLOAD;
 
   $user = $USER_PAYLOAD['data'];
-  if (!$user_id){
-    $user_id = $user -> user_id;
+  if (!$user_id) {
+    $user_id = $user->user_id;
   }
   $table_users = _USER_TABLE_;
 
@@ -2819,11 +2991,12 @@ function getAvatar($user_id=""){
              WHERE $table_users.id = $user_id
              LIMIT 1;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results[0];
 }
 
-function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
+function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id = 3)
+{
   global $wpdb;
   global $PAGE;
   global $USER_PAYLOAD;
@@ -2833,7 +3006,7 @@ function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_users.id)
              FROM $table_users
@@ -2842,13 +3015,14 @@ function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
              AND role_id=$role_id;";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%", "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
     $query = "SELECT $table_users.id, date_created, full_name, email, activated
              FROM $table_users
@@ -2858,14 +3032,15 @@ function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
              ORDER BY date_created DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
 
         "%$q%", "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -2874,7 +3049,7 @@ function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
              FROM $table_users
              WHERE role_id=$role_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_users.id, date_created, full_name, email, activated
              FROM $table_users
@@ -2882,26 +3057,26 @@ function getAllUserAccounts($limit = 20, $page = 1, $q = "", $role_id=3){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getAllUserAccTemp($data){
-  $date = date_create($data -> date_created);
+function getAllUserAccTemp($data)
+{
+  $date = date_create($data->date_created);
   $date = date_format($date, 'd/m/Y');
-  $full_name = $data -> full_name;
-  $email = $data -> email;
-  $activated = $data -> activated;
-  $id = $data -> id;
-  if ($activated){
+  $full_name = $data->full_name;
+  $email = $data->email;
+  $activated = $data->activated;
+  $id = $data->id;
+  if ($activated) {
     $status = _ACTIVATED_;
   } else {
     $status = _REGISTERED_;
   }
   $status_color = get_color($status);
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -2927,26 +3102,25 @@ function getAllUserAccTemp($data){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$date</small>
        </td>
-        "
-  );
+        ");
 }
 
-function getAllAdminAccTemp($data){
-  $date = date_create($data -> date_created);
+function getAllAdminAccTemp($data)
+{
+  $date = date_create($data->date_created);
   $date = date_format($date, 'd/m/Y');
-  $full_name = $data -> full_name;
-  $email = $data -> email;
-  $activated = $data -> activated;
-  $id = $data -> id;
-  if ($activated){
+  $full_name = $data->full_name;
+  $email = $data->email;
+  $activated = $data->activated;
+  $id = $data->id;
+  if ($activated) {
     $status = _ACTIVATED_;
   } else {
     $status = _REGISTERED_;
   }
   $status_color = get_color($status);
 
-  return (
-    "
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -2972,11 +3146,11 @@ function getAllAdminAccTemp($data){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$date</small>
        </td>
-        "
-  );
+        ");
 }
 
-function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
+function getAdminCreatDocuments($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $DATA_COUNT;
@@ -2987,7 +3161,7 @@ function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_doc.id)
              FROM $table_doc
@@ -2996,13 +3170,14 @@ function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
              WHERE full_name LIKE '%s';";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
-        "%$q%","%$q%"
+    $query = $wpdb->prepare(
+      $query,
+      array(
+        "%$q%", "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_doc.id, full_name, $table_activities.date_created, category, state
@@ -3015,13 +3190,14 @@ function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
              ORDER BY $table_activities.date_created DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
-        "%$q%","%$q%"
+    $query = $wpdb->prepare(
+      $query,
+      array(
+        "%$q%", "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -3029,7 +3205,7 @@ function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
   $query = "SELECT COUNT($table_doc.id)
              FROM $table_doc;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_doc.id, full_name, $table_activities.date_created, category, state
              FROM $table_doc
@@ -3040,23 +3216,23 @@ function getAdminCreatDocuments($limit = 20, $page = 1, $q = ""){
              ORDER BY $table_activities.date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getAdminDocTemp($doc){
+function getAdminDocTemp($doc)
+{
   $status = _COMPLETED_;
-  $date = date_create($doc -> date_created);
+  $date = date_create($doc->date_created);
   $date = date_format($date, 'd/m/Y');
-  $doc_id = $doc -> id;
+  $doc_id = $doc->id;
   $status_color = get_color($status);
-  $category = $doc -> category;
-  $state = $doc -> state;
-  $full_name = $doc -> full_name;
+  $category = $doc->category;
+  $state = $doc->state;
+  $full_name = $doc->full_name;
   $mess = "<strong>$full_name</strong> created a document under $category in $state state";
-  $id = $doc -> id;
-  return (
-    "
+  $id = $doc->id;
+  return ("
          <td style=\"width: 5%\">
            <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -3074,11 +3250,11 @@ function getAdminDocTemp($doc){
        <td  style=\"width: 10%;\">
          <small class=\"has-text-centered\">$date</small>
        </td>
-        "
-  );
+        ");
 }
 
-function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
+function getAdminTable($table_name, $limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $DATA_COUNT;
@@ -3088,7 +3264,7 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
 
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_name.id)
              FROM $table_name
@@ -3098,13 +3274,14 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
              OR WHERE mess LIKE '%s';";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created, feedback
@@ -3118,13 +3295,14 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
              ORDER BY date_created DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -3134,7 +3312,7 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
              INNER JOIN $table_activities
              ON $table_name.act_id = $table_activities.id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_name.id, status, full_name, $table_activities.date_created, feedback
              FROM $table_name
@@ -3145,23 +3323,27 @@ function getAdminTable($table_name, $limit = 20, $page = 1, $q = ""){
              ORDER BY date_created DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function getAdminRequests($limit = 20, $page = 1, $q = ""){
+function getAdminRequests($limit = 20, $page = 1, $q = "")
+{
   $table_requests = _REQUEST_TABLE_;
   return getAdminTable($table_requests, $limit, $page, $q);
 }
-{}
-function getLawyerRequests($limit = 20, $page = 1, $q = ""){
+{
+}
+function getLawyerRequests($limit = 20, $page = 1, $q = "")
+{
   $table_requests = _REQUEST_TABLE_;
   $table_law_req = _LAWYER_REQ_;
 
   return getLawyerTable($table_requests, $table_law_req, $limit, $page, $q);
 }
 
-function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = ""){
+function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $DATA_COUNT;
@@ -3172,9 +3354,9 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
-  if ($q){
+  if ($q) {
     error_log($q);
     $query = "SELECT COUNT(*)
              From $table_tasks
@@ -3189,13 +3371,14 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
              OR mess LIKE '%s');";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%", "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_name.id, mess, viewed, full_name, status, last_updated, feedback
@@ -3212,13 +3395,14 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
              ORDER BY date_assigned DESC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%", "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -3228,7 +3412,7 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
              INNER JOIN $table_activities
              ON $table_name.act_id = $table_activities.id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_name.id, mess, viewed, full_name, status, last_updated, feedback
              FROM $table_tasks
@@ -3242,26 +3426,26 @@ function getLawyerTable($table_name, $table_tasks, $limit = 20, $page = 1, $q = 
              ORDER BY date_assigned DESC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
 
-function getAdminTableTemp($req, $get_info){
-  $status = $req -> status;
-  $full_name = $req -> full_name;
-  $date = date_create($req -> date_created);
+function getAdminTableTemp($req, $get_info)
+{
+  $status = $req->status;
+  $full_name = $req->full_name;
+  $date = date_create($req->date_created);
   $date = date_format($date, 'd/m/Y');
   $status_color = get_color($status);
   $info = call_user_func($get_info, $full_name);
   $mess = $info['mess'];
   $url = $info['detail_url'];
-  $id = $req -> id;
-  $feedback = $req -> feedback;
+  $id = $req->id;
+  $feedback = $req->feedback;
   $statusAction = determineStatusAction($req, $status);
 
-  return (
-    "
+  return ("
          <td style=\"\">
 <p class=\"media-icon\">
              <span class=\"icon $status_color\">
@@ -3282,14 +3466,14 @@ function getAdminTableTemp($req, $get_info){
        <td  style=\"\">
            $statusAction
        </td>
-        "
-  );
+        ");
 }
 
-function determineStatusAction($req, $status){
-  $id = $req -> id;
+function determineStatusAction($req, $status)
+{
+  $id = $req->id;
 
-  if($status === _RECEIVED_){
+  if ($status === _RECEIVED_) {
     $lawyers = getLawyers();
     $lawyerOptions = createLawyers($lawyers);
 
@@ -3304,7 +3488,7 @@ function determineStatusAction($req, $status){
             </div>
            </div>
            ");
-  } else if($status === _PROCESSING_){
+  } else if ($status === _PROCESSING_) {
     return ("
             <p>
                <a class=\"button is-primary is-outlined\" disabled>PROCESSING</a>
@@ -3315,79 +3499,92 @@ function determineStatusAction($req, $status){
   }
 }
 
-function createLawyers($lawyers){
+function createLawyers($lawyers)
+{
   $options = array();
-  foreach($lawyers as $law){
+  foreach ($lawyers as $law) {
     $options[] = lawyerOptions($law);
   }
   return implode($options);
 }
 
-function lawyerOptions($lawyer){
-  $value = $lawyer -> id;
-  $name = $lawyer -> full_name;
+function lawyerOptions($lawyer)
+{
+  $value = $lawyer->id;
+  $name = $lawyer->full_name;
 
   return ("<div class=\"item\" data-value=\"$value\">$name</div>");
 }
 
-function get_req_info($full_name){
+function get_req_info($full_name)
+{
   return array(
     "mess" => "<strong>$full_name</strong> submitted a new request to an attorney",
     "detail_url" => "request_messages"
   );
 }
 
-function get_rev_info($full_name){
+function get_rev_info($full_name)
+{
   return array(
     "mess" => "<strong>$full_name</strong> submitted a document for review",
     "detail_url" => "document_details"
   );
 }
 
-function getAdminReqTemp($req){
+function getAdminReqTemp($req)
+{
   return getAdminTableTemp($req, 'get_req_info');
 }
 
-function getAdminReviews($limit = 20, $page = 1, $q = ""){
+function getAdminReviews($limit = 20, $page = 1, $q = "")
+{
   $table_reviews = _DOC_REVIEW_TABLE_;
   return getAdminTable($table_reviews, $limit, $page, $q);
 }
 
-function getAttorneyReviews($limit = 20, $page = 1, $q = ""){
+function getAttorneyReviews($limit = 20, $page = 1, $q = "")
+{
   $table_reviews = _DOC_REVIEW_TABLE_;
   $table_law_rev = _LAWYER_REV_;
 
   return getLawyerTable($table_reviews, $table_law_rev, $limit, $page, $q);
 }
 
-function getAdminRevTemp($req){
+function getAdminRevTemp($req)
+{
   return getAdminTableTemp($req, 'get_rev_info');
 }
 
-function getAdminRegs($limit = 20, $page = 1, $q = ""){
+function getAdminRegs($limit = 20, $page = 1, $q = "")
+{
   $table_regs = _BUS_REG_TABLE_;
   return getAdminTable($table_regs, $limit, $page, $q);
 }
 
-function getAttorneyRegs($limit = 20, $page = 1, $q = ""){
+function getAttorneyRegs($limit = 20, $page = 1, $q = "")
+{
   $table_regs = _BUS_REG_TABLE_;
   $table_law_regs = _LAWYER_BUS_;
 
   return getLawyerTable($table_regs, $table_law_regs, $limit, $page, $q);
 }
 
-function get_reg_mess($full_name){
+function get_reg_mess($full_name)
+{
   return array(
     "mess" => "<strong>$full_name</strong> submitted a business for registration",
     "detail_url" => "business_detail"
   );
 }
 
-function getAdminRegTemp($req){
+function getAdminRegTemp($req)
+{
   return getAdminTableTemp($req, 'get_reg_mess');
 }
 
-function admin_requests(){
+function admin_requests()
+{
   global $wpdb;
 
   $edits = $_POST['edits'];
@@ -3396,22 +3593,25 @@ function admin_requests(){
   $table_tasks = getAttorneyTableNameFromAction($action);
   $table_activities = _ACTIVITY_TABLE_;
 
-  foreach($edits as $edit){
+  foreach ($edits as $edit) {
     $item_id = $edit['id'];
     $value = $edit['value'];
 
-    $res = $wpdb -> insert($table_tasks,
-                           array(
-                             "lawyer_id" => $value,
-                             "item_id" => $item_id,
-                             "date_assigned" => current_time('sql')
-                           ), array(
-                             "%d", "%d", "%s"
-                           ));
+    $res = $wpdb->insert(
+      $table_tasks,
+      array(
+        "lawyer_id" => $value,
+        "item_id" => $item_id,
+        "date_assigned" => current_time('sql')
+      ),
+      array(
+        "%d", "%d", "%s"
+      )
+    );
 
-    if ($res){
+    if ($res) {
       // update request table
-      $up = $wpdb -> update(
+      $up = $wpdb->update(
         $table_request,
         array(
           'status' => _PROCESSING_
@@ -3426,7 +3626,7 @@ function admin_requests(){
           '%d'
         )
       );
-      if ($up){
+      if ($up) {
 
         $query = "SELECT user_id
                        FROM $table_request
@@ -3434,10 +3634,10 @@ function admin_requests(){
                        ON $table_activities.id=$table_request.act_id
                        WHERE $table_request.id=$item_id";
 
-        $results = $wpdb -> get_results($query, OBJECT);
-        $data= $results[0];
+        $results = $wpdb->get_results($query, OBJECT);
+        $data = $results[0];
 
-        addNotification($action, $data -> user_id, $item_id, 0);
+        addNotification($action, $data->user_id, $item_id, 0);
         return wp_send_json(array(
           "status" => true,
           "message" => "Success"
@@ -3449,8 +3649,9 @@ function admin_requests(){
   die();
 }
 
-function getAttorneyTableNameFromAction($action){
-  switch($action){
+function getAttorneyTableNameFromAction($action)
+{
+  switch ($action) {
     case _ASK_ATTORNEY_:
       return _LAWYER_REQ_;
     case _REVIEW_DOCUMENT_:
@@ -3460,8 +3661,9 @@ function getAttorneyTableNameFromAction($action){
   }
 }
 
-function getUserTableNameFromAction($action){
-  switch($action){
+function getUserTableNameFromAction($action)
+{
+  switch ($action) {
     case _ASK_ATTORNEY_:
       return _REQUEST_TABLE_;
     case _REVIEW_DOCUMENT_:
@@ -3476,7 +3678,8 @@ function getUserTableNameFromAction($action){
 }
 
 
-function register_lawyer(){
+function register_lawyer()
+{
   global $wpdb;
 
   $email = trim($_POST['email']);
@@ -3489,7 +3692,7 @@ function register_lawyer(){
 
   $email_exists = $wpdb->get_row("SELECT id, email FROM $table_user WHERE email = '$email'");
 
-  if ($email_exists !== null){
+  if ($email_exists !== null) {
     wp_send_json(array(
       'message' => "Account with email already exists, please login instead",
       'status' => false
@@ -3510,10 +3713,10 @@ function register_lawyer(){
   else
     $active = 0;
 
-  $result =  $wpdb->insert(
+  $result = $wpdb->insert(
     $table_user,
     array(
-      'date_created' => current_time( 'mysql' ),
+      'date_created' => current_time('mysql'),
       'email' => $email,
       'full_name' => $full_name,
       'password' => $hashed_password,
@@ -3532,11 +3735,11 @@ function register_lawyer(){
     )
   );
 
-  if ($result){
+  if ($result) {
 
     // INSERT INTO lawyer profile
 
-    $user_id = $wpdb -> insert_id;
+    $user_id = $wpdb->insert_id;
 
     echo '<h2>Lawyer Account Created</h2>';
 
@@ -3578,7 +3781,8 @@ function register_lawyer(){
   die();
 }
 
-function randomPassword($len) {
+function randomPassword($len)
+{
   $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   $pass = array();
   $alphaLength = strlen($alphabet) - 1;
@@ -3590,7 +3794,8 @@ function randomPassword($len) {
 }
 
 
-function getLawyers($limit = 20, $page = 1, $q = ""){
+function getLawyers($limit = 20, $page = 1, $q = "")
+{
   global $wpdb;
   global $PAGE;
   global $DATA_COUNT;
@@ -3599,7 +3804,7 @@ function getLawyers($limit = 20, $page = 1, $q = ""){
   $offset = $limit * ($page - 1);
   $PAGE = $page;
   $lawyer_role_id = _LAWYER_ID_;
-  if ($q){
+  if ($q) {
 
     $query = "SELECT COUNT($table_users.id)
              FROM $table_users
@@ -3608,13 +3813,14 @@ function getLawyers($limit = 20, $page = 1, $q = ""){
              AND role_id=$lawyer_role_id;";
 
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%", "%$q%"
       )
     );
 
-    $DATA_COUNT = $wpdb -> get_var($query);
+    $DATA_COUNT = $wpdb->get_var($query);
 
 
     $query = "SELECT $table_users.id, full_name
@@ -3626,13 +3832,14 @@ function getLawyers($limit = 20, $page = 1, $q = ""){
              ORDER BY full_name ASC
              LIMIT $limit";
 
-    $query = $wpdb -> prepare(
-      $query, array(
+    $query = $wpdb->prepare(
+      $query,
+      array(
         "%$q%", "%$q%"
       )
     );
 
-    $results = $wpdb -> get_results($query, OBJECT);
+    $results = $wpdb->get_results($query, OBJECT);
 
     return $results;
   }
@@ -3641,7 +3848,7 @@ function getLawyers($limit = 20, $page = 1, $q = ""){
              FROM $table_users
              WHERE role_id=$lawyer_role_id;";
 
-  $DATA_COUNT = $wpdb -> get_var($query);
+  $DATA_COUNT = $wpdb->get_var($query);
 
   $query = "SELECT $table_users.id, full_name
              FROM $table_users
@@ -3650,11 +3857,12 @@ function getLawyers($limit = 20, $page = 1, $q = ""){
              ORDER BY full_name ASC
              LIMIT $limit;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
+  $results = $wpdb->get_results($query, OBJECT);
   return $results;
 }
 
-function admin_actions(){
+function admin_actions()
+{
   global $wpdb;
 
   $request_type = trim($_POST['request_type']);
@@ -3663,9 +3871,9 @@ function admin_actions(){
 
   $table_name = getUserTableNameFromAction($request_type);
 
-  switch($action_type){
+  switch ($action_type) {
     case 'mark_completed':
-      $up = $wpdb -> update(
+      $up = $wpdb->update(
         $table_name,
         array(
           'status' => _COMPLETED_
@@ -3684,8 +3892,7 @@ function admin_actions(){
       break;
 
     case 'deactivate_user':
-      $up = $wpdb ->
-      update(
+      $up = $wpdb->update(
         $table_name,
         array(
           'activate' => 0
@@ -3706,7 +3913,7 @@ function admin_actions(){
     case 'remove_request':
 
     case 'remove_request':
-      $up = $wpdb -> delete(
+      $up = $wpdb->delete(
         $table_name,
         array(
           'id' => $req_id
@@ -3719,7 +3926,7 @@ function admin_actions(){
       break;
   }
 
-  if (!$up === false){
+  if (!$up === false) {
     wp_send_json(array(
       'message' => "Success",
       'status' => true
@@ -3733,9 +3940,10 @@ function admin_actions(){
 
 }
 
-function user_mess(){
+function user_mess()
+{
   $content = $_POST['content'];
-  $user_id =  $_POST['req_id'];
+  $user_id = $_POST['req_id'];
   $date = date('Y-m-d H:i:s');
 
   $query = "SELECT full_name, email
@@ -3743,11 +3951,11 @@ function user_mess(){
              WHERE id=$user_id
              LIMIT 1;";
 
-  $results = $wpdb -> get_results($query, OBJECT);
-  if ($results){
+  $results = $wpdb->get_results($query, OBJECT);
+  if ($results) {
     $user = $results[0];
-    $full_name = $user -> full_name;
-    $email = $user -> email;
+    $full_name = $user->full_name;
+    $email = $user->email;
 
     $subject = 'Propellegal Admin';
     $body = "<html>
@@ -3771,7 +3979,8 @@ function user_mess(){
   die();
 }
 
-function formatBytes($bytes, $precision = 2) {
+function formatBytes($bytes, $precision = 2)
+{
   $units = array('B', 'KB', 'MB', 'GB', 'TB');
 
   $bytes = max($bytes, 0);
@@ -3786,7 +3995,8 @@ function formatBytes($bytes, $precision = 2) {
 }
 
 
-function req_feedback(){
+function req_feedback()
+{
   global $USER_PAYLOAD;
   global $wpdb;
 
@@ -3797,11 +4007,11 @@ function req_feedback(){
 
   $table_feedback = _FEEDBACK_TABLE_;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
-  $result =  $wpdb->insert(
+  $user_id = $user->user_id;
+  $result = $wpdb->insert(
     $table_feedback,
     array(
-      'date_created' => current_time( 'mysql' ),
+      'date_created' => current_time('mysql'),
       'item_id' => $req_id,
       'act_type' => $action_type,
       'content' => $comment,
@@ -3816,12 +4026,12 @@ function req_feedback(){
     )
   );
 
-  if ($result){
-    $feedback_id = $wpdb -> insert_id;
+  if ($result) {
+    $feedback_id = $wpdb->insert_id;
 
     $table_name = getUserTableNameFromAction($action_type);
 
-    $up = $wpdb -> update(
+    $up = $wpdb->update(
       $table_name,
       array(
         'feedback' => 1
@@ -3837,7 +4047,7 @@ function req_feedback(){
       )
     );
 
-    if ($up !== false){
+    if ($up !== false) {
       wp_send_json(array(
         'status' => true,
         'message' => "Success"
@@ -3853,7 +4063,8 @@ function req_feedback(){
   die();
 }
 
-function getRequestFeedback($req_id, $req_type){
+function getRequestFeedback($req_id, $req_type)
+{
   global $wpdb;
   $table_feedback = _FEEDBACK_TABLE_;
 
@@ -3864,18 +4075,19 @@ function getRequestFeedback($req_id, $req_type){
              ORDER BY date_created DESC
              LIMIT 1;";
 
-  $results = ($wpdb -> get_results($query, OBJECT));
+  $results = ($wpdb->get_results($query, OBJECT));
 
   return results[0];
 }
 
 
-function getSubscriptionDetails(){
+function getSubscriptionDetails()
+{
   global $USER_PAYLOAD;
   global $wpdb;
 
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
   $table_subscriptions = _SUBSCRIPTION_TABLE_;
 
   $query = "SELECT date_renewed, date_expire, amount
@@ -3883,24 +4095,26 @@ function getSubscriptionDetails(){
              WHERE user_id='$user_id'
              LIMIT 1;";
 
-  $results = ($wpdb -> get_results($query, OBJECT));
+  $results = ($wpdb->get_results($query, OBJECT));
 
   return $results[0];
 }
 
-function checkSubscription(){
+function checkSubscription()
+{
   $data = getSubscriptionDetails();
 
-  $renewed = $data -> date_renewed;
-  $expire = $data -> date_expire;
-  $amount = $data -> amount;
+  $renewed = $data->date_renewed;
+  $expire = $data->date_expire;
+  $amount = $data->amount;
   $date_expire = new DateTime($expire);
   $date_today = new DateTime("now");
   $acc_status = $date_expire > $date_today;
   return $acc_status;
 }
 
-function checkAccountActive($user_id){
+function checkAccountActive($user_id)
+{
   global $wpdb;
 
   $table_subscriptions = _SUBSCRIPTION_TABLE_;
@@ -3910,22 +4124,23 @@ function checkAccountActive($user_id){
              WHERE user_id='$user_id'
              LIMIT 1;";
 
-  $results = ($wpdb -> get_results($query, OBJECT));
+  $results = ($wpdb->get_results($query, OBJECT));
   $data = $results[0];
 
-  $renewed = $data -> date_renewed;
-  $expire = $data -> date_expire;
-  $amount = $data -> amount;
+  $renewed = $data->date_renewed;
+  $expire = $data->date_expire;
+  $amount = $data->amount;
   $date_expire = new DateTime($expire);
   $date_today = new DateTime("now");
   $acc_status = $date_expire > $date_today;
   return $acc_status;
 }
 
-function payment_price(){
+function payment_price()
+{
   global $USER_PAYLOAD;
   $user = $USER_PAYLOAD['data'];
-  $user_id = $user -> user_id;
+  $user_id = $user->user_id;
 
-  
+
 }

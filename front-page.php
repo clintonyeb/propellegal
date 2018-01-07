@@ -2,22 +2,22 @@
 get_template_part('template-parts/header', 'home');
 ?>
 
-<section class="hero is-fullheight main-hero" id="hero">
+    <section class="hero is-fullheight main-hero" id="hero">
 
         <p id="loader" class="has-text-centered">
             <a class="button is-loading is-large is-dark menu-icon">
                 <span class="icon">
                     <i class="fa fa-load"></i>
                 </span>
-            </a><br>
-            Loading video...
+            </a>
+            <br> Loading video...
             <!-- <a class="button is-loading is-large is-dark" has-text-white>Loading</a> -->
         </p>
         <!-- Hero head: will stick at the top -->
         <div class="hero-head">
             <nav class="navbar is-black">
                 <div class="navbar-brand" id="brand-mob">
-                    <a  class="navbar-item is-hidden-desktop">
+                    <a class="navbar-item is-hidden-desktop">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/logo-text.svg" alt="Logo" height="400px">
                     </a>
                     <span class="navbar-burger burger" data-target="main-menu">
@@ -47,9 +47,22 @@ get_template_part('template-parts/header', 'home');
                         </div>
                     </div>
 
-                    <div class="navbar-end">
-                        <span class="navbar-item">
-                            <a class="button is-dark menu-icon" href="/search">
+                    <div class="navbar-end" style="position: relative;">
+                        <span class="navbar-item animated slideInRight" id="search-box">
+                            <div class="field has-addons mt-1">
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Find the website" id="search-input">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-white is-outlined" id="search-button">
+                                        Search
+                                    </a>
+                                </div>
+                            </div>
+                            <a class="delete mb-1 ml-1" id="search-remove"></a>
+                        </span>
+                        <span class="navbar-item" id="search-icon">
+                            <a class="button is-dark menu-icon">
                                 <span class="icon is-small">
                                     <i class="fa fa-search"></i>
                                 </span>
@@ -72,17 +85,19 @@ get_template_part('template-parts/header', 'home');
 
         <div class="hero-body">
             <div class="content">
-                <h2 class="subtitle has-text-centered"><span class="b"> MAKERS</span> &amp; <span class="b">THINKERS</span> WELCOME
+                <h2 class="subtitle has-text-centered">
+                    <span class="b"> MAKERS</span> &amp;
+                    <span class="b">THINKERS</span> WELCOME
                 </h2>
 
 
                 <div class="columns hero-butts is-hidden-touch is-mobile is-multiline">
-		    <div class="column">
+                    <div class="column">
                         <p class="has-text-centered" data-scroll="example">
                             <a class="button is-white is-outlined is-large">Create a Document</a>
                         </p>
                     </div>
-		    <div class="column">
+                    <div class="column">
                         <p class="has-text-centered" data-scroll="upload">
                             <a class="button is-white is-outlined is-large">Document Review</a>
                         </p>
@@ -106,78 +121,78 @@ get_template_part('template-parts/header', 'home');
             <div class="columns is-mobile is-multiline">
                 <div class="column">
                     <div class="box">
-			<a href="/create-document">
+                        <a href="/create-document">
                             <h2 class="title is-6 has-text-centered">Create Legal Document</h2>
                             <img class="image is-128x128 svg" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/page-blank.svg">
 
                             <p class="has-text-centered content">
-				Individual Packages for every house, every territory, and every requirements
+                                Individual Packages for every house, every territory, and every requirements
                             </p>
                             <p class="has-text-centered arrow">
-				<span class="button is-white">
+                                <span class="button is-white">
                                     <span class="icon is-large has-text-darker-blue">
-					<i class="fa fa-arrow-right"></i>
+                                        <i class="fa fa-arrow-right"></i>
                                     </span>
-				</span>
+                                </span>
                             </p>
-			</a>
+                        </a>
                     </div>
                 </div>
                 <div class="column">
                     <div class="box">
-			<a href="/upload-document">
+                        <a href="/upload-document">
                             <h2 class="title is-6 has-text-centered">Have Your Document Reviewed</h2>
                             <img class="image is-128x128 svg" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/upload.svg">
 
                             <p class="has-text-centered content">
-				Individual Packages for every house, every territory, and every requirements
+                                Individual Packages for every house, every territory, and every requirements
                             </p>
                             <p class="has-text-centered arrow">
-				<span class="button is-white">
+                                <span class="button is-white">
                                     <span class="icon is-large has-text-darker-blue">
-					<i class="fa fa-arrow-right"></i>
+                                        <i class="fa fa-arrow-right"></i>
                                     </span>
-				</span>
+                                </span>
                             </p>
-			</a>
+                        </a>
                     </div>
                 </div>
                 <div class="column">
                     <div class="box">
-			<a href="/register-business">
+                        <a href="/register-business">
                             <h2 class="title is-6 has-text-centered">Register Your Business</h2>
                             <img class="image is-128x128 svg" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/portfolio.svg">
 
                             <p class="has-text-centered content">
-				Individual Packages for every house, every territory, and every requirements
+                                Individual Packages for every house, every territory, and every requirements
                             </p>
                             <p class="has-text-centered arrow">
-				<span class="button is-white">
+                                <span class="button is-white">
                                     <span class="icon is-large has-text-darker-blue">
-					<i class="fa fa-arrow-right"></i>
+                                        <i class="fa fa-arrow-right"></i>
                                     </span>
-				</span>
+                                </span>
                             </p>
-			</a>
+                        </a>
                     </div>
                 </div>
                 <div class="column">
                     <div class="box">
-			<a href="/ask-attorney">
+                        <a href="/ask-attorney">
                             <h2 class="title is-6 has-text-centered">Ask An Attorney</h2>
                             <img class="image is-128x128 svg" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/ask-lawyer.svg">
 
                             <p class="has-text-centered content">
-				Individual Packages for every house, every territory, and every requirements
+                                Individual Packages for every house, every territory, and every requirements
                             </p>
                             <p class="has-text-centered arrow">
-				<span class="button is-white">
+                                <span class="button is-white">
                                     <span class="icon is-large has-text-darker-blue">
-					<i class="fa fa-arrow-right"></i>
+                                        <i class="fa fa-arrow-right"></i>
                                     </span>
-				</span>
+                                </span>
                             </p>
-			</a>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -200,8 +215,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -217,8 +232,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -234,8 +249,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -257,8 +272,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -274,8 +289,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -291,8 +306,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Headline Goes Here</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -313,10 +328,16 @@ get_template_part('template-parts/header', 'home');
                 <div class="column">
                     <h2 class="subtitle is-3 has-text-darker-gray has-text-centered" style="margin-top: 4rem">Measure everything with a few clicks</h2>
                     <br>
-                    <p class="has-text-light-gray">There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...</p>
+                    <p class="has-text-light-gray">There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is
+                        pain...
+                    </p>
                     <br>
                     <p>
-                        Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
+                        Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature
+                        from 45 BC, making it over 2000 years old. Contrary to popular belief, Lorem Ipsum is not simply
+                        random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000
+                        years old. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece
+                        of classical Latin literature from 45 BC, making it over 2000 years old.
                     </p>
                     <br>
                     <p class="section-button">
@@ -333,10 +354,12 @@ get_template_part('template-parts/header', 'home');
                 <div class="column">
                     <h2 class="subtitle is-3 has-text-white">Get Your Legal Documents Reviewed</h2>
 
-                    <p>All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.</p>
+                    <p>All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making
+                        this the first true generator on the Internet. All the Lorem Ipsum generators on the Internet tend
+                        to repeat predefined chunks as necessary, making this the first true generator on the Internet.</p>
                 </div>
                 <div class="column is-3">
-		    <p class="field section-button">
+                    <p class="field section-button">
                         <a class="button is-whiteo is-large" href="/upload-document">
                             <span>Upload Document</span>
                             <span class="icon is-large">
@@ -354,7 +377,8 @@ get_template_part('template-parts/header', 'home');
             <h1 class="subtitle is-3 has-text-darker-gray has-text-centered">Register Your Business</h1>
             <br>
             <h3 class="title is-5 has-text-centered has-text-light-gray">The standard Lorem Ipsum passage, used since the 1500s</h3>
-            <br><br>
+            <br>
+            <br>
             <div class="columns">
                 <div class="column">
                     <article class="media">
@@ -367,8 +391,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Easy to Use handles</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -383,8 +407,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Create and manage Schedules</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -401,8 +425,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Communicate with your teammates</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -417,8 +441,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Measure everything with a few clicks</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -435,8 +459,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Share all kinds of files</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -451,8 +475,8 @@ get_template_part('template-parts/header', 'home');
                             <div class="content">
                                 <p>
                                     <strong class="has-text-darker-gray">Customize in few steps</strong>
-                                    <br>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                    <br> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                    has been the industry's standard dummy text ever since the 1500s.
                                 </p>
                             </div>
                         </div>
@@ -556,15 +580,18 @@ get_template_part('template-parts/header', 'home');
                     <h2 class="title is-2">Ask An Attorney</h2>
 
                     <p>
-                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
+                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi
+                        laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
                     </p>
                     <br>
                     <p>
-                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
+                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi
+                        laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
                     </p>
                     <br>
                     <p>
-                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
+                        Lorem ipsum dolor sit amet, ex sit dicta convenire accusamus. Eu legere quidam pro, an sed adhuc option posidonium. Eu mundi
+                        laboramus assentior nec, vim nostro euripidis cu. Ad novum altera ius. At sed electram definitiones.
                     </p>
                 </div>
                 <div class="column">
@@ -591,11 +618,15 @@ get_template_part('template-parts/header', 'home');
         </p>
 
         <div class="container">
-            <h3 class="subtitle has-text-centered is-4"><b>Our Clients</b></h3>
+            <h3 class="subtitle has-text-centered is-4">
+                <b>Our Clients</b>
+            </h3>
             <h2 class="title has-text-centered is-2">What the Doers are saying</h2>
 
-            <p class="has-text-centered">Commune abhorreant et usu, facer mandamus necessitatibus ut vis. At everti quaeque dissentiet nec, tota prompta ea vel. Pri cu wisi complectitur. No est nonumy quodsi, eam at errem partiendo conclusionemque.</p>
-            <br><br>
+            <p class="has-text-centered">Commune abhorreant et usu, facer mandamus necessitatibus ut vis. At everti quaeque dissentiet nec, tota prompta
+                ea vel. Pri cu wisi complectitur. No est nonumy quodsi, eam at errem partiendo conclusionemque.</p>
+            <br>
+            <br>
 
             <div class="columns cont">
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -607,7 +638,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 1</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 1</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -619,7 +652,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 2</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 2</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -631,7 +666,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 3</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 3</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -643,7 +680,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 4</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 4</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -655,7 +694,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 5</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 5</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -667,7 +708,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 6</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 6</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
                 <div class="column is-4 quote-cont animated fadeIn">
@@ -679,7 +722,9 @@ get_template_part('template-parts/header', 'home');
                     <p class="has-text-centered avatar">
                         <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
                     </p>
-                    <p class="has-text-centered"><strong>Stephen Hill 7</strong></p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 7</strong>
+                    </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
 

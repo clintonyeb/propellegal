@@ -173,18 +173,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             },
             success: function (data) {
-                console.log('hrere');
                 if (data.status) {
                     localStorage.setItem('token', data.token);
                     displayMessage('Login success', 'is-info');
 
                     if (!sendUnsentUserPayload()) {
-                        console.log('here');
                         window.location = data.url;
                     }
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
+                    if(data.message.indexOf('activated') !== -1){
+                        const a = document.createElement('a');
+                        a.addEventListener('click', function () {
+                            if(loading) return false;
+                            
+                            showLoadingButton($loginButton, true);
+                            loading = true;
+
+                            postData({
+                                action: 'resend_confirm',
+                                email: email.value.trim()
+                            }, function(data){
+                                if(data.status){
+                                    displayMessage(data.message, 'is-info');
+                                } else {
+                                    displayMessage(data.message, 'is-danger');
+                                }
+                            }, function (err) {
+                                displayMessage('Unknown error occured', 'is-danger');
+                                
+                            }, function () {
+                                showLoadingButton($loginButton, false);
+                                loading = false;
+                            })
+                        })
+                        a.textContent = 'Resend confirmation email'
+                        messageBody.appendChild(a);
+                    }
                 }
 
                 loading = false;
@@ -2159,13 +2185,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function postData(data, success, failure) {
+    function postData(data, success, failure, final) {
         jQuery.ajax({
             type: "POST",
             url: $wp_data.ajaxUrl,
             data: data,
             success: success,
-            error: failure
+            error: failure,
+            complete: final
         });
     }
 
@@ -2587,5 +2614,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    // Searching
 
+    var searchIcon = document.getElementById('search-icon');
+    if(searchIcon) {
+        var searchBox = document.getElementById('search-box');
+        var searchRemove = document.getElementById('search-remove');
+        var searchButton = document.getElementById('search-button');
+        var searchInput = document.getElementById('search-input');
+
+        searchBox.style.display = 'none';
+        searchIcon.addEventListener('click', function ($event) {
+            searchIcon.style.display = 'none';
+            searchBox.style.display = 'flex'
+        });
+
+        searchRemove.addEventListener('click', function ($event) {
+            searchBox.style.display = 'none'
+            searchIcon.style.display = 'flex';
+        })
+
+        searchButton.addEventListener('click', function ($event) {
+            var data = searchInput.value
+            if(!data) return;
+            location.href = '/search?q=' + data;
+        })
+
+    }
 }.bind(this));
