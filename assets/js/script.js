@@ -105,12 +105,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.status) {
                 showLoadingButton($regButton, false);
                 displayMessage(data.message, 'is-info');
-                clearField(email);
+                // clearField(email);
                 clearField(name);
                 clearField(password);
                 clearField(cpassword);
                 terms.selected = false;
                 loading = false;
+                console.log('here');
+                createResendConfirmationLink(email.value.trim(), $regButton)
             } else {
                 showLoadingButton($regButton, false);
                 displayMessage(data.message, 'is-danger');
@@ -183,33 +185,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     showLoadingButton($loginButton, false);
                     displayMessage(data.message, 'is-danger');
-                    if(data.message.indexOf('activated') !== -1){
-                        const a = document.createElement('a');
-                        a.addEventListener('click', function () {
-                            if(loading) return false;
-                            
-                            showLoadingButton($loginButton, true);
-                            loading = true;
-
-                            postData({
-                                action: 'resend_confirm',
-                                email: email.value.trim()
-                            }, function(data){
-                                if(data.status){
-                                    displayMessage(data.message, 'is-info');
-                                } else {
-                                    displayMessage(data.message, 'is-danger');
-                                }
-                            }, function (err) {
-                                displayMessage('Unknown error occured', 'is-danger');
-                                
-                            }, function () {
-                                showLoadingButton($loginButton, false);
-                                loading = false;
-                            })
-                        })
-                        a.textContent = 'Resend confirmation email'
-                        messageBody.appendChild(a);
+                    if (data.message.indexOf('activated') !== -1) {
+                        createResendConfirmationLink(email.value.time(), $loginButton)
                     }
                 }
 
@@ -228,6 +205,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of Log-in functions
 
+    function createResendConfirmationLink(email, button) {
+        const a = document.createElement('a');
+        a.addEventListener('click', function () {
+            if (loading) return false;
+
+            showLoadingButton($button, true);
+            loading = true;
+
+            postData({
+                action: 'resend_confirm',
+                email: email
+            }, function (data) {
+                if (data.status) {
+                    displayMessage(data.message, 'is-info');
+                } else {
+                    displayMessage(data.message, 'is-danger');
+                }
+            }, function (err) {
+                displayMessage('Unknown error occured', 'is-danger');
+
+            }, function () {
+                showLoadingButton(button, false);
+                loading = false;
+            })
+        })
+        a.textContent = 'Resend confirmation email'
+        messageBody.appendChild(a);
+    }
     // Recover password functions
 
     var $recoverButton = document.getElementById('recover-submit');
@@ -1017,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function () {
             buttons[i].addEventListener('click', function ($ev) {
                 var b = $ev.currentTarget;
                 var s = b.getAttribute('data-step');
-                
+
                 s = Number(s);
                 removeError('is-danger');
 
@@ -1063,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             break;
                         case 1:
-                            if(!$wp_data.active) return location.href = '/user/pricing'
+                            if (!$wp_data.active) return location.href = '/user/pricing'
 
                             var detailsForm = document.getElementById('details');
 
@@ -1272,7 +1277,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             updateProgress(10);
                             break;
                         case 1:
-                        if(!$wp_data.active) return location.href = '/user/pricing'
+                            if (!$wp_data.active) return location.href = '/user/pricing'
 
                             removeErrorField(firstname);
                             removeErrorField(lastname);
@@ -2611,13 +2616,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return location.href = '/user/subscribe'
             })
         }
-
     }
 
     // Searching
 
     var searchIcon = document.getElementById('search-icon');
-    if(searchIcon) {
+    if (searchIcon) {
         var searchBox = document.getElementById('search-box');
         var searchRemove = document.getElementById('search-remove');
         var searchButton = document.getElementById('search-button');
@@ -2636,7 +2640,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         searchButton.addEventListener('click', function ($event) {
             var data = searchInput.value
-            if(!data) return;
+            if (!data) return;
             location.href = '/search?q=' + data;
         })
 

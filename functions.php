@@ -39,17 +39,34 @@ function my_theme_enqueue_styles()
     wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown'));
   }
 
-  wp_localize_script(
-    'script-js',
-    '$wp_data',
-    array(
-      'ajaxUrl' => admin_url('admin-ajax.php'),
-      'client_auth' => CLIENT_KEY,
-      'home' => HOME,
-      'authenticated' => $USER_PAYLOAD['status'],
-      'active' => $USER_PAYLOAD['active']
-    )
-  );
+  error_log(print_r(($USER_PAYLOAD['data'] -> active), true));
+
+  if($USER_PAYLOAD['status'] === true) {
+    wp_localize_script(
+      'script-js',
+      '$wp_data',
+      array(
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'client_auth' => CLIENT_KEY,
+        'home' => HOME,
+        'authenticated' => $USER_PAYLOAD['status'],
+        'active' => ($USER_PAYLOAD['data']) -> active
+      )
+    );
+  }
+  else {
+    wp_localize_script(
+      'script-js',
+      '$wp_data',
+      array(
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'client_auth' => CLIENT_KEY,
+        'home' => HOME,
+        'authenticated' => false,
+        'active' => false
+      )
+    );
+  }
 }
 
 add_action('wp_ajax_nopriv_register_form', 'register_form');
@@ -115,23 +132,6 @@ function wpdocs_set_html_mail_content_type()
 {
   return 'text/html';
 }
-
-// Email code from: https://wordpress.stackexchange.com/a/185296
-if ( ! defined( 'DOING_CRON' ) || ( defined( 'DOING_CRON' ) && ! DOING_CRON ) ) {
-  function wp_cron_mail() {
-    $args = func_get_args();
-    $args[] = mt_rand();
-    wp_schedule_single_event( time() + 5, 'cron_send_mail', $args );
-  }
-}
-
-function example_cron_send_mail() {
-  $args = func_get_args();
-  array_pop( $args );
-  call_user_func_array( 'wp_mail', $args );
-}
-
-add_action( 'cron_send_mail', 'example_cron_send_mail', 10, 10 );
 
 /* define the wp_mail_failed callback
  * function action_wp_mail_failed($wp_error)
@@ -260,8 +260,6 @@ function register_form()
     )
   );
 
-
-
   if ($result) {
 
     $user_id = $wpdb->insert_id;
@@ -287,7 +285,7 @@ function register_form()
     addActivity(_REGISTERED_ACCOUNT_, $user_id);
 
     wp_send_json(array(
-      'message' => "Account Registration success. Please check your email for a confirmation email",
+      'message' => "Account Registration success. Please check your email for a confirmation email  ",
       'status' => true
     ));
   } else {
@@ -385,8 +383,7 @@ function sendEmail($subject, $content, $to)
   $body = $content;
   $header = "MIME-Version: 1.0" . "\r\n";
   $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
-
-  return wp_cron_mail($to, $subject, $body, $header);
+  return wp_mail($to, $subject, $body, $header);
 }
 
 function activate()
@@ -610,7 +607,7 @@ function recover_pass()
     $header = "MIME-Version: 1.0" . "\r\n";
     $header .= "Content-Type: text/html; charset=utf-8" . "\r\n";
 
-    $mail_res = wp_cron_mail($to, $subject, $body, $header);
+    $mail_res = wp_mail($to, $subject, $body, $header);
 
     if ($mail_res) {
       error_log('Mail sent');
@@ -772,6 +769,8 @@ function encryptData($payload)
         // TODO: Remove Fullname from token payload
       ]
     ];
+
+    error_log(print_r($data, true));
 
     //$secret_key = base64_encode($secret_key);
     $jwt = JWT::encode(
@@ -1264,6 +1263,7 @@ function upload_doc()
 
 function _saveFile($files, $i, $crush = 0)
 {
+  error_log(print_r($files, true));
   $target_dir = "assets/uploads/";
   $target_file = $target_dir . basename($files['name'][$i]);
 

@@ -599,7 +599,7 @@ get_template_part('template-parts/header', 'home');
 
                         <textarea class="textarea is-medium" placeholder="e.g. What is the likely outcome in my case?" rows="7" id="attorney-text-el"></textarea>
                         <p class="has-text-centered">
-                            <a class="button is-darker-yellow  is-medium" id="ask-attorney-btn">Ask an Attorney</a>
+                            <a class="button is-darker-yellow is-medium mt-2" id="ask-attorney-btn">Ask an Attorney</a>
                         </p>
                     </div>
                 </div>
