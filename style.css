@@ -16466,57 +16466,75 @@ p {
 }
 
 /* line 485, assets/sass/_custom.sass */
+#contact-card {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 400px;
+  border-radius: 1rem;
+}
+/* line 492, assets/sass/_custom.sass */
+#contact-card .card-header-title {
+  padding: 0.6rem 0;
+  font-size: 0.8rem;
+}
+/* line 496, assets/sass/_custom.sass */
+#contact-card textarea {
+  resize: none;
+}
+
+/* line 499, assets/sass/_custom.sass */
 #testimonial {
   position: relative;
 }
-/* line 488, assets/sass/_custom.sass */
+/* line 502, assets/sass/_custom.sass */
 #testimonial .quote-box {
   position: relative;
   margin-left: 1rem;
   position: relative;
   transition: all 0.25s;
 }
-/* line 494, assets/sass/_custom.sass */
+/* line 508, assets/sass/_custom.sass */
 #testimonial .quote-box.red {
   border-top: 1px solid red;
 }
-/* line 496, assets/sass/_custom.sass */
+/* line 510, assets/sass/_custom.sass */
 #testimonial .quote-box.red::after {
   border-color: red transparent transparent transparent;
 }
-/* line 498, assets/sass/_custom.sass */
+/* line 512, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow {
   border-top: 1px solid yellow;
 }
-/* line 500, assets/sass/_custom.sass */
+/* line 514, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow::after {
   border-color: yellow transparent transparent transparent;
 }
-/* line 502, assets/sass/_custom.sass */
+/* line 516, assets/sass/_custom.sass */
 #testimonial .quote-box.blue {
   border-top: 1px solid blue;
 }
-/* line 504, assets/sass/_custom.sass */
+/* line 518, assets/sass/_custom.sass */
 #testimonial .quote-box.blue::after {
   border-color: blue transparent transparent transparent;
 }
-/* line 506, assets/sass/_custom.sass */
+/* line 520, assets/sass/_custom.sass */
 #testimonial .quote-box.green {
   border-top: 1px solid green;
 }
-/* line 508, assets/sass/_custom.sass */
+/* line 522, assets/sass/_custom.sass */
 #testimonial .quote-box.green::after {
   border-color: green transparent transparent transparent;
 }
-/* line 510, assets/sass/_custom.sass */
+/* line 524, assets/sass/_custom.sass */
 #testimonial .quote-box.pink {
   border-top: 1px solid pink;
 }
-/* line 512, assets/sass/_custom.sass */
+/* line 526, assets/sass/_custom.sass */
 #testimonial .quote-box.pink::after {
   border-color: pink transparent transparent transparent;
 }
-/* line 514, assets/sass/_custom.sass */
+/* line 528, assets/sass/_custom.sass */
 #testimonial .quote-box::after {
   content: " ";
   position: absolute;
@@ -16527,13 +16545,13 @@ p {
   border-style: solid;
   border-color: #455a64 transparent transparent transparent;
 }
-/* line 523, assets/sass/_custom.sass */
+/* line 537, assets/sass/_custom.sass */
 #testimonial img {
   height: 50px;
   width: 50px;
   border-radius: 50%;
 }
-/* line 528, assets/sass/_custom.sass */
+/* line 542, assets/sass/_custom.sass */
 #testimonial .nav-icon {
   position: absolute;
   top: 50%;
@@ -16541,34 +16559,34 @@ p {
   color: red;
   z-index: 1;
 }
-/* line 535, assets/sass/_custom.sass */
+/* line 549, assets/sass/_custom.sass */
 #testimonial .nav-icon.left {
   left: 20px;
 }
-/* line 537, assets/sass/_custom.sass */
+/* line 551, assets/sass/_custom.sass */
 #testimonial .nav-icon.right {
   right: 20px;
 }
 
-/* line 540, assets/sass/_custom.sass */
+/* line 554, assets/sass/_custom.sass */
 .is-bordercircle {
   border-radius: 50%;
 }
 
 @media only screen and (max-width: 600px) {
-  /* line 544, assets/sass/_custom.sass */
+  /* line 558, assets/sass/_custom.sass */
   .section-button {
     text-align: center;
   }
 }
 
-/* line 551, assets/sass/_custom.sass */
+/* line 565, assets/sass/_custom.sass */
 .animated {
   animation-duration: 1s;
   animation-fill-mode: both;
 }
 
-/* line 555, assets/sass/_custom.sass */
+/* line 569, assets/sass/_custom.sass */
 .anime {
   animation-duration: 0.5s;
   animation-fill-mode: both;
@@ -16582,7 +16600,7 @@ p {
     opacity: 1;
   }
 }
-/* line 567, assets/sass/_custom.sass */
+/* line 581, assets/sass/_custom.sass */
 .fadeIn {
   animation-name: fadeIn;
 }
@@ -16595,7 +16613,7 @@ p {
     opacity: 0;
   }
 }
-/* line 578, assets/sass/_custom.sass */
+/* line 592, assets/sass/_custom.sass */
 .fadeOut {
   animation-name: fadeOut;
 }
@@ -16609,7 +16627,7 @@ p {
     transform: translate3d(0, 0, 0);
   }
 }
-/* line 588, assets/sass/_custom.sass */
+/* line 602, assets/sass/_custom.sass */
 .slideInDown {
   animation-name: slideInDown;
 }
@@ -16623,7 +16641,7 @@ p {
     transform: translate3d(0, -100%, 0);
   }
 }
-/* line 598, assets/sass/_custom.sass */
+/* line 612, assets/sass/_custom.sass */
 .slideOutUp {
   animation-name: slideOutUp;
 }
@@ -16637,24 +16655,24 @@ p {
     transform: translate3d(0, 0, 0);
   }
 }
-/* line 609, assets/sass/_custom.sass */
+/* line 623, assets/sass/_custom.sass */
 .slideInRight {
   animation-name: slideInRight;
 }
 
-/* line 613, assets/sass/_custom.sass */
+/* line 627, assets/sass/_custom.sass */
 .is-mfullheight {
   width: 100%;
   min-height: 100vh;
 }
 
-/* line 619, assets/sass/_custom.sass */
+/* line 633, assets/sass/_custom.sass */
 #upload-doc .box {
   position: relative;
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 624, assets/sass/_custom.sass */
+/* line 638, assets/sass/_custom.sass */
 #upload-doc .box .file-input {
   width: 100%;
   height: 80%;
@@ -16662,28 +16680,28 @@ p {
   cursor: pointer;
   opacity: 0;
 }
-/* line 630, assets/sass/_custom.sass */
+/* line 644, assets/sass/_custom.sass */
 #upload-doc .box:hover {
   box-shadow: 1px 1px 10px #212121;
 }
-/* line 633, assets/sass/_custom.sass */
+/* line 647, assets/sass/_custom.sass */
 #upload-doc .box p.is-icon {
   font-size: 4rem;
 }
-/* line 635, assets/sass/_custom.sass */
+/* line 649, assets/sass/_custom.sass */
 #upload-doc .box.dragged {
   box-shadow: 4px 4px 30px #212121;
 }
-/* line 638, assets/sass/_custom.sass */
+/* line 652, assets/sass/_custom.sass */
 #upload-doc #doc-count {
   font-size: 2rem;
 }
-/* line 642, assets/sass/_custom.sass */
+/* line 656, assets/sass/_custom.sass */
 #upload-doc .todo li {
   font-size: 1.5rem;
   margin-top: 1em;
 }
-/* line 646, assets/sass/_custom.sass */
+/* line 660, assets/sass/_custom.sass */
 #upload-doc .step {
   background-color: #fdd835;
   display: inline-block;
@@ -16695,32 +16713,32 @@ p {
   font-weight: bolder;
   margin-bottom: 1em;
 }
-/* line 657, assets/sass/_custom.sass */
+/* line 671, assets/sass/_custom.sass */
 #upload-doc .butts {
   display: inline-block;
 }
-/* line 661, assets/sass/_custom.sass */
+/* line 675, assets/sass/_custom.sass */
 #upload-doc .upload .box-cont {
   transition: all 200ms ease-in-out;
 }
-/* line 664, assets/sass/_custom.sass */
+/* line 678, assets/sass/_custom.sass */
 #upload-doc .progress {
   height: 0.5em;
   transition: background-color 1s ease-in-out;
 }
 
-/* line 669, assets/sass/_custom.sass */
+/* line 683, assets/sass/_custom.sass */
 .in {
   display: inline-block;
   z-index: 2;
 }
-/* line 672, assets/sass/_custom.sass */
+/* line 686, assets/sass/_custom.sass */
 .ina {
   width: 100%;
   height: 100%;
 }
 
-/* line 678, assets/sass/_custom.sass */
+/* line 692, assets/sass/_custom.sass */
 #snackbar {
   visibility: hidden;
   min-width: 250px;
@@ -16735,12 +16753,12 @@ p {
   bottom: 30px;
 }
 @media only screen and (max-width: 600px) {
-  /* line 678, assets/sass/_custom.sass */
+  /* line 692, assets/sass/_custom.sass */
   #snackbar {
     right: 50%;
   }
 }
-/* line 694, assets/sass/_custom.sass */
+/* line 708, assets/sass/_custom.sass */
 #snackbar.show {
   visibility: visible !important;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -16787,83 +16805,83 @@ p {
     opacity: 0;
   }
 }
-/* line 734, assets/sass/_custom.sass */
+/* line 748, assets/sass/_custom.sass */
 #user-dashboard h3.title {
   margin-bottom: 0;
 }
-/* line 737, assets/sass/_custom.sass */
+/* line 751, assets/sass/_custom.sass */
 #user-dashboard .media + .media {
   border-top: none;
   margin-top: 0;
   padding-top: 0;
 }
-/* line 742, assets/sass/_custom.sass */
+/* line 756, assets/sass/_custom.sass */
 #user-dashboard .box.padded-small {
   padding: 0.5rem;
 }
-/* line 744, assets/sass/_custom.sass */
+/* line 758, assets/sass/_custom.sass */
 #user-dashboard .button {
   border-radius: 0;
   margin-bottom: 0.5rem;
 }
-/* line 747, assets/sass/_custom.sass */
+/* line 761, assets/sass/_custom.sass */
 #user-dashboard p {
   padding-top: 1em;
 }
 
-/* line 751, assets/sass/_custom.sass */
+/* line 765, assets/sass/_custom.sass */
 .box.has-top-blue {
   border-top: 1px solid #455a64;
 }
-/* line 753, assets/sass/_custom.sass */
+/* line 767, assets/sass/_custom.sass */
 .box.has-top-yellow {
   border-top: 1px solid #fdd835;
 }
-/* line 755, assets/sass/_custom.sass */
+/* line 769, assets/sass/_custom.sass */
 .box.has-top-gray {
   border-top: 1px solid #212121;
 }
-/* line 757, assets/sass/_custom.sass */
+/* line 771, assets/sass/_custom.sass */
 .box.has-top-light {
   border-top: 1px solid #757575;
 }
 
-/* line 761, assets/sass/_custom.sass */
+/* line 775, assets/sass/_custom.sass */
 #user_activities .page-button {
   border-radius: 50%;
 }
-/* line 764, assets/sass/_custom.sass */
+/* line 778, assets/sass/_custom.sass */
 #user_activities .media-content {
   position: relative;
   max-width: 100%;
 }
-/* line 767, assets/sass/_custom.sass */
+/* line 781, assets/sass/_custom.sass */
 #user_activities .media-content .content {
   width: 900px;
   max-width: 90%;
 }
-/* line 770, assets/sass/_custom.sass */
+/* line 784, assets/sass/_custom.sass */
 #user_activities .media-content .time {
   float: right;
 }
 
-/* line 773, assets/sass/_custom.sass */
+/* line 787, assets/sass/_custom.sass */
 .media-right {
   padding-top: 1rem;
 }
 
-/* line 776, assets/sass/_custom.sass */
+/* line 790, assets/sass/_custom.sass */
 .padded-top {
   display: inline-block;
   padding-top: 1em;
 }
 
-/* line 781, assets/sass/_custom.sass */
+/* line 795, assets/sass/_custom.sass */
 tr.clickable:hover {
   background-color: #f5f5f5 !important;
 }
 
-/* line 784, assets/sass/_custom.sass */
+/* line 798, assets/sass/_custom.sass */
 .truncate {
   display: inline-block;
   width: 60%;
@@ -16872,24 +16890,24 @@ tr.clickable:hover {
   text-overflow: ellipsis;
 }
 
-/* line 791, assets/sass/_custom.sass */
+/* line 805, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(odd) {
   background-color: #fafafa;
 }
 
-/* line 793, assets/sass/_custom.sass */
+/* line 807, assets/sass/_custom.sass */
 .table.is-striped tbody tr:not(.is-selected):nth-child(even) {
   background-color: #fff;
 }
 
-/* line 798, assets/sass/_custom.sass */
+/* line 812, assets/sass/_custom.sass */
 #register-business .box,
 #document-form .box {
   position: relative;
   transition: 200ms;
   transition-timing-function: ease-in-out;
 }
-/* line 803, assets/sass/_custom.sass */
+/* line 817, assets/sass/_custom.sass */
 #register-business .step,
 #document-form .step {
   background-color: #fdd835;
@@ -16902,70 +16920,70 @@ tr.clickable:hover {
   font-weight: bolder;
   margin-bottom: 1em;
 }
-/* line 814, assets/sass/_custom.sass */
+/* line 828, assets/sass/_custom.sass */
 #register-business form,
 #document-form form {
   margin: 1em auto;
 }
-/* line 816, assets/sass/_custom.sass */
+/* line 830, assets/sass/_custom.sass */
 #register-business .butts,
 #document-form .butts {
   display: inline-block;
 }
-/* line 820, assets/sass/_custom.sass */
+/* line 834, assets/sass/_custom.sass */
 #register-business .upload .box-cont,
 #document-form .upload .box-cont {
   transition: all 200ms ease-in-out;
 }
-/* line 823, assets/sass/_custom.sass */
+/* line 837, assets/sass/_custom.sass */
 #register-business .progress,
 #document-form .progress {
   height: 0.5em;
   transition: background-color 1s ease-in-out;
 }
 
-/* line 828, assets/sass/_custom.sass */
+/* line 842, assets/sass/_custom.sass */
 .has-padding-top padd {
   ing-top: 1rem;
 }
 
-/* line 831, assets/sass/_custom.sass */
+/* line 845, assets/sass/_custom.sass */
 .has-margin-top {
   margin-top: 1rem;
 }
 
-/* line 834, assets/sass/_custom.sass */
+/* line 848, assets/sass/_custom.sass */
 .has-margin-top-2 {
   margin-top: 2rem;
 }
 
-/* line 840, assets/sass/_custom.sass */
+/* line 854, assets/sass/_custom.sass */
 .table.is-hoverable tr:hover {
   cursor: pointer;
 }
 
-/* line 845, assets/sass/_custom.sass */
+/* line 859, assets/sass/_custom.sass */
 #activity-history .media + .media, #notifications .media + .media {
   border-top: none;
 }
 
-/* line 849, assets/sass/_custom.sass */
+/* line 863, assets/sass/_custom.sass */
 input[type="checkbox"].is-large {
   width: 1rem;
   height: 1rem;
   cursor: pointer;
 }
 
-/* line 856, assets/sass/_custom.sass */
+/* line 870, assets/sass/_custom.sass */
 a.is-hoverable:hover {
   text-decoration: underline;
 }
 
-/* line 859, assets/sass/_custom.sass */
+/* line 873, assets/sass/_custom.sass */
 .icon.badge {
   position: relative;
 }
-/* line 861, assets/sass/_custom.sass */
+/* line 875, assets/sass/_custom.sass */
 .icon.badge:after {
   content: attr(data-noti-count);
   position: absolute;
@@ -16982,17 +17000,17 @@ a.is-hoverable:hover {
   color: #000;
 }
 
-/* line 876, assets/sass/_custom.sass */
+/* line 890, assets/sass/_custom.sass */
 .navbar-burger {
   margin-right: 0.5rem;
 }
 
-/* line 879, assets/sass/_custom.sass */
+/* line 893, assets/sass/_custom.sass */
 .navbar-brand {
   padding-left: 3rem;
 }
 
-/* line 882, assets/sass/_custom.sass */
+/* line 896, assets/sass/_custom.sass */
 .is-one-line {
   overflow: hidden;
   white-space: nowrap;
@@ -17000,7 +17018,7 @@ a.is-hoverable:hover {
   text-overflow: ellipsis;
 }
 
-/* line 890, assets/sass/_custom.sass */
+/* line 904, assets/sass/_custom.sass */
 .sidenav {
   height: 100%;
   width: 0;
@@ -17013,7 +17031,7 @@ a.is-hoverable:hover {
   overflow-x: hidden;
   transition: 0.4s;
 }
-/* line 902, assets/sass/_custom.sass */
+/* line 916, assets/sass/_custom.sass */
 .sidenav .closebtn {
   position: absolute;
   top: 0;
@@ -17022,13 +17040,13 @@ a.is-hoverable:hover {
   margin-left: 50px;
 }
 
-/* line 909, assets/sass/_custom.sass */
+/* line 923, assets/sass/_custom.sass */
 #open-nav {
   margin-left: 1.5rem;
 }
 
 /* Define how SqPaymentForm iframes should look */
-/* line 914, assets/sass/_custom.sass */
+/* line 928, assets/sass/_custom.sass */
 .sq-input {
   border: 1px solid #dfdfdf;
   outline-offset: -2px;
@@ -17037,13 +17055,13 @@ a.is-hoverable:hover {
 }
 
 /* /* Define how SqPaymentForm iframes should look when they have focus */
-/* line 922, assets/sass/_custom.sass */
+/* line 936, assets/sass/_custom.sass */
 .sq-input--focus {
   outline: 5px auto #3b99fc;
 }
 
 /* Define how SqPaymentForm iframes should look when they contain invalid values */
-/* line 927, assets/sass/_custom.sass */
+/* line 941, assets/sass/_custom.sass */
 .sq-input--error {
   outline: 5px auto #ff6161;
 }
@@ -17062,7 +17080,7 @@ a.is-hoverable:hover {
 /*   font-weight: bold */
 /*   cursor: pointer */
 /* /* Customize the "{{Wallet}} not enabled" message */
-/* line 947, assets/sass/_custom.sass */
+/* line 961, assets/sass/_custom.sass */
 .wallet-not-enabled {
   min-width: 200px;
   min-height: 40px;
@@ -17079,7 +17097,7 @@ a.is-hoverable:hover {
 }
 
 /* Customize the Apple Pay on the Web button */
-/* line 963, assets/sass/_custom.sass */
+/* line 977, assets/sass/_custom.sass */
 .button-apple-pay {
   min-width: 200px;
   min-height: 40px;
@@ -17097,7 +17115,7 @@ a.is-hoverable:hover {
 }
 
 /* Customize the Masterpass button */
-/* line 980, assets/sass/_custom.sass */
+/* line 994, assets/sass/_custom.sass */
 .button-masterpass {
   min-width: 200px;
   min-height: 40px;
@@ -17115,7 +17133,7 @@ a.is-hoverable:hover {
   display: none;
 }
 
-/* line 996, assets/sass/_custom.sass */
+/* line 1010, assets/sass/_custom.sass */
 #sq-walletbox, #sq-ccbox {
   float: left;
   margin: 5px;
@@ -17125,90 +17143,96 @@ a.is-hoverable:hover {
   font-weight: bold;
 }
 
-/* line 1004, assets/sass/_custom.sass */
+/* line 1018, assets/sass/_custom.sass */
 .currency {
   font-size: 1rem;
   vertical-align: super;
 }
 
-/* line 1009, assets/sass/_custom.sass */
+/* line 1023, assets/sass/_custom.sass */
 #pricing .columns {
   margin-left: 5rem;
   margin-right: 5rem;
   margin-top: 2rem;
 }
-/* line 1013, assets/sass/_custom.sass */
+/* line 1027, assets/sass/_custom.sass */
 #pricing .columns .column {
   padding: 0;
 }
-/* line 1017, assets/sass/_custom.sass */
+/* line 1031, assets/sass/_custom.sass */
 #pricing .card .card-header p {
   display: inline-block;
 }
-/* line 1019, assets/sass/_custom.sass */
+/* line 1033, assets/sass/_custom.sass */
 #pricing .card.is-selected {
   position: relative;
   bottom: 22px;
   border-top: 2px solid #455a64;
 }
-/* line 1023, assets/sass/_custom.sass */
+/* line 1037, assets/sass/_custom.sass */
 #pricing .card.is-selected .popular {
   height: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 0.8rem;
 }
-/* line 1029, assets/sass/_custom.sass */
+/* line 1043, assets/sass/_custom.sass */
 #pricing .content .title {
   font-weight: 800;
   color: red;
 }
-/* line 1032, assets/sass/_custom.sass */
+/* line 1046, assets/sass/_custom.sass */
 #pricing .content .button {
   width: 70%;
 }
-/* line 1035, assets/sass/_custom.sass */
+/* line 1049, assets/sass/_custom.sass */
 #pricing .foot .subtitle {
   font-size: 0.9rem;
 }
 
-/* line 1038, assets/sass/_custom.sass */
+/* line 1052, assets/sass/_custom.sass */
 .ma-1 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
 
-/* line 1042, assets/sass/_custom.sass */
+/* line 1056, assets/sass/_custom.sass */
 .ml-1 {
   margin-left: 0.5rem;
 }
 
-/* line 1045, assets/sass/_custom.sass */
+/* line 1059, assets/sass/_custom.sass */
 .ml-2 {
   margin-left: 1rem;
 }
 
-/* line 1048, assets/sass/_custom.sass */
+/* line 1062, assets/sass/_custom.sass */
 .mb-1 {
   margin-bottom: 0.5rem;
 }
 
-/* line 1051, assets/sass/_custom.sass */
+/* line 1065, assets/sass/_custom.sass */
 .mb-2 {
   margin-bottom: 1rem;
 }
 
-/* line 1054, assets/sass/_custom.sass */
+/* line 1068, assets/sass/_custom.sass */
 .mt-1 {
   margin-top: 0.5rem;
 }
 
-/* line 1057, assets/sass/_custom.sass */
+/* line 1071, assets/sass/_custom.sass */
 .mt-2 {
   margin-top: 1rem;
 }
 
-/* line 1060, assets/sass/_custom.sass */
+/* line 1074, assets/sass/_custom.sass */
 .mt-3 {
   margin-top: 1.5rem;
+}
+
+/* line 1077, assets/sass/_custom.sass */
+.control.is-shorter {
+  width: 100%;
+  max-width: 600px;
 }

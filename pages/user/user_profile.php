@@ -66,7 +66,7 @@ $avatar_name = $avatar -> avatar_name;
                 </p>
             </div>
             <p class="margined-top-down">
-	        <a class="button is-primary is-medium" href="/recover-pass" target="_blank">Change Password</a>
+	        <a class="button is-primary is-medium" href="/user/recover_password">Change Password</a>
             </p>
         </div>
 

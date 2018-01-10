@@ -457,6 +457,20 @@ function createTables(){
 ) $charset_collate;";
 
     dbDelta($query);
+
+    $table_contact = _CONTACT_TABLE_;
+
+    $query = "CREATE TABLE IF NOT EXISTS $table_contact (
+    id mediumint(9) NOT NULL AUTO_INCREMENT,
+    email text NOT NULL,
+    user_name text NOT NULL,
+    phone text,
+    message text NOT NULL,
+    date_created datetime NOT NULL,
+    PRIMARY KEY(id)
+) $charset_collate;";
+
+    dbDelta($query);
 }
 
 ?>

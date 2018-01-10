@@ -26,6 +26,14 @@ $requests = getAllRequests(20);
                 &nbsp;&nbsp;General
             </a>
         </li>
+        <li class="menu-item">
+            <a href="/admin/contacts" data-href="contacts">
+                <span class="icon is-small has-text-darker-yellow">
+                    <i class="fa fa-comment"></i>
+                </span>
+                &nbsp;&nbsp;Contacts
+            </a>
+        </li>
     </ul>
 
     <p class="menu-label has-text-darker-blue">

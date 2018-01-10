@@ -58,4 +58,7 @@ $wpdb->query( "DROP TABLE IF EXISTS $table_user_roles" );
 $table_feedback = _FEEDBACK_TABLE_;
 $wpdb->query("DROP TABLE IF EXISTS $table_feedback");
 
+$table_contact = _CONTACT_TABLE_;
+$wpdb->query("DROP TABLE IF EXISTS $table_contact");
+
 ?>

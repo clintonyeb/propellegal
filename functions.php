@@ -39,9 +39,9 @@ function my_theme_enqueue_styles()
     wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown'));
   }
 
-  error_log(print_r(($USER_PAYLOAD['data'] -> active), true));
+  error_log(print_r(($USER_PAYLOAD['data']->active), true));
 
-  if($USER_PAYLOAD['status'] === true) {
+  if ($USER_PAYLOAD['status'] === true) {
     wp_localize_script(
       'script-js',
       '$wp_data',
@@ -50,11 +50,10 @@ function my_theme_enqueue_styles()
         'client_auth' => CLIENT_KEY,
         'home' => HOME,
         'authenticated' => $USER_PAYLOAD['status'],
-        'active' => ($USER_PAYLOAD['data']) -> active
+        'active' => ($USER_PAYLOAD['data']->active)
       )
     );
-  }
-  else {
+  } else {
     wp_localize_script(
       'script-js',
       '$wp_data',
@@ -91,6 +90,10 @@ add_action('wp_ajax_activate', 'activate');
 add_action('wp_ajax_nopriv_activate', 'activate');
 add_action('wp_ajax_recover_pass', 'recover_pass');
 add_action('wp_ajax_nopriv_recover_pass', 'recover_pass');
+add_action('wp_ajax_change_pass', 'change_pass');
+add_action('wp_ajax_nopriv_contact', 'contact');
+add_action('wp_ajax_contact', 'contact');
+add_action('wp_ajax_nopriv_change_pass', 'change_pass');
 add_action('wp_ajax_do_pass_recovery', 'do_pass_recovery');
 add_action('wp_ajax_nopriv_do_pass_recovery', 'do_pass_recovery');
 add_action('wp_ajax_ask_attorney', 'ask_attorney');
@@ -299,9 +302,10 @@ function register_form()
 }
 
 
-function resend_confirm(){
+function resend_confirm()
+{
   global $wpdb;
-  
+
   $email = trim($_POST['email']);
 
   if ($email == "") {
@@ -342,7 +346,7 @@ function resend_confirm(){
     return die(0);
   }
 
-  sendConfirmationEmail($email_exists -> email, $email_exists -> full_name);
+  sendConfirmationEmail($email_exists->email, $email_exists->full_name);
 
   wp_send_json(array(
     'message' => "Confimation email sent",
@@ -2157,6 +2161,36 @@ function getRequestMessagesTemplate($mess, $files)
         ");
 }
 
+function getContactMessagesTemplate($mess)
+{
+
+  $user_name = $mess->user_name;
+  $date = time_elapsed_string($mess->date_created);
+  $content = $mess->message;
+  $avatar = 'avatar.png';
+  $email = $mess -> email;
+  $avatar_name = '/wp-content/themes/clinton-child/assets/avatar/' . $avatar;
+
+  return ("
+      <article class=\"media\" style=\"max-width: 85%\">
+     <figure class=\"media-left\">
+    <p class=\"image is-64x64\">
+      <img src=\"$avatar_name\">
+        </p>
+        </figure>
+        <div class=\"media-content\">
+        <div class=\"content\">
+        <p>
+        <strong>$user_name</strong> <small>$date</small>
+        <br>
+           $content
+        </p>
+        <p> Email address: $email</p>
+        </div>
+        </div>
+        </article>
+        ");
+}
 
 function sendError($mess = "Error")
 {
@@ -4136,11 +4170,136 @@ function checkAccountActive($user_id)
   return $acc_status;
 }
 
-function payment_price()
+function change_pass()
 {
   global $USER_PAYLOAD;
+  global $wpdb;
+
   $user = $USER_PAYLOAD['data'];
   $user_id = $user->user_id;
 
+  $curr_pass = $_POST['current_pass'];
+  $password = $_POST['password'];
 
+  if ($curr_pass == "" || $password == "") {
+    wp_send_json(array(
+      'message' => 'Server could not validate sent data',
+      'status' => false
+    ));
+    return die(0);
+  }
+
+  $table_user = _USER_TABLE_;
+
+  $results = $wpdb->get_results("
+                      SELECT email, password, id, full_name, role_id, activated, avatar_name
+                      FROM $table_user
+                      WHERE id = '$user_id'
+                      LIMIT 1;
+");
+
+  $response_data = $results[0];
+
+  $hashed_password = $response_data->password;
+  if (password_verify($curr_pass, $hashed_password)) {
+    $p_options = [
+      'cost' => 12,
+    ];
+  
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT, $p_options);
+    $up = $wpdb->update(
+      $table_user,
+      array(
+        'password' => $hashed_password
+      ),
+      array(
+        'id' => $user_id
+      ),
+      array(
+        '%s'
+      ),
+      array(
+        '%d'
+      )
+    );
+
+    if($up){
+      return wp_send_json(array(
+        'message' => "Password changed successfully",
+        'status' => true
+      ));
+    }
+  }
+
+  return wp_send_json(array(
+    'message' => "Invalid current password provided",
+    'status' => false
+  ));
+
+  die();
+}
+
+function contact(){
+  global $wpdb;
+
+  $user_name = $_POST['name'];
+  $email = $_POST['email'];
+  $phone = $_POST['phone'];
+  $message = $_POST['message'];
+
+  $table_contact = _CONTACT_TABLE_;
+
+  $result = $wpdb->insert(
+    $table_contact,
+    array(
+      'date_created' => current_time('mysql'),
+      'email' => $email,
+      'user_name' => $user_name,
+      'phone' => $phone,
+      'message' => $message
+    ),
+    array(
+      "%s",
+      "%s",
+      "%s",
+      "%s",
+      "%s"
+    )
+  );
+
+  if($result) {
+    return wp_send_json(array(
+      'message' => "Message received",
+      'status' => true
+    ));
+  }
+
+  return wp_send_json(array(
+    'message' => "Error sending message",
+    'status' => false
+  ));
+  die();
+}
+
+function getContactMessages($limit = 20, $page = 1, $q = "") {
+  global $wpdb;
+  global $PAGE;
+  global $DATA_COUNT;
+
+  $table_contacts = _CONTACT_TABLE_;
+  $offset = $limit * ($page - 1);
+  $PAGE = $page;
+ 
+  $query = "SELECT COUNT(id)
+             FROM $table_contacts;";
+
+  $DATA_COUNT = $wpdb->get_var($query);
+
+  $query = "SELECT id, user_name, email, phone, message, date_created
+             FROM $table_contacts
+             ORDER BY date_created DESC
+             LIMIT $limit;";
+
+  $results = $wpdb->get_results($query, OBJECT);
+  return $results;
 }

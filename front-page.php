@@ -751,6 +751,60 @@ get_template_part('template-parts/header', 'home');
         </a>
     </p>
 
+    <div class="card is-hidden" id="contact-card">
+        <header class="card-header">
+            <p class="card-header-title is-centered ">
+                Leave us a message
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content">
+                <form id="contact-form">
+                    <div class="field">
+                        <label class="label is-small">Your name*</label>
+                        <div class="control is-shorter">
+                            <input class="input is-small" type="text" placeholder="Fullname please" name="name">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label is-small">Email Address*</label>
+                        <div class="control is-shorter">
+                            <input class="input is-small" type="email" placeholder="Contact email address" name="email">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label is-small">Phone number</label>
+                        <div class="control is-shorter">
+                            <input class="input is-small" type="number" name="phone" placeholder="(001) 3232 3232 3223">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label is-small">How can we help*</label>
+                        <div class="control">
+                            <textarea class="textarea is-small" placeholder="Please type you request here" name="message" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a class="button is-primary is-small" id="contact-btn">
+                                Send This Message
+                            </a>
+                        </p>
+                        <p class="control">
+                            <a class="button is-light is-small" id="contact-cancel"> 
+                                Cancel
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <?php
 

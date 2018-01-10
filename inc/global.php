@@ -19,6 +19,7 @@ define("_LAWYER_BUS_", $wpdb -> prefix . "my_lawyer_bus");
 define("_NOTIF_TABLE_", $wpdb -> prefix . "my_notifs");
 define("_FEEDBACK_TABLE_", $wpdb -> prefix . "my_feedbacks");
 define("_SUBSCRIPTION_TABLE_", $wpdb -> prefix . "my_subscription");
+define("_CONTACT_TABLE_", $wpdb -> prefix . "my_contact");
 
 // USER ROLES
 define("_USER_ROLE_", "USER");

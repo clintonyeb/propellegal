@@ -784,6 +784,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var tooltip = document.querySelector('#floating-button .tooltiptext');
 
         if (floatingIcon) {
+            var contactCard = document.getElementById('contact-card');
+            var contactForm = document.getElementById('contact-form')
+            var subBtn = document.getElementById('contact-btn')
+            var cancelBtn = document.getElementById('contact-cancel')
+
             window.addEventListener('scroll', showFloatingIcon);
 
             function showFloatingIcon($ev) {
@@ -797,6 +802,78 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 5000);
                 }
             }
+
+            floatingIcon.addEventListener('click', function ($event) {
+                floatingIcon.classList.add('is-hidden');
+                contactCard.classList.remove('is-hidden');
+            })
+
+            cancelBtn.addEventListener('click', function ($event) {
+                contactCard.classList.add('is-hidden');
+                floatingIcon.classList.remove('is-hidden');
+            })
+
+            var name = contactForm.name
+            var email = contactForm.email
+            var phone = contactForm.phone
+            var message = contactForm.message
+            var contactLoading = false
+
+            subBtn.addEventListener('click', function ($event) {
+                if (contactLoading) return false
+
+                removeErrorField(name);
+                removeErrorField(email);
+                removeErrorField(phone);
+                removeErrorField(message);
+
+                // validate email field
+                if (!rules.required(name.value, true)) {
+                    showInputError(name)
+                    return false;
+                }
+
+                if (!rules.required(email.value, true)) {
+                    showInputError(email)
+                    return false;
+                }
+
+                if (!rules.email(email.value, true)) {
+                    showInputError(email)
+                    return false;
+                }
+
+                if (!rules.required(message.value, true)) {
+                    showInputError(message)
+                    return false;
+                }
+
+                showLoadingButton(subBtn, true)
+                contactLoading = true
+
+                postData({
+                    action: 'contact',
+                    name: name.value.trim(),
+                    email: email.value.trim(),
+                    phone: phone.value ? phone.value.trim() : '',
+                    message: message.value.trim()
+                }, function (data) {
+                    if (data.status) {
+                        showSnackBar(data.message)
+                        contactCard.classList.add('is-hidden');
+                        floatingIcon.classList.remove('is-hidden');
+                    } else {
+                        showSnackBar(data.message)
+                    }
+
+                }, function (err) {
+                    console.log('err', err);
+                    showSnackBar('Check internet connection')
+                }, function () {
+                    showLoadingButton(subBtn, false)
+                    contactLoading = false
+                })
+            })
         }
 
         var askAttorneyBtn = document.getElementById('ask-attorney-btn');
@@ -1404,11 +1481,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Request Messages
 
     var replyTextbox = document.getElementById('request-textbox'),
-        enterToSend, requestBtn, replyFocus, uploadFile;
+        uploadFile = document.getElementById('req-file'),
+        enterToSend, requestBtn, replyFocus;
 
     if (replyTextbox) {
         enterToSend = document.getElementById('enter-send');
-        uploadFile = document.getElementById('req-file');
 
         enterToSend.addEventListener('change', function ($event) {
             if (enterToSend.checked) makeEnterToSend(replyTextbox);
@@ -1424,24 +1501,23 @@ document.addEventListener('DOMContentLoaded', function () {
             replyFocus.addEventListener('click', function ($event) {
                 replyTextbox.focus();
             });
+    }
 
-        if (uploadFile) {
-            uploadFile.addEventListener('change', function ($event) {
-                var f = uploadFile.files;
-                for (var i = 0; i < f.length; i++) {
-                    filesToUpload.push(f[i]);
-                }
+    if (uploadFile) {
+        uploadFile.addEventListener('change', function ($event) {
+            var f = uploadFile.files;
+            for (var i = 0; i < f.length; i++) {
+                filesToUpload.push(f[i]);
+            }
 
-                updateFileText(filesToUpload.length, file_num);
-                updateFiles(filesToUpload);
-            });
-        }
+            updateFileText(filesToUpload.length, file_num);
+            updateFiles(filesToUpload);
+        });
     }
 
     function sendRequestMessage() {
         if (loading) return false;
 
-        console.log('ASKING', $wp_data);
         if (!$wp_data.active) return location.href = '/user/pricing'
 
         var v = replyTextbox.value.trim();
@@ -1548,7 +1624,6 @@ document.addEventListener('DOMContentLoaded', function () {
             sendRequestMessage();
         }
     }
-
 
     function removeEnterToSend(el) {
         el.removeEventListener('keypress', sendOnEnter);
@@ -2008,6 +2083,11 @@ document.addEventListener('DOMContentLoaded', function () {
         messageCont.classList.add('is-hidden');
     }
 
+    function showInputError(el) {
+        el.classList.add('is-danger');
+        el.focus();
+    }
+
     function removeErrorField(field) {
         field.classList.remove('is-danger');
     }
@@ -2016,23 +2096,21 @@ document.addEventListener('DOMContentLoaded', function () {
     nPath = cleanArray(nPath);
     nPath = nPath.splice(nPath.length - 1, 1)[0];
 
-    var activeNavs = document.querySelectorAll('aside .menu-list a[data-href="' + nPath + '"]');
+    var activeNav = document.querySelector('aside .menu-list a[data-href="' + nPath + '"]');
 
-    if (activeNavs) {
-        addActiveNav();
+    if (activeNav) {
+        addActiveNav(activeNav);
     } else {
         var el = document.querySelector('span[data-href]');
         if (el) {
             var sel = el.getAttribute('data-href');
-            activeNav = document.querySelectorAll('aside .menu-list a[data-href="' + sel + '"]');
-            addActiveNav();
+            activeNav = document.querySelector('aside .menu-list a[data-href="' + sel + '"]');
+            addActiveNav(activeNav);
         }
     }
 
-    function addActiveNav() {
-        for (var i = 0; i < activeNavs.length; i++) {
-            activeNavs[i].classList.add('is-active');
-        }
+    function addActiveNav(nav) {
+        nav.classList.add('is-active');
     }
 
     var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -2642,6 +2720,82 @@ document.addEventListener('DOMContentLoaded', function () {
             var data = searchInput.value
             if (!data) return;
             location.href = '/search?q=' + data;
+        })
+
+    }
+
+    //  Change User Password 
+
+    var changePassBtn = document.getElementById('changeUserPassBtn');
+
+    if (changePassBtn) {
+        var form = document.getElementById('change-pass-form')
+        var currentPass = form.current;
+        var password = form.password
+        var confirm = form.confirm
+
+        changePassBtn.addEventListener('click', function ($event) {
+            if (loading) return false;
+
+            removeErrorField(currentPass);
+            removeErrorField(password);
+            removeErrorField(confirm);
+
+            removeError('is-danger');
+
+            // validate password field
+            if (!rules.required(currentPass.value, true)) {
+                showError(currentPass, 'Current Password', rules.required.reason);
+                return false;
+            }
+
+            // validate password field
+            if (!rules.required(password.value, true)) {
+                showError(password, 'Password', rules.required.reason);
+                return false;
+            }
+
+            if (!rules.min(password.value, 6)) {
+                showError(password, 'Password', rules.min.reason);
+                return false;
+            }
+
+            // validate confirm password field
+            if (!rules.match(password.value, confirm.value)) {
+                confirm.value = '';
+                showError(confirm, 'Passwords', rules.match.reason);
+                return false;
+            }
+
+            if (rules.match(password.value, currentPass.value)) {
+                password.value = '';
+                showError(password, 'New and current password', 'cannot be same');
+                return false;
+            }
+
+            showLoadingButton(changePassBtn, true);
+            loading = true;
+
+            postData({
+                action: 'change_pass',
+                current_pass: currentPass.value.trim(),
+                password: password.value.trim()
+            }, function (data) {
+                if (data.status) {
+                    displayMessage(data.message, 'is-info');
+                    location.href = '/logout';
+                } else {
+                    displayMessage(data.message, 'is-danger');
+                }
+                console.log('data', data);
+            }, function (err) {
+                displayMessage('Please check your internet connection!', 'is-danger');
+                console.log(err, 'change pass');
+            }, function () {
+                showLoadingButton(changePassBtn, false)
+                loading = false
+            })
+
         })
 
     }
