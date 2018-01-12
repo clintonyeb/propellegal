@@ -713,303 +713,245 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of create document functions
 
+    var floatingIcon = document.querySelector('#floating-button');
+    var tooltip = document.querySelector('#floating-button .tooltiptext');
 
-    // scrolling carousel
+    if (floatingIcon) {
+        var contactCard = document.getElementById('contact-card');
+        var contactForm = document.getElementById('contact-form')
+        var subBtn = document.getElementById('contact-btn')
+        var cancelBtn = document.getElementById('contact-cancel')
 
-    function slider() {
-        var slideIndex = 1;
-        var shown = 3;
+        window.addEventListener('scroll', showFloatingIcon);
 
-        var slides = document.querySelectorAll("#testimonial .quote-cont");
-
-        if (slides.length > 0) {
-            var range = slides.length - 1;
-            hideSlides(slides);
-
-            showSlides(slides, slideIndex);
-
-            var leftSlide = document.querySelector('#testimonial .nav-icon.left');
-            var rightSlide = document.querySelector('#testimonial .nav-icon.right');
-
-            leftSlide.addEventListener('click', function ($ev) {
-                slideIndex = decCounter(slideIndex, range);
-                hideSlides(slides);
-                showSlides(slides, slideIndex);
-            });
-
-            rightSlide.addEventListener('click', function ($ev) {
-                slideIndex = incCounter(slideIndex, range);
-                hideSlides(slides);
-                showSlides(slides, slideIndex);
-            });
-        }
-
-        function showSlides(slides, index) {
-            for (var i = 0; i < 3; i++) {
-                _show(slides, index);
-                index = incCounter(index, range);
+        function showFloatingIcon($ev) {
+            var floatShown = isScrolledIntoView('#customers');
+            if (floatShown) {
+                floatingIcon.style.display = "block";
+                tooltip.style.display = "block";
+                window.removeEventListener('scroll', showFloatingIcon);
+                setTimeout(function () {
+                    tooltip.classList.add('fadeOut');
+                }, 5000);
             }
         }
 
-        function _show(slides, i) {
-            slides[i].style.display = "block";
-        }
+        floatingIcon.addEventListener('click', function ($event) {
+            floatingIcon.classList.add('is-hidden');
+            contactCard.classList.remove('is-hidden');
+        })
 
-        function hideSlides(slides) {
-            for (var i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
+        cancelBtn.addEventListener('click', function ($event) {
+            contactCard.classList.add('is-hidden');
+            floatingIcon.classList.remove('is-hidden');
+        })
+
+        var name = contactForm.name
+        var email = contactForm.email
+        var phone = contactForm.phone
+        var message = contactForm.message
+        var contactLoading = false
+
+        subBtn.addEventListener('click', function ($event) {
+            if (contactLoading) return false
+
+            removeErrorField(name);
+            removeErrorField(email);
+            removeErrorField(phone);
+            removeErrorField(message);
+
+            // validate email field
+            if (!rules.required(name.value, true)) {
+                showInputError(name)
+                return false;
             }
-        }
 
-        function incCounter(n, range) {
-            if (n + 1 > range) {
-                n = 0;
-            } else {
-                n++;
+            if (!rules.required(email.value, true)) {
+                showInputError(email)
+                return false;
             }
 
-            return n;
-        }
-
-        function decCounter(n, range) {
-            if (n - 1 < 0) {
-                n = range;
-            } else {
-                n--;
+            if (!rules.email(email.value, true)) {
+                showInputError(email)
+                return false;
             }
-            return n;
-        }
 
-        var floatingIcon = document.querySelector('#floating-button');
-        var tooltip = document.querySelector('#floating-button .tooltiptext');
+            if (!rules.required(message.value, true)) {
+                showInputError(message)
+                return false;
+            }
 
-        if (floatingIcon) {
-            var contactCard = document.getElementById('contact-card');
-            var contactForm = document.getElementById('contact-form')
-            var subBtn = document.getElementById('contact-btn')
-            var cancelBtn = document.getElementById('contact-cancel')
+            showLoadingButton(subBtn, true)
+            contactLoading = true
 
-            window.addEventListener('scroll', showFloatingIcon);
-
-            function showFloatingIcon($ev) {
-                var floatShown = isScrolledIntoView('#customers');
-                if (floatShown) {
-                    floatingIcon.style.display = "block";
-                    tooltip.style.display = "block";
-                    window.removeEventListener('scroll', showFloatingIcon);
-                    setTimeout(function () {
-                        tooltip.classList.add('fadeOut');
-                    }, 5000);
+            postData({
+                action: 'contact',
+                name: name.value.trim(),
+                email: email.value.trim(),
+                phone: phone.value ? phone.value.trim() : '',
+                message: message.value.trim()
+            }, function (data) {
+                if (data.status) {
+                    showSnackBar(data.message)
+                    contactCard.classList.add('is-hidden');
+                    floatingIcon.classList.remove('is-hidden');
+                } else {
+                    showSnackBar(data.message)
                 }
-            }
 
-            floatingIcon.addEventListener('click', function ($event) {
-                floatingIcon.classList.add('is-hidden');
-                contactCard.classList.remove('is-hidden');
+            }, function (err) {
+                console.log('err', err);
+                showSnackBar('Check internet connection')
+            }, function () {
+                showLoadingButton(subBtn, false)
+                contactLoading = false
             })
+        })
+    }
 
-            cancelBtn.addEventListener('click', function ($event) {
-                contactCard.classList.add('is-hidden');
-                floatingIcon.classList.remove('is-hidden');
-            })
+    var askAttorneyBtn = document.getElementById('ask-attorney-btn');
+    var askLoad = false;
 
-            var name = contactForm.name
-            var email = contactForm.email
-            var phone = contactForm.phone
-            var message = contactForm.message
-            var contactLoading = false
+    if (askAttorneyBtn) {
+        askAttorneyBtn.addEventListener('click', function ($ev) {
+            if (askLoad) return false;
+            var contentEl = document.querySelector('#attorney-text-el');
 
-            subBtn.addEventListener('click', function ($event) {
-                if (contactLoading) return false
+            removeErrorField(contentEl);
 
-                removeErrorField(name);
-                removeErrorField(email);
-                removeErrorField(phone);
-                removeErrorField(message);
+            if (!rules.required(contentEl.value, true)) {
+                contentEl.classList.add('is-danger');
+                contentEl.focus();
+                return false;
+            }
 
-                // validate email field
-                if (!rules.required(name.value, true)) {
-                    showInputError(name)
-                    return false;
-                }
+            showLoadingButton(askAttorneyBtn, true);
+            askLoad = true;
+            console.log('ASKING', $wp_data);
 
-                if (!rules.required(email.value, true)) {
-                    showInputError(email)
-                    return false;
-                }
+            var data = {
+                action: 'ask_attorney',
+                content: contentEl.value,
+                client_key: $wp_data.client_auth
+            };
 
-                if (!rules.email(email.value, true)) {
-                    showInputError(email)
-                    return false;
-                }
+            if (!makeSureUserAuthenticated(data, '/user/attorney_requests'))
+                return false;
 
-                if (!rules.required(message.value, true)) {
-                    showInputError(message)
-                    return false;
-                }
-
-                showLoadingButton(subBtn, true)
-                contactLoading = true
-
-                postData({
-                    action: 'contact',
-                    name: name.value.trim(),
-                    email: email.value.trim(),
-                    phone: phone.value ? phone.value.trim() : '',
-                    message: message.value.trim()
-                }, function (data) {
-                    if (data.status) {
-                        showSnackBar(data.message)
-                        contactCard.classList.add('is-hidden');
-                        floatingIcon.classList.remove('is-hidden');
-                    } else {
-                        showSnackBar(data.message)
-                    }
-
-                }, function (err) {
-                    console.log('err', err);
-                    showSnackBar('Check internet connection')
-                }, function () {
-                    showLoadingButton(subBtn, false)
-                    contactLoading = false
-                })
-            })
-        }
-
-        var askAttorneyBtn = document.getElementById('ask-attorney-btn');
-        var askLoad = false;
-
-        if (askAttorneyBtn) {
-            askAttorneyBtn.addEventListener('click', function ($ev) {
-                if (askLoad) return false;
-                var contentEl = document.querySelector('#attorney-text-el');
-
-                removeErrorField(contentEl);
-
-                if (!rules.required(contentEl.value, true)) {
-                    contentEl.classList.add('is-danger');
-                    contentEl.focus();
-                    return false;
-                }
-
-                showLoadingButton(askAttorneyBtn, true);
-                askLoad = true;
-                console.log('ASKING', $wp_data);
-                if (!$wp_data.active) return location.href = '/user/pricing'
-
-                var data = {
-                    action: 'ask_attorney',
-                    content: contentEl.value,
-                    client_key: $wp_data.client_auth
-                };
-
-                if (!makeSureUserAuthenticated(data, '/user/attorney_requests'))
-                    return false;
-
-                postData(data, function (data) {
-                    if (data.status) {
-                        showSnackBar('Request submitted...');
-                        clearField(contentEl);
-                    } else {
-                        showSnackBar('An error occurred sending request...');
-                    }
-                    askLoad = false;
-                    showLoadingButton(askAttorneyBtn, false);
-                }, function (err) {
+            if (!$wp_data.active) {
+                saveDataBeforeRedirecting(data, '/user/business_registrations', false)
+                return location.href = '/user/pricing'
+            }
+            postData(data, function (data) {
+                if (data.status) {
+                    showSnackBar('Request submitted...');
+                    clearField(contentEl);
+                } else {
                     showSnackBar('An error occurred sending request...');
-                    askLoad = false;
-                    showLoadingButton(askAttorneyBtn, false);
-                });
-            });
-        }
-
-        var businessAskBtn = document.getElementById('business-ask');
-        var businessLoad = false;
-
-        if (businessAskBtn) {
-            businessAskBtn.addEventListener('click', function ($event) {
-                if (businessLoad) return false;
-
-                var state = document.getElementById('business-state');
-                var type = document.getElementById('business-type');
-
-                if (!rules.required(state.value, true)) {
-                    state.classList.add('is-danger');
-                    state.focus();
-                    return false;
                 }
-
-                if (!rules.required(type.value, true)) {
-                    type.classList.add('is-danger');
-                    type.focus();
-                    return false;
-                }
-
-                var data = {
-                    action: 'ask_business',
-                    state: state.value,
-                    business: type.value,
-                    client_key: $wp_data.client_auth
-                };
-
-                if (!makeSureUserAuthenticated(data, '/user/register_business'))
-                    return false;
-
-                showLoadingButton(businessAskBtn, true);
-                businessLoad = true;
-
-                // postData({
-
-                //     }, function(data){
-                //         if(data.status){
-                //             showSnackBar('Request submitted...');
-                //         }
-                //         else {
-                //             showSnackBar('An error occurred sending request...');
-                //         }
-                //         businessLoad = false;
-                //         showLoadingButton(businessAskBtn, false);
-                //     }, function(err){
-                //         showSnackBar('An error occurred sending request...');
-                //         businessLoad = false;
-                //         showLoadingButton(businessAskBtn, false);
-                //     });
-
-                localStorage.setItem('data', JSON.stringify(data));
-                location.href = "/user/register_business";
-
-                return true;
+                askLoad = false;
+                showLoadingButton(askAttorneyBtn, false);
+            }, function (err) {
+                showSnackBar('An error occurred sending request...');
+                askLoad = false;
+                showLoadingButton(askAttorneyBtn, false);
             });
-        }
+        });
+    }
 
+    var businessAskBtn = document.getElementById('business-ask');
+    var businessLoad = false;
 
-        var mainbottom = $('#hero').offset().top + $('#hero').height();
+    if (businessAskBtn) {
+        businessAskBtn.addEventListener('click', function ($event) {
+            if (businessLoad) return false;
 
+            var state = document.getElementById('business-state');
+            var type = document.getElementById('business-type');
 
-        if (heroHead) {
-            window.addEventListener('scroll', showStickyMenu);
-        }
-
-        function showStickyMenu() {
-            var stop = Math.round($(window).scrollTop());
-            var navbar = $('.hero-head .navbar');
-            var mainMenu = $('#main-menu');
-
-            if (stop > mainbottom) {
-                navbar.addClass('is-fixed-top');
-                $('html').addClass('has-navbar-fixed-top');
-                mainMenu.addClass('made-fixed');
-            } else {
-                navbar.removeClass('is-fixed-top');
-                $('html').removeClass('has-navbar-fixed-top');
-                mainMenu.removeClass('made-fixed');
+            if (!rules.required(state.value, true)) {
+                state.classList.add('is-danger');
+                state.focus();
+                return false;
             }
 
+            if (!rules.required(type.value, true)) {
+                type.classList.add('is-danger');
+                type.focus();
+                return false;
+            }
 
+            var data = {
+                action: 'ask_business',
+                state: state.value,
+                business: type.value,
+                client_key: $wp_data.client_auth
+            };
+
+            if (!makeSureUserAuthenticated(data, '/user/register_business'))
+                return false;
+
+            showLoadingButton(businessAskBtn, true);
+            businessLoad = true;
+
+            // postData({
+
+            //     }, function(data){
+            //         if(data.status){
+            //             showSnackBar('Request submitted...');
+            //         }
+            //         else {
+            //             showSnackBar('An error occurred sending request...');
+            //         }
+            //         businessLoad = false;
+            //         showLoadingButton(businessAskBtn, false);
+            //     }, function(err){
+            //         showSnackBar('An error occurred sending request...');
+            //         businessLoad = false;
+            //         showLoadingButton(businessAskBtn, false);
+            //     });
+
+            localStorage.setItem('data', JSON.stringify(data));
+            location.href = "/user/register_business";
+
+            return true;
+        });
+    }
+
+
+    var mainbottom = $('#hero').offset().top + $('#hero').height();
+
+
+    if (heroHead) {
+        window.addEventListener('scroll', showStickyMenu);
+    }
+
+    function showStickyMenu() {
+        var stop = Math.round($(window).scrollTop());
+        var navbar = $('.hero-head .navbar');
+        var mainMenu = $('#main-menu');
+
+        if (stop > mainbottom) {
+            navbar.addClass('is-fixed-top');
+            $('html').addClass('has-navbar-fixed-top');
+            mainMenu.addClass('made-fixed');
+        } else {
+            navbar.removeClass('is-fixed-top');
+            $('html').removeClass('has-navbar-fixed-top');
+            mainMenu.removeClass('made-fixed');
         }
     }
 
-    slider();
+    var sliderContainer = document.getElementById('slider-container');
+    if (sliderContainer) {
+        $('.sliders').slick({
+            infinite: true,
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            prevArrow: $('.slick-left'),
+            nextArrow: $('.slick-right')
+          });
+    }
 
     // loading button
 
@@ -1082,6 +1024,20 @@ document.addEventListener('DOMContentLoaded', function () {
         fileCont = document.getElementById('display-files');
 
     if (uploadDoc) {
+        var has = localStorage.getItem('redirect');
+
+        if (has) {
+            var prevData = JSON.parse(localStorage.getItem('redirect-data'))
+            if (prevData) {
+                var detailsForm = document.getElementById('details');
+                var n = detailsForm['user_name'];
+                var c = detailsForm['content'];
+                n.value = prevData.name
+                c.value = prevData.content
+            }
+        }
+        localStorage.removeItem('redirect');
+
         fileEl.addEventListener('change', function ($event) {
             var f = fileEl.files;
 
@@ -1145,8 +1101,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             break;
                         case 1:
-                            if (!$wp_data.active) return location.href = '/user/pricing'
-
                             var detailsForm = document.getElementById('details');
 
                             var n = detailsForm['user_name'];
@@ -1173,8 +1127,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                 content: content
                             };
 
-                            if (!makeSureUserAuthenticated(data, '/user/review_document'))
+                            if (!makeSureUserAuthenticated(data, '/user/review_document', false))
                                 return false;
+
+                            if (!$wp_data.active) {
+                                saveDataBeforeRedirecting(data, '/user/review_document', false)
+                                return location.href = '/user/pricing'
+                            }
 
                             hideBoxes();
                             step = 1;
@@ -1354,8 +1313,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             updateProgress(10);
                             break;
                         case 1:
-                            if (!$wp_data.active) return location.href = '/user/pricing'
-
                             removeErrorField(firstname);
                             removeErrorField(lastname);
                             removeErrorField(phone);
@@ -1419,6 +1376,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (!makeSureUserAuthenticated(data, '/user/business_registrations'))
                                 return false;
 
+                            if (!$wp_data.active) {
+                                saveDataBeforeRedirecting(data, '/user/business_registrations', false)
+                                return location.href = '/user/pricing'
+                            }
                             postData(data, function (data) {
                                 if (data.status) {
                                     location.href = "/user/business_registrations";
@@ -1518,8 +1479,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function sendRequestMessage() {
         if (loading) return false;
 
-        if (!$wp_data.active) return location.href = '/user/pricing'
-
         var v = replyTextbox.value.trim();
         if (!rules.required(v, true)) {
             replyTextbox.value = "";
@@ -1552,6 +1511,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             };
             path = 'req_mess';
+        }
+
+        if (!$wp_data.active) {
+            saveDataBeforeRedirecting(data, '/user/business_registrations', false)
+            return location.href = '/user/pricing'
         }
 
         if (filesToUpload.length) {
@@ -1669,7 +1633,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // save message here
         //redirect to pricing if not active
 
-        if (!$wp_data.active) return location.href = '/user/pricing'
 
         var v = reviewTextbox.value.trim();
         if (!rules.required(v, true)) {
@@ -1693,6 +1656,11 @@ document.addEventListener('DOMContentLoaded', function () {
             req_id: req_id,
             client_key: $wp_data.client_auth
         };
+
+        if (!$wp_data.active) {
+            saveDataBeforeRedirecting(data, '/user/business_registrations', false)
+            return location.href = '/user/pricing'
+        }
 
         if (filesToUpload.length) {
             var fd = new FormData();
@@ -2343,13 +2311,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return check;
     }
 
-    var scrollBtns = document.querySelectorAll('[data-scroll]');
+    var goTop = document.querySelector('#go-top .icon')
+    goTop.addEventListener('click', function ($event) {
+        scrollToTop()
+    })
 
+    var scrollBtns = document.querySelectorAll('[data-scroll]');
+    
     for (var i = 0; i < scrollBtns.length; i++) {
         scrollBtns[i].addEventListener('click', function ($ev) {
             var tar = $ev.currentTarget.getAttribute('data-scroll');
             scrollToElement('#' + tar);
         });
+    }
+
+    function scrollToTop() {
+        $('html, body').animate({
+            scrollTop: 0
+        }, "slow");
     }
 
     function scrollToElement(elem) {
@@ -2388,10 +2367,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return arr;
     }
 
-    function makeSureUserAuthenticated(data, url) {
+    function makeSureUserAuthenticated(data, url, submit) {
+        submit = submit === false ? false : true
         if (authenticated) {
             return true;
         } else {
+            localStorage.setItem('submit-redirect', submit)
             localStorage.setItem('redirect', JSON.stringify(url));
             localStorage.setItem('redirect-data', JSON.stringify(data));
             location.href = "/login";
@@ -2415,6 +2396,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (has) {
             has = JSON.parse(has);
             if (has) {
+                var shdSend = localStorage.getItem('submit-redirect')
+                if (!JSON.parse(shdSend)) return location.href = has + '/?redirected=true';
                 var data = JSON.parse(localStorage.getItem('redirect-data'));
                 showSnackBar('Sending request');
 
@@ -2455,6 +2438,12 @@ document.addEventListener('DOMContentLoaded', function () {
             ret = ret.substr(0, maxLength - 3) + "...";
         }
         return ret;
+    }
+
+    function saveDataBeforeRedirecting(data, url, shdSubmit) {
+        localStorage.setItem('redirect', url)
+        localStorage.setItem('redirect-data', data)
+        localStorage.setItem('submit-redirect', shdSubmit)
     }
 
     var clickable = document.querySelectorAll('.clickable');

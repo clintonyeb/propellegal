@@ -32,14 +32,18 @@ function my_theme_enqueue_styles()
   wp_enqueue_script('util', get_bloginfo('stylesheet_directory') . '/assets/js/utils.js');
   wp_enqueue_script('transition', get_bloginfo('stylesheet_directory') . '/assets/js/transition.js', array('jquery'));
   wp_enqueue_script('dropdown', get_bloginfo('stylesheet_directory') . '/assets/js/dropdown.js', array('transition'));
+  if(is_front_page()) {
+    wp_enqueue_style('slider-css', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css');
+    wp_enqueue_style('slider-theme', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css');
+    wp_enqueue_script('slider', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js', array('jquery'));
+  }
   if (is_page('Subscribe')) {
     wp_enqueue_script('square-pay', 'https://js.squareup.com/v2/paymentform', array('jquery'));
     wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'square-pay'));
   } else {
-    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown'));
+    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'slider'));
   }
-
-  error_log(print_r(($USER_PAYLOAD['data']->active), true));
+  
 
   if ($USER_PAYLOAD['status'] === true) {
     wp_localize_script(
@@ -758,6 +762,7 @@ function encryptData($payload)
     $issued_at = time();
     $not_before = $issued_at + 10;
     $expire = $not_before + 86400 * 7; # 7 days
+    $user_id = property_exists($payload, 'user_id') ? ($payload->user_id) : ($payload->id);
 
     $data = [
       'iat' => $issued_at,
@@ -766,10 +771,10 @@ function encryptData($payload)
       'nbf' => $not_before,
       'exp' => $expire,
       'data' => [
-        'user_id' => $payload->id,
+        'user_id' => $user_id,
         'role_id' => $payload->role_id,
         'full_name' => $payload->full_name,
-        'active' => checkAccountActive(($payload->id))
+        'active' => checkAccountActive($user_id)
         // TODO: Remove Fullname from token payload
       ]
     ];
@@ -824,12 +829,18 @@ function validate_jwt($jwt)
   if ($jwt) {
     $decoded = decode_jwt($jwt, SECRET_KEY);
     if ($decoded && $decoded->exp > time()) {
+      $data = $decoded->data;
+      $id = $data->user_id;
+      if(!($data->active)) {
+        $data->active = checkAccountActive($id);
+      }
       $USER_PAYLOAD = array(
         'status' => true,
-        'data' => $decoded->data
+        'data' => $data
       );
     }
   }
+
 }
 
 function addActivity($type_name, $user_id)
@@ -4130,7 +4141,7 @@ function getSubscriptionDetails()
              LIMIT 1;";
 
   $results = ($wpdb->get_results($query, OBJECT));
-
+  if(count($results) < 1) return false;
   return $results[0];
 }
 
@@ -4159,6 +4170,8 @@ function checkAccountActive($user_id)
              LIMIT 1;";
 
   $results = ($wpdb->get_results($query, OBJECT));
+  if(count($results) < 1) return false;
+
   $data = $results[0];
 
   $renewed = $data->date_renewed;

@@ -16337,92 +16337,96 @@ aside .user-avatar {
   }
 }
 
-/* line 400, assets/sass/_custom.sass */
+/* line 399, assets/sass/_custom.sass */
+#footer {
+  position: relative;
+}
+/* line 401, assets/sass/_custom.sass */
 #footer .foot-icon {
   background-color: transparent;
 }
-/* line 402, assets/sass/_custom.sass */
+/* line 403, assets/sass/_custom.sass */
 #footer .brand {
   height: 100px;
 }
-/* line 405, assets/sass/_custom.sass */
+/* line 406, assets/sass/_custom.sass */
 #footer .title.is-6 {
   margin-top: 1.2rem;
 }
-/* line 407, assets/sass/_custom.sass */
+/* line 408, assets/sass/_custom.sass */
 #footer a {
   color: white;
 }
-/* line 410, assets/sass/_custom.sass */
+/* line 411, assets/sass/_custom.sass */
 #footer .tweets.items {
   font-size: 0.85em;
 }
-/* line 412, assets/sass/_custom.sass */
+/* line 413, assets/sass/_custom.sass */
 #footer .terms {
   display: inline-block;
 }
 
-/* line 415, assets/sass/_custom.sass */
+/* line 416, assets/sass/_custom.sass */
 .has-text-darker-blue {
   color: #455a64;
 }
 
-/* line 418, assets/sass/_custom.sass */
+/* line 419, assets/sass/_custom.sass */
 .has-text-darker-yellow {
   color: #fdd835;
 }
 
-/* line 421, assets/sass/_custom.sass */
+/* line 422, assets/sass/_custom.sass */
 .has-text-darker-gray {
   color: #212121;
 }
 
-/* line 424, assets/sass/_custom.sass */
+/* line 425, assets/sass/_custom.sass */
 .has-text-light-gray {
   color: #757575;
 }
 
-/* line 427, assets/sass/_custom.sass */
+/* line 428, assets/sass/_custom.sass */
 .has-text-lighter-gray {
   color: #f5f5f5;
 }
 
-/* line 430, assets/sass/_custom.sass */
+/* line 431, assets/sass/_custom.sass */
 .is-darker-blue {
   background-color: #455a64;
 }
 
-/* line 433, assets/sass/_custom.sass */
+/* line 434, assets/sass/_custom.sass */
 .is-darker-yellow {
   background-color: #fdd835;
 }
 
-/* line 436, assets/sass/_custom.sass */
+/* line 437, assets/sass/_custom.sass */
 .is-darker-gray {
   background-color: #212121;
 }
 
-/* line 439, assets/sass/_custom.sass */
+/* line 440, assets/sass/_custom.sass */
 .is-light-gray {
   background-color: #757575;
 }
 
-/* line 442, assets/sass/_custom.sass */
+/* line 443, assets/sass/_custom.sass */
 .is-lighter-gray {
   background-color: #f5f5f5;
 }
 
-/* line 445, assets/sass/_custom.sass */
+/* line 446, assets/sass/_custom.sass */
 .is-dark {
   background-color: #212121;
 }
 
-/* line 448, assets/sass/_custom.sass */
+/* line 449, assets/sass/_custom.sass */
 p {
   letter-spacing: 0.05rem;
 }
 
-/* line 451, assets/sass/_custom.sass */
+/* line 452, assets/sass/_custom.sass */
 #floating-button {
   position: fixed;
   bottom: 5rem;
@@ -16430,16 +16434,16 @@ p {
   display: none;
 }
 @media only screen and (max-width: 500px) {
-  /* line 451, assets/sass/_custom.sass */
+  /* line 452, assets/sass/_custom.sass */
   #floating-button {
     display: none;
   }
 }
-/* line 458, assets/sass/_custom.sass */
+/* line 459, assets/sass/_custom.sass */
 #floating-button .button {
   border-radius: 50%;
 }
-/* line 463, assets/sass/_custom.sass */
+/* line 464, assets/sass/_custom.sass */
 #floating-button .tooltiptext {
   display: none;
   width: 120px;
@@ -16453,7 +16457,7 @@ p {
   right: 3.8rem;
   margin-left: -60px;
 }
-/* line 475, assets/sass/_custom.sass */
+/* line 476, assets/sass/_custom.sass */
 #floating-button .tooltiptext::after {
   content: " ";
   position: absolute;
@@ -16465,7 +16469,7 @@ p {
   border-color: #455a64 transparent transparent transparent;
 }
 
-/* line 485, assets/sass/_custom.sass */
+/* line 486, assets/sass/_custom.sass */
 #contact-card {
   position: fixed;
   bottom: 0.5rem;
@@ -16473,68 +16477,66 @@ p {
   width: 400px;
   border-radius: 1rem;
 }
-/* line 492, assets/sass/_custom.sass */
+/* line 493, assets/sass/_custom.sass */
 #contact-card .card-header-title {
   padding: 0.6rem 0;
   font-size: 0.8rem;
 }
-/* line 496, assets/sass/_custom.sass */
+/* line 497, assets/sass/_custom.sass */
 #contact-card textarea {
   resize: none;
 }
 
-/* line 499, assets/sass/_custom.sass */
+/* line 500, assets/sass/_custom.sass */
 #testimonial {
   position: relative;
 }
-/* line 502, assets/sass/_custom.sass */
+/* line 504, assets/sass/_custom.sass */
 #testimonial .quote-box {
+  margin: 0 0.5em;
   position: relative;
-  margin-left: 1rem;
-  position: relative;
-  transition: all 0.25s;
 }
-/* line 508, assets/sass/_custom.sass */
+/* line 507, assets/sass/_custom.sass */
 #testimonial .quote-box.red {
   border-top: 1px solid red;
 }
-/* line 510, assets/sass/_custom.sass */
+/* line 509, assets/sass/_custom.sass */
 #testimonial .quote-box.red::after {
   border-color: red transparent transparent transparent;
 }
-/* line 512, assets/sass/_custom.sass */
+/* line 511, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow {
   border-top: 1px solid yellow;
 }
-/* line 514, assets/sass/_custom.sass */
+/* line 513, assets/sass/_custom.sass */
 #testimonial .quote-box.yellow::after {
   border-color: yellow transparent transparent transparent;
 }
-/* line 516, assets/sass/_custom.sass */
+/* line 515, assets/sass/_custom.sass */
 #testimonial .quote-box.blue {
   border-top: 1px solid blue;
 }
-/* line 518, assets/sass/_custom.sass */
+/* line 517, assets/sass/_custom.sass */
 #testimonial .quote-box.blue::after {
   border-color: blue transparent transparent transparent;
 }
-/* line 520, assets/sass/_custom.sass */
+/* line 519, assets/sass/_custom.sass */
 #testimonial .quote-box.green {
   border-top: 1px solid green;
 }
-/* line 522, assets/sass/_custom.sass */
+/* line 521, assets/sass/_custom.sass */
 #testimonial .quote-box.green::after {
   border-color: green transparent transparent transparent;
 }
-/* line 524, assets/sass/_custom.sass */
+/* line 523, assets/sass/_custom.sass */
 #testimonial .quote-box.pink {
   border-top: 1px solid pink;
 }
-/* line 526, assets/sass/_custom.sass */
+/* line 525, assets/sass/_custom.sass */
 #testimonial .quote-box.pink::after {
   border-color: pink transparent transparent transparent;
 }
-/* line 528, assets/sass/_custom.sass */
+/* line 527, assets/sass/_custom.sass */
 #testimonial .quote-box::after {
   content: " ";
   position: absolute;
@@ -16545,19 +16547,20 @@ p {
   border-style: solid;
   border-color: #455a64 transparent transparent transparent;
 }
-/* line 537, assets/sass/_custom.sass */
+/* line 536, assets/sass/_custom.sass */
 #testimonial img {
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  position: relative;
+  left: 45%;
+  margin-top: 0.9rem;
 }
-/* line 542, assets/sass/_custom.sass */
+/* line 544, assets/sass/_custom.sass */
 #testimonial .nav-icon {
   position: absolute;
   top: 50%;
   display: inline-block;
-  color: red;
-  z-index: 1;
 }
 /* line 549, assets/sass/_custom.sass */
 #testimonial .nav-icon.left {
@@ -17151,88 +17154,113 @@ a.is-hoverable:hover {
 
 /* line 1023, assets/sass/_custom.sass */
 #pricing .columns {
-  margin-left: 5rem;
-  margin-right: 5rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
-/* line 1027, assets/sass/_custom.sass */
+/* line 1025, assets/sass/_custom.sass */
 #pricing .columns .column {
   padding: 0;
 }
-/* line 1031, assets/sass/_custom.sass */
+/* line 1029, assets/sass/_custom.sass */
 #pricing .card .card-header p {
   display: inline-block;
 }
-/* line 1033, assets/sass/_custom.sass */
+/* line 1031, assets/sass/_custom.sass */
 #pricing .card.is-selected {
   position: relative;
   bottom: 22px;
   border-top: 2px solid #455a64;
 }
-/* line 1037, assets/sass/_custom.sass */
+/* line 1035, assets/sass/_custom.sass */
 #pricing .card.is-selected .popular {
   height: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 0.8rem;
 }
-/* line 1043, assets/sass/_custom.sass */
+/* line 1041, assets/sass/_custom.sass */
 #pricing .content .title {
   font-weight: 800;
   color: red;
 }
-/* line 1046, assets/sass/_custom.sass */
+/* line 1044, assets/sass/_custom.sass */
 #pricing .content .button {
   width: 70%;
 }
-/* line 1049, assets/sass/_custom.sass */
+/* line 1047, assets/sass/_custom.sass */
 #pricing .foot .subtitle {
   font-size: 0.9rem;
 }
 
-/* line 1052, assets/sass/_custom.sass */
+/* line 1050, assets/sass/_custom.sass */
 .ma-1 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
 
-/* line 1056, assets/sass/_custom.sass */
+/* line 1054, assets/sass/_custom.sass */
 .ml-1 {
   margin-left: 0.5rem;
 }
 
-/* line 1059, assets/sass/_custom.sass */
+/* line 1057, assets/sass/_custom.sass */
 .ml-2 {
   margin-left: 1rem;
 }
 
-/* line 1062, assets/sass/_custom.sass */
+/* line 1060, assets/sass/_custom.sass */
 .mb-1 {
   margin-bottom: 0.5rem;
 }
 
-/* line 1065, assets/sass/_custom.sass */
+/* line 1063, assets/sass/_custom.sass */
 .mb-2 {
   margin-bottom: 1rem;
 }
 
-/* line 1068, assets/sass/_custom.sass */
+/* line 1066, assets/sass/_custom.sass */
 .mt-1 {
   margin-top: 0.5rem;
 }
 
-/* line 1071, assets/sass/_custom.sass */
+/* line 1069, assets/sass/_custom.sass */
 .mt-2 {
   margin-top: 1rem;
 }
 
-/* line 1074, assets/sass/_custom.sass */
+/* line 1072, assets/sass/_custom.sass */
 .mt-3 {
   margin-top: 1.5rem;
 }
 
-/* line 1077, assets/sass/_custom.sass */
+/* line 1075, assets/sass/_custom.sass */
 .control.is-shorter {
   width: 100%;
   max-width: 600px;
+}
+
+/* line 1080, assets/sass/_custom.sass */
+section.section {
+  padding: 1.5rem;
+}
+
+/* line 1083, assets/sass/_custom.sass */
+.document-icon {
+  height: 8rem !important;
+}
+
+/* line 1086, assets/sass/_custom.sass */
+#go-top {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  z-index: 1;
+}
+/* line 1092, assets/sass/_custom.sass */
+#go-top .icon {
+  font-size: 2rem;
+  cursor: pointer;
+}
+/* line 1095, assets/sass/_custom.sass */
+#go-top:hover {
+  color: #DADADA;
 }

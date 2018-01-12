@@ -397,6 +397,7 @@ aside
         display: block
 
 #footer
+  position: relative
   .foot-icon
     background-color: transparent
   .brand
@@ -499,12 +500,10 @@ p
 #testimonial
   position: relative
 
+  #slider-container
   .quote-box
-    position: relative
-    margin-left: 1rem
-    position: relative
-    transition: all 0.25s
-
+    margin: 0 .5em
+    position: relative 
     &.red
       border-top: 1px solid red
       &::after
@@ -538,13 +537,14 @@ p
     height: 50px
     width: 50px
     border-radius: 50%
+    position: relative
+    left: 45%
+    margin-top: .9rem
 
   .nav-icon
     position: absolute
     top: 50%
     display: inline-block
-    color: red
-    z-index: 1
 
     &.left
       left: 20px
@@ -1021,9 +1021,7 @@ a
 
 #pricing
   .columns
-    margin-left: 5rem
-    margin-right: 5rem
-    margin-top: 2rem
+    margin-top: 1rem
     .column
       padding: 0
   .card
@@ -1077,3 +1075,22 @@ a
 .control.is-shorter
   width: 100%
   max-width: 600px
+
+section
+  &.section
+    padding: 1.5rem
+
+.document-icon
+  height: 8rem !important
+
+#go-top
+  position: absolute
+  bottom: 50px
+  right: 50px
+  z-index: 1
+
+  .icon
+    font-size: 2rem
+    cursor: pointer
+  &:hover
+    color: #DADADA

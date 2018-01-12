@@ -2,7 +2,7 @@
 get_template_part('template-parts/header', 'home');
 ?>
 
-    <section class="hero is-fullheight main-hero" id="hero">
+    <section class="hero is-fullheight main-hero top" id="hero">
 
         <p id="loader" class="has-text-centered">
             <a class="button is-loading is-large is-dark menu-icon">
@@ -610,7 +610,7 @@ get_template_part('template-parts/header', 'home');
     <section class="section" id="testimonial">
 
         <p class="nav-icon left is-hidden-touch">
-            <a class="button is-large is-bordercircle">
+            <a class="button is-large is-bordercircle slick-left">
                 <span class="icon is-large">
                     <i class="fa fa-angle-left"></i>
                 </span>
@@ -626,10 +626,8 @@ get_template_part('template-parts/header', 'home');
             <p class="has-text-centered">Commune abhorreant et usu, facer mandamus necessitatibus ut vis. At everti quaeque dissentiet nec, tota prompta
                 ea vel. Pri cu wisi complectitur. No est nonumy quodsi, eam at errem partiendo conclusionemque.</p>
             <br>
-            <br>
-
-            <div class="columns cont">
-                <div class="column is-4 quote-cont animated fadeIn">
+            <div class="sliders" id="slider-container">
+                <div class="quote-cont">
                     <div class="box quote-box red">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -643,7 +641,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box blue">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -657,7 +655,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box pink">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -671,7 +669,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box pink">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -685,7 +683,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box pink">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -699,7 +697,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box pink">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -713,7 +711,7 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-                <div class="column is-4 quote-cont animated fadeIn">
+                <div class="quote-cont">
                     <div class="box quote-box pink">
                         <p class="has-text-centered">
                             <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
@@ -727,14 +725,82 @@ get_template_part('template-parts/header', 'home');
                     </p>
                     <p class="has-text-centered">SEO Analyst</p>
                 </div>
-
+                <div class="quote-cont">
+                    <div class="box quote-box pink">
+                        <p class="has-text-centered">
+                            <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
+                        </p>
+                    </div>
+                    <p class="has-text-centered avatar">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
+                    </p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 8</strong>
+                    </p>
+                    <p class="has-text-centered">SEO Analyst</p>
+                </div>
+                <div class="quote-cont">
+                    <div class="box quote-box pink">
+                        <p class="has-text-centered">
+                            <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
+                        </p>
+                    </div>
+                    <p class="has-text-centered avatar">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
+                    </p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 9</strong>
+                    </p>
+                    <p class="has-text-centered">SEO Analyst</p>
+                </div>
+                <div class="quote-cont">
+                    <div class="box quote-box pink">
+                        <p class="has-text-centered">
+                            <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
+                        </p>
+                    </div>
+                    <p class="has-text-centered avatar">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
+                    </p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 10</strong>
+                    </p>
+                    <p class="has-text-centered">SEO Analyst</p>
+                </div>
+                <div class="quote-cont">
+                    <div class="box quote-box pink">
+                        <p class="has-text-centered">
+                            <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
+                        </p>
+                    </div>
+                    <p class="has-text-centered avatar">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
+                    </p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 11</strong>
+                    </p>
+                    <p class="has-text-centered">SEO Analyst</p>
+                </div>
+                <div class="quote-cont">
+                    <div class="box quote-box pink">
+                        <p class="has-text-centered">
+                            <blockquote>"Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place."</blockquote>
+                        </p>
+                    </div>
+                    <p class="has-text-centered avatar">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/person.jpg">
+                    </p>
+                    <p class="has-text-centered">
+                        <strong>Stephen Hill 12</strong>
+                    </p>
+                    <p class="has-text-centered">SEO Analyst</p>
+                </div>
             </div>
-
-
+        </div>
 
         </div>
         <p class="nav-icon right is-hidden-touch">
-            <a class="button is-bordercircle is-large">
+            <a class="button is-bordercircle is-large slick-right">
                 <span class="icon is-large">
                     <i class="fa fa-angle-right"></i>
                 </span>
@@ -795,7 +861,7 @@ get_template_part('template-parts/header', 'home');
                             </a>
                         </p>
                         <p class="control">
-                            <a class="button is-light is-small" id="contact-cancel"> 
+                            <a class="button is-light is-small" id="contact-cancel">
                                 Cancel
                             </a>
                         </p>
@@ -804,8 +870,6 @@ get_template_part('template-parts/header', 'home');
             </div>
         </div>
     </div>
-
-
     <?php
 
     get_template_part('template-parts/footer');

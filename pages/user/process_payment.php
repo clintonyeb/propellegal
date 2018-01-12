@@ -2,10 +2,6 @@
 
 <section class="section">
   <a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
-  <h2 class="title is-4 is-inline-block">
-    Processing Payment...
-  </h2>
-
   <?php
 
   global $USER_PAYLOAD;
@@ -79,8 +75,6 @@
 
   try {
     $transactions_api->charge($location -> getId(), $request_body);
-    echo "<h2 class=\"title is-4\">Payment successfull</h2>";
-    echo "<p><a class=\"button is-primary\" href=\"/user\">Go To Home</a></p>";
     // persist to database
     $user_id = $user -> user_id;
     $amt = (int)$amount;
@@ -112,13 +106,22 @@
         "%s",
         "%s",
         "%d"
-
       ),
       array(
         "%d"
       )
     );
+    if($resultPay) {
+      echo "<h2 class=\"title is-4\">Payment successfull</h2>";
+      echo "<p><a class=\"button is-primary\" href=\"/user\">Go To Home</a></p>";
 
+      echo("<script>
+        var red = JSON.parse(localStorage.getItem('redirect'));
+        location.href = red;
+      </script>");
+    } else {
+      echo "<h2 class=\"title is-4\">Error processing payment</h2>";
+    }
   } catch (Exception $e) {
     echo "<h2 class=\"title is-4\">Payment error!</h2>";
     print_r("<strong>Message:</strong><br/>");

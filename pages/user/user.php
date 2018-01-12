@@ -9,12 +9,17 @@ $register_count = getActivityCount(_REGISTER_BUSINESS_);
 $user_full = getUserDetails();
 
 $details = getSubscriptiondetails();
-$renewed = $details -> date_renewed;
+if($details) {
+    $renewed = $details -> date_renewed;
 $expire = $details -> date_expire;
 $amount = $details -> amount;
 $date_expire = new DateTime($expire);
 $date_today = new DateTime("now");
 $acc_status = $date_expire > $date_today;
+} else {
+    $acc_status = false;
+}
+
 ?>
 
 <a class="button is-primary is-outlined is-hidden-desktop is-small" id="open-nav">MENU</a>
@@ -140,10 +145,10 @@ $acc_status = $date_expire > $date_today;
                       ?>
                     </p>
                     <p>
-                        <strong>Date of Renewal: </strong> <?php echo ($renewed ? $renewed : 'Never'); ?>
+                        <strong>Date of Renewal: </strong> <?php echo ($acc_status && $renewed ? $renewed : 'Never'); ?>
                     </p>
                     <p>
-                      <strong>Date of Expiry: </strong> <?php echo ($expire ? $expire : 'Never'); ?>
+                      <strong>Date of Expiry: </strong> <?php echo ($acc_status && $expire ? $expire : 'Never'); ?>
                     </p>
                 </div>
             </div>
