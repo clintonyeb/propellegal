@@ -3,7 +3,6 @@ global $USER_PAYLOAD;
 $user = $USER_PAYLOAD['data'];
 $avatar = getAvatar();
 $avatar_name = $avatar -> avatar_name;
-echo print_r($user, true);
 ?>
 
 <span data-href="attorney_requests"></span>

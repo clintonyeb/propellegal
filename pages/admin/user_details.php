@@ -52,7 +52,7 @@ $avatar_name = $avatar -> avatar_name;
             </div>
         </div>
     </div>
-<hr>
+<!-- <hr>
     <div>
         <h4 class="title is-6 has-text-centered" id="admin-action">Actions you can perfrom on user account</h4>
         <div class="columns is-multiline">
@@ -75,7 +75,7 @@ $avatar_name = $avatar -> avatar_name;
         </div>
 
         <input type=hidden value="USER_ACCOUNT" id="action-type">
-    </div>
+    </div> -->
 
     <article class="media is-hidden" id="reply-box">
             <figure class="media-left">

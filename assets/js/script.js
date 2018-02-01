@@ -131,12 +131,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Log-in Functions
 
     var $loginButton = document.getElementById('login-submit');
-
+    
     if ($loginButton) {
         $loginButton.addEventListener('click', submitLogin);
     }
-
-    function submitLogin($event) {
+    
+    function submitLogin($event) {   
         $event.preventDefault();
 
         if (loading) return false;
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             },
             success: function (data) {
-                if (data.status) {
+                if (data.status) {  
                     localStorage.setItem('token', data.token);
                     displayMessage('Login success', 'is-info');
 
@@ -618,8 +618,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function setUpDownload() {
-
-
             var docPrev = document.querySelector('#doc_prev .image');
             var file = JSON.parse(localStorage.getItem('output'));
 
@@ -637,7 +635,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 subsMess.classList.remove('is-hidden');
             }
-
         }
     }
 
@@ -1027,7 +1024,14 @@ document.addEventListener('DOMContentLoaded', function () {
         var has = localStorage.getItem('redirect');
 
         if (has) {
-            var prevData = JSON.parse(localStorage.getItem('redirect-data'))
+            var prevData = null;
+            try {
+                prevData = JSON.parse(localStorage.getItem('redirect-data'))  
+            } catch (error) {
+                // do nothing
+                prevData = null;
+            } 
+
             if (prevData) {
                 var detailsForm = document.getElementById('details');
                 var n = detailsForm['user_name'];
@@ -1166,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showBox(i) {
+        console.log(hiddens[i]);
         hiddens[i].classList.remove('is-hidden');
     }
 
@@ -1633,7 +1638,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // save message here
         //redirect to pricing if not active
 
-
         var v = reviewTextbox.value.trim();
         if (!rules.required(v, true)) {
             reviewTextbox.value = "";
@@ -1984,6 +1988,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     goback(request_type.value, role);
                 }
                 loading = false;
+                console.log(data);
+                
             }, function (err) {
                 console.log(err);
                 loading = false;
@@ -2394,7 +2400,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function sendUnsentUserPayload() {
         var has = localStorage.getItem('redirect');
         if (has) {
-            has = JSON.parse(has);
+            try {
+                has = JSON.parse(has);    
+            } catch (error) {
+                // return false;
+            }
+            
             if (has) {
                 var shdSend = localStorage.getItem('submit-redirect')
                 if (!JSON.parse(shdSend)) return location.href = has + '/?redirected=true';

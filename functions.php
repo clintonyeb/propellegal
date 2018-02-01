@@ -36,12 +36,13 @@ function my_theme_enqueue_styles()
     wp_enqueue_style('slider-css', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css');
     wp_enqueue_style('slider-theme', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css');
     wp_enqueue_script('slider', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js', array('jquery'));
+    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'slider'));
   }
-  if (is_page('Subscribe')) {
+  else if (is_page('Subscribe')) {
     wp_enqueue_script('square-pay', 'https://js.squareup.com/v2/paymentform', array('jquery'));
     wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'square-pay'));
   } else {
-    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown', 'slider'));
+    wp_enqueue_script('script-js', get_bloginfo('stylesheet_directory') . '/assets/js/script.js', array('util', 'dropdown'));
   }
   
 
@@ -1223,7 +1224,7 @@ function upload_doc()
     if ($target_file) {
       array_push($save_files, $target_file);
     } else {
-      sendError("Error uploading files");
+      sendError("Error: Please check the file size. Limit: 10MB");
     }
   }
 
@@ -3786,7 +3787,7 @@ function register_lawyer()
 
     $user_id = $wpdb->insert_id;
 
-    echo '<h2>Lawyer Account Created</h2>';
+    // echo '<h2>Lawyer Account Created</h2>';
 
     // send welcome message
 
