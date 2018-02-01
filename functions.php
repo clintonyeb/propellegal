@@ -127,6 +127,10 @@ add_action('wp_ajax_user_mess', 'user_mess');
 add_action('wp_ajax_nopriv_user_mess', 'user_mess');
 add_action('wp_ajax_payment_price', 'payment_price');
 add_action('wp_ajax_nopriv_payment_price', 'payment_price');
+add_action('wp_ajax_admin_email', 'admin_email');
+add_action('wp_ajax_nopriv_admin_email', 'admin_email');
+add_action('wp_ajax_admin_del_user', 'admin_del_user');
+add_action('wp_ajax_nopriv_admin_del_user', 'admin_del_user');
 
 add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
 add_filter('show_admin_bar', '__return_false');
@@ -496,7 +500,7 @@ function login()
   $table_user = _USER_TABLE_;
 
   $results = $wpdb->get_results("
-                      SELECT email, password, id, full_name, role_id, activated, avatar_name
+                      SELECT email, password, id, full_name, role_id, activated, avatar_name, approved
                       FROM $table_user
                       WHERE email = '$email'
                       LIMIT 1;
@@ -510,6 +514,15 @@ function login()
     if ($res_data->activated != 1) {
       wp_send_json(array(
         'message' => "Your Account is not activated, please check your mail  ",
+        'status' => false,
+      ));
+
+      return die(0);
+    }
+    
+    if ($res_data->approved != 1) {
+      wp_send_json(array(
+        'message' => "Your Account is deactivated.",
         'status' => false,
       ));
 
@@ -3827,6 +3840,52 @@ function register_lawyer()
   die();
 }
 
+function admin_email(){
+  $email = trim($_POST['email']);
+  $user_id = trim($_POST['user_id']);
+  $message = trim($_POST['message']);
+
+  $subject = 'Propellegal Admin';
+    $body = "<html>
+                     <head>
+                      <title>Welcome</title>
+                        </head>
+                    <body>";
+    $body .= "<p>Hi $message </p>";
+    $body .= "</body></html>";
+
+
+    $mail_res = sendEmail($subject, $body, $email);
+
+  die();
+}
+
+function admin_del_user(){
+  $email = trim($_POST['email']);
+  $user_id = trim($_POST['user_id']);
+
+  global $wpdb;
+  $table_users = _USER_TABLE_; 
+
+  $wpdb->update(
+    $table_users,
+    array(
+      'approved' => 0
+    ),
+    array(
+      'id' => $user_id
+    ),
+    array(
+      '%d'
+    ),
+    array(
+      '%d'
+    )
+  );
+
+  die();
+}
+
 function randomPassword($len)
 {
   $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -4159,8 +4218,12 @@ function checkSubscription()
   return $acc_status;
 }
 
-function checkAccountActive($user_id)
+function checkAccountActive($user_id, $role)
 {
+  if ($role == _LAWYER_ID_ || $role == _ADMIN_ID_) {
+    return true;
+  }
+
   global $wpdb;
 
   $table_subscriptions = _SUBSCRIPTION_TABLE_;

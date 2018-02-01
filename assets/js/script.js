@@ -131,12 +131,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Log-in Functions
 
     var $loginButton = document.getElementById('login-submit');
-    
+
     if ($loginButton) {
         $loginButton.addEventListener('click', submitLogin);
     }
-    
-    function submitLogin($event) {   
+
+    function submitLogin($event) {
         $event.preventDefault();
 
         if (loading) return false;
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 client_key: $wp_data.client_auth
             },
             success: function (data) {
-                if (data.status) {  
+                if (data.status) {
                     localStorage.setItem('token', data.token);
                     displayMessage('Login success', 'is-info');
 
@@ -947,7 +947,7 @@ document.addEventListener('DOMContentLoaded', function () {
             slidesToScroll: 3,
             prevArrow: $('.slick-left'),
             nextArrow: $('.slick-right')
-          });
+        });
     }
 
     // loading button
@@ -961,8 +961,8 @@ document.addEventListener('DOMContentLoaded', function () {
         setUpVideo();
 
         video.addEventListener('loadstart', show);
-        video.addEventListener('progress', show);
-        video.addEventListener('playing', show);
+        // video.addEventListener('progress', show);
+        // video.addEventListener('playing', show);
         video.addEventListener('playing', hide);
         video.addEventListener('play', hide);
         video.addEventListener('canplaythrough', hide);
@@ -1026,11 +1026,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (has) {
             var prevData = null;
             try {
-                prevData = JSON.parse(localStorage.getItem('redirect-data'))  
+                prevData = JSON.parse(localStorage.getItem('redirect-data'))
             } catch (error) {
                 // do nothing
                 prevData = null;
-            } 
+            }
 
             if (prevData) {
                 var detailsForm = document.getElementById('details');
@@ -1267,7 +1267,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: fd,
             contentType: false,
             processData: false,
-            beforeSend: function (d) {},
+            beforeSend: function (d) { },
             success: function (data) {
                 cb(null, data);
             },
@@ -1546,7 +1546,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: fd,
                 contentType: false,
                 processData: false,
-                beforeSend: function (d) {},
+                beforeSend: function (d) { },
                 success: function (data) {
                     showSnackBar("Request submitted...");
                     if (is_new)
@@ -1689,7 +1689,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: fd,
                 contentType: false,
                 processData: false,
-                beforeSend: function (d) {},
+                beforeSend: function (d) { },
                 success: function (data) {
                     showSnackBar("Request submitted...");
                     location.reload();
@@ -1946,6 +1946,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var actionBtns = document.querySelectorAll('a[data-action]');
         var request_type = document.getElementById('action-type');
         var req_id = document.getElementById('req_id');
+        var admin_Mail_Submit = document.getElementById('admin_mail_btn')
 
         for (var i = 0; i < actionBtns.length; i++) {
             actionBtns[i].addEventListener('click', function ($event) {
@@ -1955,7 +1956,23 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        admin_Mail_Submit.addEventListener('click', function ($event) {
+            var email = document.getElementById('email').value;
+            var userId = document.getElementById('user_id').value;
+            var mess = document.getElementById('admin-mail').value;
+            var type = document.getElementById('mail-type').value;
+
+            if (!mess) return false
+            showLoadingButton(admin_Mail_Submit, true)
+
+            sendAdminMail(email, userId, mess, function (data) {
+                showLoadingButton(admin_Mail_Submit, false)
+                location.href = '/admin/' + type + '/'
+            })
+        })
+
         function performAction(attr, role) {
+
             switch (attr) {
                 case 'send_message':
                     var article = document.querySelector('article#reply-box');
@@ -1969,7 +1986,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'remove_request':
                     postAction('remove_request', role);
                     break;
+                case 'delete_account':
+                    var email = document.getElementById('email').value;
+                    var userId = document.getElementById('user_id').value;
+                    var type = document.getElementById('mail-type').value;
+
+                    deleteUserAcc(email, userId, function (res) {
+                        location.href = '/admin/' + type + '/'
+                    });
+                    break;
             }
+        }
+        
+        function deleteUserAcc(email, userId, action) {
+            postData({
+                action: 'admin_del_user',
+                email: email,
+                user_id: userId
+            }, function (data) {
+                action();
+            }, function (err) {
+                console.log(err);
+            })
+        }
+
+        function sendAdminMail(email, userId, message, action) {
+            postData({
+                action: 'admin_email',
+                email: email,
+                user_id: userId,
+                message: message
+            }, function (data) {
+                action();
+            }, function (err) {
+                console.log(err);
+            })
         }
 
         function postAction(action_type, role) {
@@ -1989,7 +2040,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 loading = false;
                 console.log(data);
-                
+
             }, function (err) {
                 console.log(err);
                 loading = false;
@@ -2008,8 +2059,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 case "REGISTER_BUSINESS":
                     location.href = "/" + role + "/business_registrations";
                     break;
-                default:
-                    console.log('wrong type given');
             }
         }
     }
@@ -2323,7 +2372,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     var scrollBtns = document.querySelectorAll('[data-scroll]');
-    
+
     for (var i = 0; i < scrollBtns.length; i++) {
         scrollBtns[i].addEventListener('click', function ($ev) {
             var tar = $ev.currentTarget.getAttribute('data-scroll');
@@ -2401,11 +2450,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var has = localStorage.getItem('redirect');
         if (has) {
             try {
-                has = JSON.parse(has);    
+                has = JSON.parse(has);
             } catch (error) {
-                // return false;
+                return false;
             }
-            
+
             if (has) {
                 var shdSend = localStorage.getItem('submit-redirect')
                 if (!JSON.parse(shdSend)) return location.href = has + '/?redirected=true';
@@ -2584,20 +2633,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             pending: false
                         },
                         lineItems: [{
-                                label: "Subtotal",
-                                amount: "80.00",
-                                pending: false
-                            },
-                            {
-                                label: "Shipping",
-                                amount: "0.00",
-                                pending: true
-                            },
-                            {
-                                label: "Tax",
-                                amount: "10.00",
-                                pending: false
-                            }
+                            label: "Subtotal",
+                            amount: "80.00",
+                            pending: false
+                        },
+                        {
+                            label: "Shipping",
+                            amount: "0.00",
+                            pending: true
+                        },
+                        {
+                            label: "Tax",
+                            amount: "10.00",
+                            pending: false
+                        }
                         ]
                     };
                 },

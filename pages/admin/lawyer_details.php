@@ -64,12 +64,7 @@ $avatar_name = $avatar -> avatar_name;
 
             <div class="column">
                 <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="mark_completed">Deactivate Account</a>
-            </p>
-            </div>
-            <div class="column">
-                <p class="has-text-centered">
-                <a class="button is-primary is-outlined" data-action="remove_request">Remove User</a>
+                <a class="button is-primary is-outlined" data-action="delete_account">Deactivate Account</a>
             </p>
             </div>
         </div>
@@ -86,13 +81,13 @@ $avatar_name = $avatar -> avatar_name;
             <div class="media-content">
                 <div class="field">
                     <p class="control">
-                        <textarea id="review-textbox" class="textarea" placeholder="Email user..."></textarea>
+                        <textarea id="admin-mail" class="textarea" placeholder="Email user..."></textarea>
                     </p>
                 </div>
                 <nav class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <a class="button is-primary is-medium" id="req-submit" data-url="user_mess">Send Message</a>
+                            <a class="button is-primary is-medium" id="admin_mail_btn" data-url="user_mess">Send Message</a>
                         </div>
                     </div>
                     <div class="level-right">
@@ -105,6 +100,9 @@ $avatar_name = $avatar -> avatar_name;
                 </nav>
                 <input name="req_id" id="req_id" type="hidden" value="<?php echo $req_id ?>" />
             </div>
+            <input type="hidden" value=<?php echo $user_full -> email ?> id="email">
+        <input type="hidden" value=<?php echo $user_full -> id ?> id="user_id">
+        <input type="hidden" value=lawyer_accounts id="mail-type">
         </article>
     </div>
 </section>

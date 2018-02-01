@@ -108,14 +108,14 @@ $user_full = getUserDetails();
             <div class="column">
                 <div class="box has-top-light">
                     <h3 class="title is-5">Ratings</h3>
-                    <p>
+                    <!-- <p>
                         <strong>Status: </strong> Not Active
                     </p>
                     <p>
                         <strong>Date of Renewal: </strong> Never
                     </p>
                     <p>
-                        <strong>Date of Expiry: </strong> Never
+                        <strong>Date of Expiry: </strong> Never -->
                     </p>
                 </div>
             </div>

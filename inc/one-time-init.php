@@ -214,6 +214,7 @@ function createTables(){
   role_id tinyint NOT NULL,
   activated int NOT NULL DEFAULT 0,
   avatar_name tinytext,
+  approved int NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT UC_Email UNIQUE (email),
   FOREIGN KEY (role_id) REFERENCES $table_user_roles(authority)
